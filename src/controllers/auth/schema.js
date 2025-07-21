@@ -8,9 +8,17 @@ const login = yup.object().shape({
 const register = yup.object().shape({
   fullname: yup.string().required('Fullname is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(8, 'Password min 8 character').required('Password is required'),
-  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
-
+  password: yup
+    .string()
+    .min(8, 'Password min 8 character')
+    .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+  gender: yup
+    .string()
+    .oneOf(['m', 'f'], 'Gender must be m or f')
+    .required('Gender is required'),
   RoleId: yup.string().required('RoleId is required'),
 })
 

@@ -1,11 +1,10 @@
 import { Model, DataTypes } from 'sequelize'
 import { sequelize } from '../data-source'
-import { hashSync } from 'bcrypt'
-const Role = require('./role')
+const User = require('./user')
 
-class User extends Model {}
+class Child extends Model {}
 
-User.init(
+Child.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -14,25 +13,28 @@ User.init(
       primaryKey: true,
     },
     fullname: {
+      allowNull: false,
       type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.STRING,
-      unique: {
-        msg: 'Email is already used',
-      },
+    birthDate: {
+      allowNull: false,
+      type: DataTypes.DATE,
     },
-    password: {
+    birthCondition: {
+      allowNull: false,
       type: DataTypes.STRING,
-      set(value) {
-        this.setDataValue('password', hashSync(value, 7))
-      },
     },
     gender: {
+      allowNull: false,
       type: DataTypes.ENUM(['m', 'f']),
     },
-    RoleId: {
+    ParentId: {
+      allowNull: false,
       type: DataTypes.UUID,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -42,15 +44,11 @@ User.init(
     },
   },
   {
-    defaultScope: {
-      attributes: { exclude: ['password'] },
-    },
     sequelize,
+    tableName: 'childs',
   }
 )
 
-User.addScope('withPassword', { attributes: {} })
+Child.belongsTo(User, { foreignKey: 'ParentId' })
 
-User.belongsTo(Role, { foreignKey: 'RoleId' })
-
-module.exports = User
+module.exports = Child

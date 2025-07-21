@@ -2,7 +2,7 @@ const RoleId = require('../../constants/ConstRole')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Roles', [
+    return queryInterface.bulkInsert('roles', [
       {
         id: RoleId.ADMIN,
         name: 'Admin',

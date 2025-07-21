@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('roles', {
+    return queryInterface.createTable('masterGenders', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -27,6 +27,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('roles')
+    return queryInterface.dropTable('masterGenders')
   },
 }

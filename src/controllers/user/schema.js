@@ -11,12 +11,20 @@ const create = yup.object().shape({
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
     .required('Confirm password is required'),
+  gender: yup
+    .string()
+    .oneOf(['m', 'f'], 'Gender must be m or f')
+    .required('Gender is required'),
   RoleId: yup.string().required('RoleId is required'),
 })
 
 const update = yup.object().shape({
   fullname: yup.string().required('Fullname is required'),
   email: yup.string().email('invalid email').required('Email is required'),
+  gender: yup
+    .string()
+    .oneOf(['m', 'f'], 'Gender must be m or f')
+    .required('Gender is required'),
   RoleId: yup.string().required('RoleId is required'),
 })
 
