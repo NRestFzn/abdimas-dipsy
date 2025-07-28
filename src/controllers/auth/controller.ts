@@ -29,9 +29,9 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const values = req.getBody()
 
-    const data = await service.register(values)
+    const data = await service.login(values)
 
-    const httpResponse = HttpResponse.created({
+    const httpResponse = HttpResponse.get({
       message: 'Login successfully',
       data,
     })
