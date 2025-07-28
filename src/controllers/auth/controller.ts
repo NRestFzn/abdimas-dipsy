@@ -24,4 +24,20 @@ route.post(
   })
 )
 
+route.post(
+  '/signin',
+  asyncHandler(async (req: Request, res: Response) => {
+    const values = req.getBody()
+
+    const data = await service.register(values)
+
+    const httpResponse = HttpResponse.created({
+      message: 'Login successfully',
+      data,
+    })
+
+    res.status(201).json(httpResponse)
+  })
+)
+
 export { route as AuthHandler }

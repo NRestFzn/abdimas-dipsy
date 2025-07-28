@@ -29,6 +29,7 @@ export const registerSchema = yup.object({
       [yup.ref('newPassword')],
       "New password and confirm new password don't match"
     ),
+  RoleId: yup.string().required("RoleId can't be empty"),
 })
 
 export type RegisterSchema = yup.InferType<typeof registerSchema>

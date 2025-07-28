@@ -35,6 +35,14 @@ export async function up(
         key: 'id',
       },
     },
+    gender: {
+      allowNull: false,
+      type: Sequelize.ENUM('m', 'f'),
+    },
+    birthDate: {
+      allowNull: false,
+      type: Sequelize.DATEONLY,
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

@@ -10,21 +10,18 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": "./",
-		"paths": {
-			"@/*": ["*"],
-			"@/lib/*" : ["./src/lib/*"],
-			"@/config/*" : ["./src/config/*"],
-			"@/controllers/*" : ["./src/controllers/*"],
-			// "@/modules/*" : ["./src/modules/*"],
-			"@/routes/*" : ["./src/routes/*"],
-			"@/middleware/*" : ["./src/middleware/*"],
-			"@/database/*" : ["./src/database/*"],
-			"@/helper/*" : ["./src/helper/*"],
-		},
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/lib/types"
-    ],
+    "paths": {
+      "@/*": ["*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/controllers/*": ["./src/controllers/*"],
+      // "@/modules/*" : ["./src/modules/*"],
+      "@/routes/*": ["./src/routes/*"],
+      "@/middleware/*": ["./src/middleware/*"],
+      "@/database/*": ["./src/database/*"],
+      "@/helper/*": ["./src/helper/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/lib/types"],
 
     /* JavaScript Support */
     "allowJs": true,

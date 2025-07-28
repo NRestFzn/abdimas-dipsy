@@ -4,33 +4,37 @@ import path from 'path'
 import pino from 'pino'
 import { pinoHttp } from 'pino-http'
 import { currentDir } from '@/lib/string'
+import fs from 'fs'
 
 const logDir = path.resolve(`${currentDir}/logs`)
 
-const fileTransport = pino.transport({
-  target: 'pino/file',
-  options: { destination: `${logDir}/server.log` },
-})
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true })
+}
 
-export const logger = pino(
-  {
-    level: 'info',
-    formatters: {
-      level: (label) => {
-        return { level: label.toUpperCase() }
+export const logger = pino({
+  level: 'info',
+  transport: {
+    targets: [
+      {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          ignore: 'pid,hostname',
+          translateTime: 'SYS:dd-mm-yyyy HH:MM:ss',
+        },
       },
-    },
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        ignore: 'pid,hostname',
-        translateTime: 'SYS:dd-mm-yyyy HH:MM:ss',
+      {
+        target: 'pino/file',
+        level: 'info',
+        options: {
+          destination: `${logDir}/server.log`,
+          mkdir: true,
+        },
       },
-    },
+    ],
   },
-  fileTransport
-)
+})
 
 export const httpLogger = pinoHttp({
   logger,

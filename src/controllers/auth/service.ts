@@ -9,9 +9,7 @@ import User from '@/database/model/user'
 import { ErrorResponse } from '@/lib/http/ErrorResponse'
 import JwtToken from '@/lib/jwtToken'
 import { env } from '@/config/env.config'
-import { v4 as uuidv4 } from 'uuid'
 import { userSchema } from '@/controllers/user/schema'
-import { validate } from '@/lib/validate'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
@@ -56,19 +54,35 @@ export class AuthService {
   }
 
   async register(formData: RegisterSchema) {
-    const values = userSchema.validateSync({
+    const values = registerSchema.validateSync({
       ...formData,
     })
+
+    let data: any
 
     // @ts-expect-error
     const formRegister: User = {
       ...values,
     }
-    const newUser = await User.create({ ...formRegister })
+    await db.sequelize!.transaction(async (transaction) => {
+      const duplicateEmail = await User.findOne({
+        where: { email: formData.email },
+        transaction,
+      })
 
-    const data = await this.login({
-      email: newUser.email,
-      password: values.newPassword,
+      if (duplicateEmail)
+        throw new ErrorResponse.BaseResponse(
+          'Email already used',
+          'Conflict',
+          409
+        )
+
+      const newUser = await User.create({ ...formRegister }, { transaction })
+
+      data = await this.login({
+        email: newUser.email,
+        password: values.newPassword,
+      })
     })
 
     return data

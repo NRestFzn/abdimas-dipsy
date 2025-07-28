@@ -50,6 +50,12 @@ export default class User extends BaseSchema {
   @BelongsTo(() => Role)
   role: Role
 
+  @Column({ type: DataType.ENUM('m', 'f'), allowNull: false })
+  gender: string
+
+  @Column({ type: DataType.DATEONLY, allowNull: false })
+  birthDate: string
+
   @Column({ type: DataType.VIRTUAL })
   newPassword: string
 
