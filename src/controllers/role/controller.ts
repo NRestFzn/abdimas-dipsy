@@ -67,7 +67,6 @@ route.delete(
   '/:id',
   authorization(),
   permissionAccess([RoleId.admin]),
-  authorization(),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
