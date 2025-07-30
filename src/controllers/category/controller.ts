@@ -31,8 +31,6 @@ route.post(
 
 route.get(
   '/',
-  authorization(),
-  permissionAccess([RoleId.admin]),
   asyncHandler(async (req: Request, res: Response) => {
     const data = await service.getAll()
 

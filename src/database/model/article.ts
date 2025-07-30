@@ -8,6 +8,7 @@ import {
 import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import Category from './category'
+import User from './user'
 
 @Table({ tableName: 'article' })
 export default class Article extends BaseSchema {
@@ -20,8 +21,8 @@ export default class Article extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   image: string
 
-  @Column({ allowNull: false, type: DataTypes.STRING })
-  publishedDate: string
+  @Column({ allowNull: true, type: DataTypes.DATE })
+  publishedDate: Date | null
 
   @Column({ allowNull: false, type: DataTypes.ENUM('draft', 'publish') })
   status: string
@@ -37,4 +38,16 @@ export default class Article extends BaseSchema {
 
   @BelongsTo(() => Category)
   category: Category
+
+  @IsUUID(4)
+  @ForeignKey(() => User)
+  @Column({
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false,
+  })
+  AuthorId: string
+
+  @BelongsTo(() => User)
+  author: User
 }
