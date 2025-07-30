@@ -2,7 +2,7 @@ import { db } from '@/database/databaseConnection'
 import Thread from '@/database/model/thread'
 import { ErrorResponse } from '@/lib/http/ErrorResponse'
 import { CreateThreadSchema, threadSchema, UpdateThreadSchema } from './schema'
-import User from '@/src/database/model/user'
+import User from '@/database/model/user'
 import ThreadComment from '@/database/model/threadcomment'
 
 export class ThreadService {
