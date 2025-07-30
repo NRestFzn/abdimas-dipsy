@@ -63,7 +63,7 @@ route.get(
       data,
     })
 
-    res.status(201).json(httpResponse)
+    res.status(200).json(httpResponse)
   })
 )
 
@@ -79,7 +79,7 @@ route.get(
       data,
     })
 
-    res.status(201).json(httpResponse)
+    res.status(200).json(httpResponse)
   })
 )
 
@@ -111,7 +111,7 @@ route.put(
       data,
     })
 
-    res.status(201).json(httpResponse)
+    res.status(200).json(httpResponse)
   })
 )
 
@@ -127,7 +127,7 @@ route.delete(
       message: 'Data deleted successfully',
     })
 
-    res.status(201).json(httpResponse)
+    res.status(200).json(httpResponse)
   })
 )
 

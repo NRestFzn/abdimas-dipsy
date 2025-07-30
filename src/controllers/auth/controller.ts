@@ -36,7 +36,7 @@ route.post(
       data,
     })
 
-    res.status(201).json(httpResponse)
+    res.status(200).json(httpResponse)
   })
 )
 
