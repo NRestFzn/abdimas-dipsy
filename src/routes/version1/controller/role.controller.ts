@@ -1,13 +1,14 @@
+import { RoleRepository } from '@/domain/role/repository/roleRepository'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/lib/http/HttpResponse'
+import { roleSchema } from '@/domain/role/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/lib/constant/roleIds'
-import { RoleService } from './service'
 import _ from 'lodash'
 
-const service = new RoleService()
+const repository = new RoleRepository()
 
 const route = express.Router()
 
@@ -16,9 +17,11 @@ route.post(
   authorization(),
   permissionAccess([RoleId.admin]),
   asyncHandler(async (req: Request, res: Response) => {
-    const values = req.getBody()
+    const formData = req.getBody()
 
-    const data = await service.add(values)
+    const values = roleSchema.validateSync(formData)
+
+    const data = await repository.add(values)
 
     const httpResponse = HttpResponse.created({
       message: 'Data created successfully',
@@ -34,7 +37,7 @@ route.get(
   authorization(),
   permissionAccess([RoleId.admin]),
   asyncHandler(async (req: Request, res: Response) => {
-    const data = await service.getAll()
+    const data = await repository.getAll(req)
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
@@ -52,7 +55,7 @@ route.get(
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    const data = await service.getByPk(id)
+    const data = await repository.getByPk(id)
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
@@ -70,7 +73,7 @@ route.delete(
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    const data = await service.delete(id)
+    const data = await repository.delete(id)
 
     const httpResponse = HttpResponse.deleted({
       message: 'Data deleted successfully',
@@ -85,11 +88,13 @@ route.put(
   authorization(),
   permissionAccess([RoleId.admin]),
   asyncHandler(async (req: Request, res: Response) => {
-    const values = req.getBody()
+    const formData = req.getBody()
+
+    const values = roleSchema.validateSync(formData)
 
     const id = req.params.id
 
-    const data = await service.update(id, values)
+    const data = await repository.update(id, values)
 
     const httpResponse = HttpResponse.created({
       message: 'Data updated successfully',
@@ -100,4 +105,4 @@ route.put(
   })
 )
 
-export { route as RoleHandler }
+export { route as RoleController }
