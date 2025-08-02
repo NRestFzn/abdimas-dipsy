@@ -1,8 +1,9 @@
 import asyncHandler from '@/helper/asyncHandler'
 import express, { Response, Request } from 'express'
-import { AuthService } from './service'
+import { AuthService } from '@/domain/auth/repository/authRepository'
 import HttpResponse from '@/lib/http/HttpResponse'
 import { RoleId } from '@/lib/constant/roleIds'
+import { loginSchema, registerSchema } from '@/domain/auth/schema'
 
 const service = new AuthService()
 
@@ -11,7 +12,9 @@ const route = express.Router()
 route.post(
   '/signup',
   asyncHandler(async (req: Request, res: Response) => {
-    const values = req.getBody()
+    const formData = req.getBody()
+
+    const values = registerSchema.validateSync(formData)
 
     const data = await service.register({ ...values, RoleId: RoleId.user })
 
@@ -27,7 +30,9 @@ route.post(
 route.post(
   '/signin',
   asyncHandler(async (req: Request, res: Response) => {
-    const values = req.getBody()
+    const formData = req.getBody()
+
+    const values = loginSchema.validateSync(formData)
 
     const data = await service.login(values)
 
@@ -40,4 +45,4 @@ route.post(
   })
 )
 
-export { route as AuthHandler }
+export { route as AuthController }

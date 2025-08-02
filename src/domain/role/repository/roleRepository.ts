@@ -9,6 +9,8 @@ export class RoleRepository {
   async getAll(req: Request): Promise<RoleDto[]> {
     const { queryFilter } = new RoleQueryRepository(req)
 
+    console.log(queryFilter())
+
     const data = await Role.findAll({ ...queryFilter() })
 
     return data

@@ -31,6 +31,3 @@ export const registerSchema = yup.object({
     ),
   RoleId: yup.string().required("RoleId can't be empty"),
 })
-
-export type RegisterSchema = yup.InferType<typeof registerSchema>
-export type LoginSchema = yup.InferType<typeof loginSchema>

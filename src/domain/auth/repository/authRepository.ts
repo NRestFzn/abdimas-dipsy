@@ -1,28 +1,20 @@
-import {
-  loginSchema,
-  LoginSchema,
-  registerSchema,
-  RegisterSchema,
-} from './schema'
 import { db } from '@/database/databaseConnection'
 import User from '@/database/model/user'
 import { ErrorResponse } from '@/lib/http/ErrorResponse'
 import JwtToken from '@/lib/jwtToken'
 import { env } from '@/config/env.config'
-import { userSchema } from '@/controllers/user/schema'
+import { AuthResponseDto, LoginDto, RegisterDto } from '../dto'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
 export class AuthService {
-  async login(formData: LoginSchema) {
-    const values = loginSchema.validateSync(formData)
-
+  async login(formData: LoginDto): Promise<AuthResponseDto> {
     let data: any
 
     await db.sequelize!.transaction(async (transaction) => {
       const getUser = await User.findOne({
         attributes: ['id', 'fullname', 'email', 'password', 'RoleId'],
-        where: { email: values.email },
+        where: { email: formData.email },
         transaction,
       })
 
@@ -30,7 +22,7 @@ export class AuthService {
         throw new ErrorResponse.NotFound('Invalid credentials')
       }
 
-      const isPasswordMatch = await getUser.comparePassword(values.password)
+      const isPasswordMatch = await getUser.comparePassword(formData.password)
 
       if (!isPasswordMatch) {
         throw new ErrorResponse.BadRequest('Invalid credentials')
@@ -44,26 +36,18 @@ export class AuthService {
         fullname: getUser.fullname,
         email: getUser.email,
         uid: getUser.id,
-        access_token: token,
-        expires_at: new Date(Date.now() + expiresIn * 1000),
-        expires_in: expiresIn,
+        accessToken: token,
+        expiresAt: new Date(Date.now() + expiresIn * 1000),
+        expiresIn: expiresIn,
       }
     })
 
     return data
   }
 
-  async register(formData: RegisterSchema) {
-    const values = registerSchema.validateSync({
-      ...formData,
-    })
-
+  async register(formData: RegisterDto): Promise<AuthResponseDto> {
     let data: any
 
-    // @ts-expect-error
-    const formRegister: User = {
-      ...values,
-    }
     await db.sequelize!.transaction(async (transaction) => {
       const duplicateEmail = await User.findOne({
         where: { email: formData.email },
@@ -77,12 +61,12 @@ export class AuthService {
           409
         )
 
-      const newUser = await User.create({ ...formRegister }, { transaction })
+      data = await User.create({ ...formData }, { transaction })
+    })
 
-      data = await this.login({
-        email: newUser.email,
-        password: values.newPassword,
-      })
+    data = await this.login({
+      email: data.email,
+      password: formData.newPassword,
     })
 
     return data
