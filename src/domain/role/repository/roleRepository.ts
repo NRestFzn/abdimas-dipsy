@@ -7,11 +7,9 @@ import { CreateRoleDto, RoleDto, UpdateRoleDto } from '../dto'
 
 export class RoleRepository {
   async getAll(req: Request): Promise<RoleDto[]> {
-    const { queryFilter } = new RoleQueryRepository(req)
+    const query = new RoleQueryRepository(req)
 
-    console.log(queryFilter())
-
-    const data = await Role.findAll({ ...queryFilter() })
+    const data = await Role.findAll(query.queryFilter())
 
     return data
   }
