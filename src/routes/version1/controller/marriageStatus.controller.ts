@@ -1,14 +1,14 @@
-import { RoleRepository } from '@/features/role/repository/roleRepository'
+import { MarriageStatusRepository } from '@/features/marriageStatus/repository/marriageStatusRepository'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { roleSchema } from '@/features/role/schema'
+import { marriageStatusSchema } from '@/features/marriageStatus/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 
-const repository = new RoleRepository()
+const repository = new MarriageStatusRepository()
 
 const route = express.Router()
 
@@ -19,7 +19,7 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = marriageStatusSchema.validateSync(formData)
 
     const data = await repository.add(values)
 
@@ -34,8 +34,6 @@ route.post(
 
 route.get(
   '/',
-  authorization(),
-  permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
     const data = await repository.getAll(req)
 
@@ -90,13 +88,13 @@ route.put(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = marriageStatusSchema.validateSync(formData)
 
     const id = req.params.id
 
     const data = await repository.update(id, values)
 
-    const httpResponse = HttpResponse.created({
+    const httpResponse = HttpResponse.updated({
       message: 'Data updated successfully',
       data,
     })
@@ -105,4 +103,4 @@ route.put(
   })
 )
 
-export { route as RoleController }
+export { route as MarriageStatusController }

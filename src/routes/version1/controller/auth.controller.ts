@@ -1,9 +1,9 @@
 import asyncHandler from '@/helper/asyncHandler'
 import express, { Response, Request } from 'express'
-import { AuthService } from '@/domain/auth/repository/authRepository'
-import HttpResponse from '@/lib/http/HttpResponse'
-import { RoleId } from '@/lib/constant/roleIds'
-import { loginSchema, registerSchema } from '@/domain/auth/schema'
+import { AuthService } from '@/features/auth/repository/authRepository'
+import HttpResponse from '@/libs/http/HttpResponse'
+import { RoleId } from '@/libs/constant/roleIds'
+import { loginSchema, registerSchema } from '@/features/auth/schema'
 
 const service = new AuthService()
 

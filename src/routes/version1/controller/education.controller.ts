@@ -1,14 +1,14 @@
-import { RoleRepository } from '@/features/role/repository/roleRepository'
+import { EducationRepository } from '@/features/education/repository/educationRepository'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { roleSchema } from '@/features/role/schema'
+import { educationSchema } from '@/features/education/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 
-const repository = new RoleRepository()
+const repository = new EducationRepository()
 
 const route = express.Router()
 
@@ -19,7 +19,7 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = educationSchema.validateSync(formData)
 
     const data = await repository.add(values)
 
@@ -28,14 +28,12 @@ route.post(
       data,
     })
 
-    res.status(201).json(httpResponse)
+    res.status(httpResponse.statusCode).json(httpResponse)
   })
 )
 
 route.get(
   '/',
-  authorization(),
-  permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
     const data = await repository.getAll(req)
 
@@ -44,7 +42,7 @@ route.get(
       data,
     })
 
-    res.status(200).json(httpResponse)
+    res.status(httpResponse.statusCode).json(httpResponse)
   })
 )
 
@@ -62,7 +60,7 @@ route.get(
       data,
     })
 
-    res.status(200).json(httpResponse)
+    res.status(httpResponse.statusCode).json(httpResponse)
   })
 )
 
@@ -79,7 +77,7 @@ route.delete(
       message: 'Data deleted successfully',
     })
 
-    res.status(200).json(httpResponse)
+    res.status(httpResponse.statusCode).json(httpResponse)
   })
 )
 
@@ -90,19 +88,19 @@ route.put(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = educationSchema.validateSync(formData)
 
     const id = req.params.id
 
     const data = await repository.update(id, values)
 
-    const httpResponse = HttpResponse.created({
+    const httpResponse = HttpResponse.updated({
       message: 'Data updated successfully',
       data,
     })
 
-    res.status(200).json(httpResponse)
+    res.status(httpResponse.statusCode).json(httpResponse)
   })
 )
 
-export { route as RoleController }
+export { route as EducationController }
