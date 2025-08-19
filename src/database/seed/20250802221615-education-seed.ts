@@ -2,20 +2,26 @@
 
 import _ from 'lodash'
 import { DataTypes, QueryInterface } from 'sequelize'
-import { RoleId } from '@/libs/constant/roleIds'
+import { v4 } from 'uuid'
 
 const data = [
   {
-    id: RoleId.adminDesa,
-    name: 'admin desa',
+    name: 'sd',
   },
   {
-    id: RoleId.adminMedis,
-    name: 'admin medis',
+    name: 'smp',
   },
   {
-    id: RoleId.user,
-    name: 'user',
+    name: 'sma/k',
+  },
+  {
+    name: 's1',
+  },
+  {
+    name: 's2',
+  },
+  {
+    name: 's3',
   },
 ]
 
@@ -26,24 +32,29 @@ export async function up(
 ) {
   const formData: any[] = []
 
+  const startTime = new Date()
+
   if (!_.isEmpty(data)) {
     for (let i = 0; i < data.length; i += 1) {
       const item = data[i]
 
+      const timeStamps = new Date(startTime.getTime() + i * 1000)
+
       formData.push({
         ...item,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        id: v4(),
+        createdAt: timeStamps,
+        updatedAt: timeStamps,
       })
     }
   }
 
-  await queryInterface.bulkInsert('role', formData)
+  await queryInterface.bulkInsert('education', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('role', {})
+  await queryInterface.bulkDelete('education', {})
 }

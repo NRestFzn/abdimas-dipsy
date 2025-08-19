@@ -2,8 +2,26 @@
 
 import _ from 'lodash'
 import { DataTypes, QueryInterface } from 'sequelize'
-import { hfaGirl } from '@/lib/constant/hfaGirl'
 import { v4 } from 'uuid'
+
+const data = [
+  {
+    minRange: 500000,
+    maxRange: 1000000,
+  },
+  {
+    minRange: 1000000,
+    maxRange: 1500000,
+  },
+  {
+    minRange: 1500000,
+    maxRange: 2000000,
+  },
+  {
+    minRange: 2000000,
+    maxRange: 2500000,
+  },
+]
 
 /** @type {import('sequelize-cli').Migration} */
 export async function up(
@@ -12,26 +30,25 @@ export async function up(
 ) {
   const formData: any[] = []
 
-  if (!_.isEmpty(hfaGirl)) {
-    for (let i = 0; i < hfaGirl.length; i += 1) {
-      const item = hfaGirl[i]
+  if (!_.isEmpty(data)) {
+    for (let i = 0; i < data.length; i += 1) {
+      const item = data[i]
 
       formData.push({
-        id: v4(),
         ...item,
-        gender: 'f',
+        id: v4(),
         createdAt: new Date(),
         updatedAt: new Date(),
       })
     }
   }
 
-  await queryInterface.bulkInsert('whoStandardChildGrow', formData)
+  await queryInterface.bulkInsert('salaryRange', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('whoStandardChildGrow', {})
+  await queryInterface.bulkDelete('salaryRange', {})
 }

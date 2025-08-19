@@ -15,6 +15,11 @@ import Hashing from '@/config/hash.config'
 import BaseSchema from './_baseModel'
 import Role from './role'
 import { DataTypes } from 'sequelize'
+import RukunWarga from './rukunWarga'
+import RukunTetangga from './rukunTetangga'
+import MarriageStatus from './marriageStatus'
+import Education from './education'
+import SalaryRange from './salaryRange'
 
 const hashing = new Hashing()
 
@@ -36,7 +41,7 @@ export default class User extends BaseSchema {
   email: string
 
   @Column({ type: DataTypes.STRING })
-  password?: string
+  password: string
 
   @IsUUID(4)
   @ForeignKey(() => Role)
@@ -56,22 +61,76 @@ export default class User extends BaseSchema {
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: string
 
-  @Column({ type: DataType.VIRTUAL })
-  newPassword: string
+  @IsUUID(4)
+  @ForeignKey(() => RukunWarga)
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  RukunWargaId: string
 
-  @Column({ type: DataType.VIRTUAL })
-  confirmNewPassword: string
+  @BelongsTo(() => RukunWarga)
+  rukunWarga: RukunWarga
+
+  @IsUUID(4)
+  @ForeignKey(() => RukunTetangga)
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  RukunTetanggaId: string
+
+  @BelongsTo(() => RukunTetangga)
+  rukunTetangga: RukunTetangga
+
+  @IsUUID(4)
+  @ForeignKey(() => MarriageStatus)
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  MarriageStatusId: string
+
+  @BelongsTo(() => MarriageStatus)
+  marriageStatus: MarriageStatus
+
+  @IsUUID(4)
+  @ForeignKey(() => Education)
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  EducationId: string
+
+  @BelongsTo(() => Education)
+  education: Education
+
+  @IsUUID(4)
+  @ForeignKey(() => SalaryRange)
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+  })
+  SalaryRangeId: string
+
+  @BelongsTo(() => SalaryRange)
+  salaryRange: SalaryRange
 
   comparePassword: (current_password: string) => Promise<boolean>
 
   @BeforeUpdate
   @BeforeCreate
   static async setUserPassword(instance: User): Promise<void> {
-    const { newPassword } = instance
+    const { password } = instance
 
-    if (newPassword) {
-      const hash = await hashing.hash(instance.newPassword)
-      instance.setDataValue('password', hash)
+    if (password) {
+      const hash = await hashing.hash(instance.password)
+      instance.setDataValue(password, hash)
     }
   }
 }
