@@ -126,11 +126,10 @@ export default class User extends BaseSchema {
   @BeforeUpdate
   @BeforeCreate
   static async setUserPassword(instance: User): Promise<void> {
-    const { password } = instance
-
-    if (password) {
+    if (instance.password) {
       const hash = await hashing.hash(instance.password)
-      instance.setDataValue(password, hash)
+
+      instance.setDataValue('password', hash)
     }
   }
 }
