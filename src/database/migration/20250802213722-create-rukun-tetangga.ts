@@ -16,7 +16,7 @@ export async function up(
     },
     name: {
       allowNull: false,
-      type: Sequelize.NUMBER,
+      type: Sequelize.INTEGER,
     },
     RukunWargaId: {
       allowNull: false,
