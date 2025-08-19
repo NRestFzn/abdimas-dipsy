@@ -12,7 +12,7 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["*"],
-      "@/lib/*": ["./src/lib/*"],
+      "@/libs/*": ["./src/libs/*"],
       "@/config/*": ["./src/config/*"],
       "@/controllers/*": ["./src/controllers/*"],
       // "@/modules/*" : ["./src/modules/*"],
@@ -20,7 +20,7 @@
       "@/middleware/*": ["./src/middleware/*"],
       "@/database/*": ["./src/database/*"],
       "@/helper/*": ["./src/helper/*"],
-      "@/domain/*": ["./src/domain/*"]
+      "@/features*": ["src/features/*"]
     },
     "typeRoots": ["./node_modules/@types", "./src/lib/types"],
 

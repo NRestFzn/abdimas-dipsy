@@ -2,7 +2,7 @@ import http from 'http'
 import { initDatabase } from '@/database/databaseConnection'
 import { App } from './config/app.config'
 import { env } from './config/env.config'
-import { httpHandle } from './lib/http/handle'
+import { httpHandle } from './libs/http/handle'
 
 function bootstrap() {
   const port = env.APP_PORT
