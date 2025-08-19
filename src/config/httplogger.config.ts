@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto'
 import path from 'path'
 import pino from 'pino'
 import { pinoHttp } from 'pino-http'
-import { currentDir } from '@/lib/string'
+import { currentDir } from '@/libs/string'
 import fs from 'fs'
 
 const logDir = path.resolve(`${currentDir}/logs`)

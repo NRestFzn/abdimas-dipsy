@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { validate } from '@/lib/validate'
+import { validate } from '@/libs/validate'
 
 export const env = {
   NODE_ENV: process.env.NODE_ENV || 'development',
