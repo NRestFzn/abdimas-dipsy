@@ -1,5 +1,5 @@
 import express, { Router } from 'express'
-import { v1Route } from './version1/index'
+import { v1Route } from './version1/version1.route'
 
 const Route: Router = express.Router()
 
