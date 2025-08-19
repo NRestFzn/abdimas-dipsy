@@ -9,6 +9,9 @@ import {
   RukunTetanggaDto,
   UpdateRukunTetanggaDto,
 } from '../dto'
+import { RukunWargaRepository } from '@/features/rukunWarga/repository/rukunWargaRepository'
+
+const rukunWargaRepository = new RukunWargaRepository()
 
 export class RukunTetanggaRepository {
   async getAll(req: Request): Promise<RukunTetanggaDto[]> {
@@ -38,11 +41,27 @@ export class RukunTetanggaRepository {
     return data
   }
 
-  async add(formData: CreateRukunTetanggaDto): Promise<RukunTetanggaDto> {
+  async add(formData: CreateRukunTetanggaDto): Promise<RukunTetanggaDto[]> {
     let data: any
 
     await db.sequelize!.transaction(async (transaction) => {
-      data = await RukunTetangga.create({ ...formData }, { transaction })
+      const latestRt = await RukunTetangga.findOne({
+        attributes: ['name'],
+        order: [['name', 'DESC']],
+      })
+
+      const rw = await rukunWargaRepository.getByPk(formData.RukunWargaId)
+
+      const rwBulkCreate = []
+
+      for (let i = 1; i <= formData.count; i++) {
+        rwBulkCreate.push({
+          name: (latestRt?.name ? latestRt.name : 0) + i,
+          RukunWargaId: rw.id,
+        })
+      }
+
+      data = await RukunTetangga.bulkCreate(rwBulkCreate, { transaction })
     })
 
     return data

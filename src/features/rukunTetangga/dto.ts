@@ -13,7 +13,8 @@ export interface RukunTetanggaDetailDto extends RukunTetanggaDto {
 }
 
 export interface CreateRukunTetanggaDto {
-  name: number
+  count: number
+  RukunWargaId: string
 }
 
 export interface UpdateRukunTetanggaDto {
