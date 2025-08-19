@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import _ from 'lodash'
 import multer from 'multer'
-import { ErrorResponse } from '@/lib/http/ErrorResponse'
+import { ErrorResponse } from '@/libs/http/ErrorResponse'
 
 interface DtoErrorResponse {
   statusCode: number

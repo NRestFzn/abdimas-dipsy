@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { env } from '@/config/env.config'
 import asyncHandler from '@/helper/asyncHandler'
-import JwtToken from '@/lib/jwtToken'
+import JwtToken from '@/libs/jwtToken'
 import _ from 'lodash'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
