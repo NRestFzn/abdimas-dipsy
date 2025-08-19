@@ -19,7 +19,7 @@ export async function up(
   for (let i = 1; i <= 6; i++) {
     formData.push({
       id: v4(),
-      name: `${i}`,
+      name: i,
       RukunWargaId: rukunWarga[0].id,
       createdAt: new Date(),
       updatedAt: new Date(),

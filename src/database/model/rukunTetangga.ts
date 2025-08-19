@@ -11,8 +11,8 @@ import RukunWarga from './rukunWarga'
 
 @Table({ tableName: 'rukunTetangga' })
 export default class RukunTetangga extends BaseSchema {
-  @Column({ allowNull: false, type: DataTypes.STRING })
-  name: string
+  @Column({ allowNull: false, type: DataTypes.NUMBER })
+  name: number
 
   @IsUUID(4)
   @ForeignKey(() => RukunWarga)

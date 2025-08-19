@@ -5,8 +5,8 @@ import RukunTetangga from './rukunTetangga'
 
 @Table({ tableName: 'rukunWarga' })
 export default class RukunWarga extends BaseSchema {
-  @Column({ allowNull: false, type: DataTypes.STRING })
-  name: string
+  @Column({ allowNull: false, type: DataTypes.NUMBER })
+  name: number
 
   @HasMany(() => RukunTetangga)
   rukunTetangga: RukunTetangga[]

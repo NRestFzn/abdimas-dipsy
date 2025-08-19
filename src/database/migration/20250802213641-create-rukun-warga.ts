@@ -16,7 +16,7 @@ export async function up(
     },
     name: {
       allowNull: false,
-      type: Sequelize.STRING,
+      type: Sequelize.NUMBER,
     },
     createdAt: {
       allowNull: false,

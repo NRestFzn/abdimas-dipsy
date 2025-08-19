@@ -2,7 +2,7 @@ import { RukunWargaDto } from '../rukunWarga/dto'
 
 export interface RukunTetanggaDto {
   id: string
-  name: string
+  name: number
   RukunWargaId: string
   createdAt: Date
   updatedAt: Date
@@ -13,13 +13,13 @@ export interface RukunTetanggaDetailDto extends RukunTetanggaDto {
 }
 
 export interface CreateRukunTetanggaDto {
-  name: string
+  name: number
 }
 
 export interface UpdateRukunTetanggaDto {
-  name: string
+  name: number
 }
 
 export interface RukunTetanggaQueryFilterDto {
-  name: string
+  name: number
 }

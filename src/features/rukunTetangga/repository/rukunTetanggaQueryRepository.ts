@@ -4,7 +4,7 @@ import { FindOptions, WhereOptions, Op } from 'sequelize'
 import { BaseQueryRequest } from '@/routes/version1/request/_baseQueryRequest'
 
 export class RukunTetanggaQueryRepository extends BaseQueryRequest {
-  public name?: string
+  public name?: number
 
   constructor(req: Request) {
     super(req)
@@ -19,9 +19,7 @@ export class RukunTetanggaQueryRepository extends BaseQueryRequest {
 
     if (this.name) {
       whereCondition.push({
-        name: {
-          [Op.like]: `%${this.name}%`,
-        },
+        name: this.name,
       })
     }
 

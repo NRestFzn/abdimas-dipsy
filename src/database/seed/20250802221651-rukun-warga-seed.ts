@@ -12,7 +12,7 @@ export async function up(
   const formData: any[] = [
     {
       id: v4(),
-      name: `1`,
+      name: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
