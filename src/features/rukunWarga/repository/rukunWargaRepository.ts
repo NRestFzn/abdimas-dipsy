@@ -39,11 +39,24 @@ export class RukunWargaRepository {
     return data
   }
 
-  async add(formData: CreateRukunWargaDto): Promise<RukunWargaDto> {
+  async add(formData: CreateRukunWargaDto): Promise<RukunWargaDto[]> {
     let data: any
 
     await db.sequelize!.transaction(async (transaction) => {
-      data = await RukunWarga.create({ ...formData }, { transaction })
+      const latestRw = await RukunWarga.findOne({
+        attributes: ['name'],
+        order: [['name', 'DESC']],
+      })
+
+      const rwBulkCreate = []
+
+      for (let i = 1; i <= formData.count; i++) {
+        rwBulkCreate.push({
+          name: (latestRw?.name ? latestRw.name : 0) + i,
+        })
+      }
+
+      data = await RukunWarga.bulkCreate(rwBulkCreate, { transaction })
     })
 
     return data

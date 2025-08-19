@@ -3,7 +3,10 @@ import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { rukunWargaSchema } from '@/features/rukunWarga/schema'
+import {
+  createRukunWargaSchema,
+  updateRukunWargaSchema,
+} from '@/features/rukunWarga/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
@@ -19,7 +22,7 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = rukunWargaSchema.validateSync(formData)
+    const values = createRukunWargaSchema.validateSync(formData)
 
     const data = await repository.add(values)
 
@@ -88,7 +91,7 @@ route.put(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = rukunWargaSchema.validateSync(formData)
+    const values = updateRukunWargaSchema.validateSync(formData)
 
     const id = req.params.id
 

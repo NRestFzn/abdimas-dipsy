@@ -12,7 +12,7 @@ export interface RukunWargaDetailDto extends RukunWargaDto {
 }
 
 export interface CreateRukunWargaDto {
-  name: number
+  count: number
 }
 
 export interface UpdateRukunWargaDto {
