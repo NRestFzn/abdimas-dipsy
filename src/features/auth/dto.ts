@@ -6,8 +6,13 @@ export interface LoginDto {
 export interface RegisterDto {
   fullname: string
   email: string
-  newPassword: string
-  confirmNewPassword: string
+  password: string
+  birthDate: Date
+  RukunWargaId: string
+  RukunTetanggaId: string
+  MarriageStatusId: string
+  EducationId: string
+  SalaryRangeId: string
   RoleId: string
 }
 

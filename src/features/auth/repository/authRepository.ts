@@ -70,7 +70,7 @@ export class AuthService {
 
     data = await this.login({
       email: data.email,
-      password: formData.newPassword,
+      password: formData.password,
     })
 
     return data
