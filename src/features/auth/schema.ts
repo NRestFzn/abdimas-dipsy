@@ -26,6 +26,8 @@ export const registerSchema = yup.object({
     .oneOf(['m', 'f'], "Gender must be one of 'm' or 'f'")
     .required("Gender can't be empty"),
   birthDate: yup.date().required("Birth date can't be empty"),
+  profession: yup.string().required("Profession can't be empty"),
+  nik: yup.string().required("NIK can't be empty"),
   RukunWargaId: yup.string().required("RukunWargaId can't be empty"),
   RukunTetanggaId: yup.string().required("RukunTetanggaId can't be empty"),
   MarriageStatusId: yup.string().required("MarriageStatusId can't be empty"),

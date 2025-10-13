@@ -6,6 +6,9 @@ import { EducationController } from './controller/education.controller'
 import { RukunWargaController } from './controller/rukunWarga.controller'
 import { RukunTetanggaController } from './controller/rukunTetangga.controller'
 import { SalaryRangeController } from './controller/salaryRange.controller'
+import { QuestionnaireController } from './controller/questionnaire.controller'
+import { QuestionnaireQuestionController } from './controller/questionnaireQuestion.controller'
+import { QuestionnaireSubmissionController } from './controller/questionnaireSubmission.controller'
 
 const Route: Router = express.Router()
 
@@ -16,5 +19,8 @@ Route.use('/education', EducationController)
 Route.use('/rukun-warga', RukunWargaController)
 Route.use('/rukun-tetangga', RukunTetanggaController)
 Route.use('/salary-range', SalaryRangeController)
+Route.use('/questionnaire', QuestionnaireController)
+Route.use('/questionnaire-question', QuestionnaireQuestionController)
+Route.use('/questionnaire-submission', QuestionnaireSubmissionController)
 
 export { Route as v1Route }

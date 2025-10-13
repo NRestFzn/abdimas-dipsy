@@ -11,6 +11,8 @@ export interface CreateUserDto {
   password: string
   RoleId: string
   gender: string
+  profession: string
+  nik: string
   birthDate: string
   RukunWargaId: string
   RukunTetanggaId: string

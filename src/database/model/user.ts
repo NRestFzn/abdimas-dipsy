@@ -58,6 +58,12 @@ export default class User extends BaseSchema {
   @Column({ type: DataType.ENUM('m', 'f'), allowNull: false })
   gender: string
 
+  @Column({ type: DataType.STRING, allowNull: false })
+  profession: string
+
+  @Column({ type: DataType.STRING, allowNull: false, unique: true })
+  nik: string
+
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: string
 

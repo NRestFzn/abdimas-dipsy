@@ -1,14 +1,17 @@
-import { RoleRepository } from '@/features/role/repository/roleRepository'
+import { QuestionnaireQuestionRepository } from '@/features/questionnaireQuestion/repository/questionnaireQuestionRepository'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { roleSchema } from '@/features/role/schema'
+import {
+  createQuestionnaireQuestionSchema,
+  updateQuestionnaireQuestionSchema,
+} from '@/features/questionnaireQuestion/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 
-const repository = new RoleRepository()
+const repository = new QuestionnaireQuestionRepository()
 
 const route = express.Router()
 
@@ -19,7 +22,7 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = createQuestionnaireQuestionSchema.validateSync(formData)
 
     const data = await repository.add(values)
 
@@ -84,17 +87,15 @@ route.delete(
 )
 
 route.put(
-  '/:id',
+  '/bulk-update',
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = updateQuestionnaireQuestionSchema.validateSync(formData)
 
-    const id = req.params.id
-
-    const data = await repository.update(id, values)
+    const data = await repository.update(values)
 
     const httpResponse = HttpResponse.updated({
       message: 'Data updated successfully',
@@ -105,4 +106,4 @@ route.put(
   })
 )
 
-export { route as RoleController }
+export { route as QuestionnaireQuestionController }

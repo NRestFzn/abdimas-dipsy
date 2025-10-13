@@ -7,6 +7,8 @@ export interface RegisterDto {
   fullname: string
   email: string
   password: string
+  profession: string
+  nik: string
   birthDate: Date
   RukunWargaId: string
   RukunTetanggaId: string

@@ -20,7 +20,7 @@
       "@/middleware/*": ["./src/middleware/*"],
       "@/database/*": ["./src/database/*"],
       "@/helper/*": ["./src/helper/*"],
-      "@/features*": ["src/features/*"]
+      "@/features/*": ["src/features/*"]
     },
     "typeRoots": ["./node_modules/@types", "./src/lib/types"],
 

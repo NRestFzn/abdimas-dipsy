@@ -1,14 +1,17 @@
-import { RoleRepository } from '@/features/role/repository/roleRepository'
+import { QuestionnaireRepository } from '@/features/questionnaire/repository/questionnaireRepository'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { roleSchema } from '@/features/role/schema'
+import {
+  createQuestionnaireSchema,
+  updateQuestionnaireSchema,
+} from '@/features/questionnaire/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 
-const repository = new RoleRepository()
+const repository = new QuestionnaireRepository()
 
 const route = express.Router()
 
@@ -19,7 +22,7 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = createQuestionnaireSchema.validateSync(formData)
 
     const data = await repository.add(values)
 
@@ -49,13 +52,45 @@ route.get(
 )
 
 route.get(
+  '/public',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const data = await repository.getAllPublic(req)
+
+    const httpResponse = HttpResponse.get({
+      message: 'Success get data',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
   '/:id',
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    const data = await repository.getByPk(id)
+    const data = await repository.getById(id)
+
+    const httpResponse = HttpResponse.get({
+      message: 'Success get data',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
+  '/:id/public',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const id = req.params.id
+
+    const data = await repository.getByIdPublic(id)
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
@@ -90,7 +125,7 @@ route.put(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const values = roleSchema.validateSync(formData)
+    const values = updateQuestionnaireSchema.validateSync(formData)
 
     const id = req.params.id
 
@@ -105,4 +140,4 @@ route.put(
   })
 )
 
-export { route as RoleController }
+export { route as QuestionnaireController }
