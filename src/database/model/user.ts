@@ -6,6 +6,7 @@ import {
   DataType,
   DefaultScope,
   ForeignKey,
+  HasOne,
   IsUUID,
   Scopes,
   Table,
@@ -15,11 +16,7 @@ import Hashing from '@/config/hash.config'
 import BaseSchema from './_baseModel'
 import Role from './role'
 import { DataTypes } from 'sequelize'
-import RukunWarga from './rukunWarga'
-import RukunTetangga from './rukunTetangga'
-import MarriageStatus from './marriageStatus'
-import Education from './education'
-import SalaryRange from './salaryRange'
+import UserDetail from './userDetail'
 
 const hashing = new Hashing()
 
@@ -58,74 +55,11 @@ export default class User extends BaseSchema {
   @Column({ type: DataType.ENUM('m', 'f'), allowNull: false })
   gender: string
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  profession: string
-
-  @Column({ type: DataType.STRING, allowNull: false, unique: true })
-  nik: string
-
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: string
 
-  @IsUUID(4)
-  @ForeignKey(() => RukunWarga)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  RukunWargaId: string
-
-  @BelongsTo(() => RukunWarga)
-  rukunWarga: RukunWarga
-
-  @IsUUID(4)
-  @ForeignKey(() => RukunTetangga)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  RukunTetanggaId: string
-
-  @BelongsTo(() => RukunTetangga)
-  rukunTetangga: RukunTetangga
-
-  @IsUUID(4)
-  @ForeignKey(() => MarriageStatus)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  MarriageStatusId: string
-
-  @BelongsTo(() => MarriageStatus)
-  marriageStatus: MarriageStatus
-
-  @IsUUID(4)
-  @ForeignKey(() => Education)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  EducationId: string
-
-  @BelongsTo(() => Education)
-  education: Education
-
-  @IsUUID(4)
-  @ForeignKey(() => SalaryRange)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  SalaryRangeId: string
-
-  @BelongsTo(() => SalaryRange)
-  salaryRange: SalaryRange
+  @HasOne(() => UserDetail)
+  userDetail: UserDetail
 
   comparePassword: (current_password: string) => Promise<boolean>
 

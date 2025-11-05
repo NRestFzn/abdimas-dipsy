@@ -18,7 +18,7 @@ const sequelizeOptions: SequelizeOptions = {
   models: [`${__dirname}/model`],
 }
 
-const sequelize = new Sequelize({ ...sequelizeOptions })
+export const sequelize = new Sequelize({ ...sequelizeOptions })
 export const db = { sequelize }
 
 export const initDatabase = async () => {

@@ -1,8 +1,15 @@
-import { Column, ForeignKey, IsUUID, Table } from 'sequelize-typescript'
+import {
+  Column,
+  ForeignKey,
+  HasMany,
+  IsUUID,
+  Table,
+} from 'sequelize-typescript'
 import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import Questionnaire from './questionnaire'
 import User from './user'
+import QuestionnaireAnswer from './questionnaireAnswer'
 
 @Table({ tableName: 'questionnaireSubmission' })
 export default class QuestionnaireSubmission extends BaseSchema {
@@ -15,4 +22,7 @@ export default class QuestionnaireSubmission extends BaseSchema {
   @ForeignKey(() => Questionnaire)
   @Column({ allowNull: false, type: DataTypes.UUID })
   QuestionnaireId: string
+
+  @HasMany(() => QuestionnaireAnswer)
+  questionnaireAnswer: QuestionnaireAnswer[]
 }

@@ -16,7 +16,7 @@ export async function up(
     { type: QueryTypes.SELECT }
   )
 
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 3; i++) {
     formData.push({
       id: v4(),
       name: i,

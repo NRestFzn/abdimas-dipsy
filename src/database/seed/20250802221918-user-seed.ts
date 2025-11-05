@@ -48,11 +48,6 @@ export async function up(
       birthDate: '2004-12-06',
       RoleId: RoleId.adminMedis,
       password: await hashing.hash(defaultPassword),
-      EducationId: education[0].id,
-      MarriageStatusId: marriageStatus[0].id,
-      RukunTetanggaId: rukunTetangga[0].id,
-      RukunWargaId: rukunWarga[0].id,
-      SalaryRangeId: salaryRange[0].id,
     },
     {
       fullname: 'Admin Desa',
@@ -61,11 +56,6 @@ export async function up(
       birthDate: '2004-12-06',
       RoleId: RoleId.adminDesa,
       password: await hashing.hash(defaultPassword),
-      EducationId: education[0].id,
-      MarriageStatusId: marriageStatus[0].id,
-      RukunTetanggaId: rukunTetangga[0].id,
-      RukunWargaId: rukunWarga[0].id,
-      SalaryRangeId: salaryRange[0].id,
     },
     {
       fullname: 'user',
@@ -74,11 +64,6 @@ export async function up(
       birthDate: '2004-12-06',
       RoleId: RoleId.user,
       password: await hashing.hash(defaultPassword),
-      EducationId: education[0].id,
-      MarriageStatusId: marriageStatus[0].id,
-      RukunTetanggaId: rukunTetangga[0].id,
-      RukunWargaId: rukunWarga[0].id,
-      SalaryRangeId: salaryRange[0].id,
     },
   ]
 
@@ -98,6 +83,21 @@ export async function up(
   }
 
   await queryInterface.bulkInsert('user', formData)
+  await queryInterface.bulkInsert('userDetail', [
+    {
+      id: uuidv4(),
+      UserId: formData[2].id,
+      EducationId: education[0].id,
+      MarriageStatusId: marriageStatus[0].id,
+      RukunTetanggaId: rukunTetangga[0].id,
+      RukunWargaId: rukunWarga[0].id,
+      SalaryRangeId: salaryRange[0].id,
+      profession: 'programmer',
+      nik: '3204544444444444',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ])
 }
 
 export async function down(

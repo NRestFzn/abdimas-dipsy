@@ -1,4 +1,10 @@
-import { Column, ForeignKey, IsUUID, Table } from 'sequelize-typescript'
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  IsUUID,
+  Table,
+} from 'sequelize-typescript'
 import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import QuestionnaireSubmission from './questionnaireSubmission'
@@ -18,4 +24,7 @@ export default class QuestionnaireAnswer extends BaseSchema {
   @ForeignKey(() => QuestionnaireSubmission)
   @Column({ allowNull: false, type: DataTypes.UUID })
   QuestionnaireSubmissionId: string
+
+  @BelongsTo(() => QuestionnaireQuestion)
+  questionnaireQuestion: QuestionnaireQuestion
 }
