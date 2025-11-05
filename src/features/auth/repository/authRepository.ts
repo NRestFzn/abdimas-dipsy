@@ -5,6 +5,7 @@ import JwtToken from '@/libs/jwtToken'
 import { env } from '@/config/env.config'
 import { AuthResponseDto, LoginDto, RegisterDto } from '../dto'
 import { RoleId } from '@/libs/constant/roleIds'
+import UserDetail from '@/database/model/userDetail'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
@@ -64,6 +65,14 @@ export class AuthService {
 
       data = await User.create(
         { ...formData, RoleId: RoleId.user },
+        { transaction }
+      )
+
+      await UserDetail.create(
+        {
+          ...formData,
+          UserId: data.id,
+        },
         { transaction }
       )
     })

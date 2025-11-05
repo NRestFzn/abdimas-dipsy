@@ -33,7 +33,6 @@ export class RukunTetanggaRepository {
   async getById(id: string): Promise<RukunTetanggaDetailDto> {
     const data = await RukunTetangga.findOne({
       where: { id },
-      include: [{ model: RukunTetangga }],
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')

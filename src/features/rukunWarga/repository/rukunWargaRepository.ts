@@ -34,7 +34,7 @@ export class RukunWargaRepository {
       include: [{ model: RukunTetangga }],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('Data not found asd')
 
     return data
   }

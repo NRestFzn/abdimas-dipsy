@@ -35,8 +35,10 @@ export class QuestionnaireRepository {
     return data
   }
 
-  async getByPk(id: string): Promise<Questionnaire | null> {
+  async getByPk(id: string): Promise<Questionnaire> {
     const data = await Questionnaire.findByPk(id)
+
+    if (!data) throw new ErrorResponse.NotFound('Data not found')
 
     return data
   }

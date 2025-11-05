@@ -1,8 +1,24 @@
 export interface UserDto {
   id: string
   fullname: string
+  email: string
+  RoleId: string
+  gender: string
+  birthDate: Date
   createdAt: Date
   updatedAt: Date
+}
+
+export interface UserDetailDto extends UserDto {
+  userDetail: {
+    RukunWargaId: string
+    RukunTetanggaId: string
+    MarriageStatusId: string
+    EducationId: string
+    SalaryRangeId: string
+    profession: string
+    nik: string
+  }
 }
 
 export interface CreateUserDto {
@@ -11,14 +27,7 @@ export interface CreateUserDto {
   password: string
   RoleId: string
   gender: string
-  profession: string
-  nik: string
-  birthDate: string
-  RukunWargaId: string
-  RukunTetanggaId: string
-  MarriageStatusId: string
-  EducationId: string
-  SalaryRangeId: string
+  birthDate: Date
 }
 
 export interface UpdateUserDto {
