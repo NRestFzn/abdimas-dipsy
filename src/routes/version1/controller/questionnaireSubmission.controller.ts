@@ -26,9 +26,9 @@ import {
   IGetSummaryOptionsByRw,
   IGetSummaryOptionsByUser,
 } from '@/features/questionnaireSubmission/dto'
-import User from '@/src/database/model/user'
-import UserDetail from '@/src/database/model/userDetail'
-import { ErrorResponse } from '@/src/libs/http/ErrorResponse'
+import User from '@/database/model/user'
+import UserDetail from '@/database/model/userDetail'
+import { ErrorResponse } from '@/libs/http/ErrorResponse'
 
 const repository = new QuestionnaireSubmissionRepository()
 
