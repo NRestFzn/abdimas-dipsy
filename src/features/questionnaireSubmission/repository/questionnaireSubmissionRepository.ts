@@ -15,6 +15,7 @@ import {
   ISummarizeSubmission,
   ISummarizeSubmissionByUser,
   ISummarizeUserByRt,
+  QuestionnaireSubmissionDto,
 } from '../dto'
 import { QuestionnaireRepository } from '../../questionnaire/repository/questionnaireRepository'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
@@ -551,7 +552,11 @@ export class QuestionnaireSubmissionRepository {
     return data
   }
 
-  async add(formData: CreateQuestionnaireSubmissionDto): Promise<void> {
+  async add(
+    formData: CreateQuestionnaireSubmissionDto
+  ): Promise<QuestionnaireSubmissionDto> {
+    let submission: any
+
     const answerData: { QuestionId: string; answer: string }[] = []
 
     const questionnaire = await questionnaireRepository.getByIdPublic(
@@ -593,6 +598,7 @@ export class QuestionnaireSubmissionRepository {
 
     await db.sequelize!.transaction(async (transaction) => {
       const bulkCreate = []
+
       const questionnaireSubmission = await QuestionnaireSubmission.create(
         {
           UserId: formData.UserId,
@@ -610,6 +616,10 @@ export class QuestionnaireSubmissionRepository {
       }
 
       await QuestionnaireAnswer.bulkCreate(bulkCreate, { transaction })
+
+      submission = questionnaireSubmission
     })
+
+    return submission
   }
 }
