@@ -15,7 +15,7 @@ const route = express.Router()
 route.post(
   '/',
   authorization(),
-  permissionAccess([RoleId.adminMedis]),
+  permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
@@ -49,7 +49,7 @@ route.get(
 route.get(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminMedis]),
+  permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
@@ -67,7 +67,7 @@ route.get(
 route.delete(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminMedis]),
+  permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
@@ -84,7 +84,7 @@ route.delete(
 route.put(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminMedis]),
+  permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
