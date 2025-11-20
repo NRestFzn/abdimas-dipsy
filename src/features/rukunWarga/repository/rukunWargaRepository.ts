@@ -10,14 +10,35 @@ import {
   UpdateRukunWargaDto,
 } from '../dto'
 import RukunTetangga from '@/database/model/rukunTetangga'
+import User from '@/database/model/user'
+import { Op } from 'sequelize'
+import UserDetail from '@/src/database/model/userDetail'
 
 export class RukunWargaRepository {
-  async getAll(req: Request): Promise<RukunWargaDto[]> {
+  async getAll(req: Request): Promise<{
+    data: RukunWargaDto[]
+    metaData: { rwCount: number; rtCount: number; userCount: number }
+  }> {
     const query = new RukunWargaQueryRepository(req)
 
     const data = await RukunWarga.findAll(query.queryFilter())
 
-    return data
+    const rtCount = await RukunTetangga.count({
+      where: { RukunWargaId: { [Op.in]: data.map((e) => e.id) } },
+    })
+
+    const userCount = await UserDetail.count({
+      where: { RukunWargaId: { [Op.in]: data.map((e) => e.id) } },
+    })
+
+    return {
+      data,
+      metaData: {
+        rwCount: data.length,
+        rtCount,
+        userCount,
+      },
+    }
   }
 
   async getByPk(id: string): Promise<RukunWarga> {
