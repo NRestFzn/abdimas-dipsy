@@ -11,6 +11,7 @@ import {
 } from '../dto'
 import { RukunWargaRepository } from '@/features/rukunWarga/repository/rukunWargaRepository'
 import User from '@/database/model/user'
+import UserDetail from '@/database/model/userDetail'
 
 const rukunWargaRepository = new RukunWargaRepository()
 
@@ -34,7 +35,7 @@ export class RukunTetanggaRepository {
   async getById(id: string): Promise<RukunTetanggaDetailDto> {
     const data = await RukunTetangga.findOne({
       where: { id },
-      include: [{ model: User }],
+      include: [{ model: UserDetail, include: [{ model: User }] }],
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')

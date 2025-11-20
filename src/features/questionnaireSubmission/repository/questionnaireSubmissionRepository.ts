@@ -413,6 +413,8 @@ export class QuestionnaireSubmissionRepository {
   ): Promise<ISummarizeByUserIdDetailed> {
     const { startDate, endDate } = options
 
+    console.log(options)
+
     const rw = await rukunWargaRepository.getById(options.RukunWargaId)
 
     const rt = await rukunTetanggaRepository.getById(options.RukunTetanggaId)

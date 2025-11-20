@@ -2,12 +2,14 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
+  HasMany,
   IsUUID,
   Table,
 } from 'sequelize-typescript'
 import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import RukunWarga from './rukunWarga'
+import UserDetail from './userDetail'
 
 @Table({ tableName: 'rukunTetangga' })
 export default class RukunTetangga extends BaseSchema {
@@ -25,4 +27,7 @@ export default class RukunTetangga extends BaseSchema {
 
   @BelongsTo(() => RukunWarga)
   rukunWarga: RukunWarga
+
+  @HasMany(() => UserDetail)
+  userDetails: UserDetail
 }

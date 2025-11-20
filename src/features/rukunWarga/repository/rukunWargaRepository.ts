@@ -10,9 +10,8 @@ import {
   UpdateRukunWargaDto,
 } from '../dto'
 import RukunTetangga from '@/database/model/rukunTetangga'
-import User from '@/database/model/user'
 import { Op } from 'sequelize'
-import UserDetail from '@/src/database/model/userDetail'
+import UserDetail from '@/database/model/userDetail'
 
 export class RukunWargaRepository {
   async getAll(req: Request): Promise<{
@@ -49,15 +48,24 @@ export class RukunWargaRepository {
     return data
   }
 
-  async getById(id: string): Promise<RukunWargaDetailDto> {
+  async getById(id: string): Promise<{
+    data: RukunWargaDetailDto
+    metadata: { rtCount: number; userCount: number }
+  }> {
     const data = await RukunWarga.findOne({
       where: { id },
       include: [{ model: RukunTetangga }],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found asd')
+    if (!data) throw new ErrorResponse.NotFound('Data not found')
 
-    return data
+    const userCount = await UserDetail.count({
+      where: {
+        RukunWargaId: data.id,
+      },
+    })
+
+    return { data, metadata: { rtCount: data.rukunTetangga.length, userCount } }
   }
 
   async add(formData: CreateRukunWargaDto): Promise<RukunWargaDto[]> {
