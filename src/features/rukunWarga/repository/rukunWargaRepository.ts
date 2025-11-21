@@ -16,7 +16,7 @@ import UserDetail from '@/database/model/userDetail'
 export class RukunWargaRepository {
   async getAll(req: Request): Promise<{
     data: RukunWargaDto[]
-    metaData: { rwCount: number; rtCount: number; userCount: number }
+    metadata: { rwCount: number; rtCount: number; userCount: number }
   }> {
     const query = new RukunWargaQueryRepository(req)
 
@@ -32,7 +32,7 @@ export class RukunWargaRepository {
 
     return {
       data,
-      metaData: {
+      metadata: {
         rwCount: data.length,
         rtCount,
         userCount,

@@ -38,11 +38,12 @@ route.post(
 route.get(
   '/',
   asyncHandler(async (req: Request, res: Response) => {
-    const data = await repository.getAll(req)
+    const { data, metadata } = await repository.getAll(req)
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
       data,
+      metadata,
     })
 
     res.status(httpResponse.statusCode).json(httpResponse)
@@ -56,11 +57,12 @@ route.get(
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    const data = await repository.getById(id)
+    const { data, metadata } = await repository.getById(id)
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
       data,
+      metadata,
     })
 
     res.status(httpResponse.statusCode).json(httpResponse)
