@@ -16,12 +16,21 @@ import UserDetail from '@/database/model/userDetail'
 const rukunWargaRepository = new RukunWargaRepository()
 
 export class RukunTetanggaRepository {
-  async getAll(req: Request): Promise<RukunTetanggaDto[]> {
+  async getAll(req: Request): Promise<{
+    data: RukunTetanggaDto[]
+    metadata: { userCount: number }
+  }> {
     const query = new RukunTetanggaQueryRepository(req)
 
     const data = await RukunTetangga.findAll(query.queryFilter())
 
-    return data
+    const userCount = await UserDetail.count({
+      where: {
+        RukunTetanggaId: data.map((e) => e.id),
+      },
+    })
+
+    return { data, metadata: { userCount } }
   }
 
   async getByPk(id: string): Promise<RukunTetangga> {
@@ -32,7 +41,10 @@ export class RukunTetanggaRepository {
     return data
   }
 
-  async getById(id: string): Promise<RukunTetanggaDetailDto> {
+  async getById(id: string): Promise<{
+    data: RukunTetanggaDetailDto
+    metadata: { userCount: number }
+  }> {
     const data = await RukunTetangga.findOne({
       where: { id },
       include: [{ model: UserDetail, include: [{ model: User }] }],
@@ -40,19 +52,26 @@ export class RukunTetanggaRepository {
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
 
-    return data
+    const userCount = await UserDetail.count({
+      where: {
+        RukunTetanggaId: data.id,
+      },
+    })
+
+    return { data, metadata: { userCount } }
   }
 
   async add(formData: CreateRukunTetanggaDto): Promise<RukunTetanggaDto[]> {
     let data: any
 
     await db.sequelize!.transaction(async (transaction) => {
+      const rw = await rukunWargaRepository.getByPk(formData.RukunWargaId)
+
       const latestRt = await RukunTetangga.findOne({
+        where: { RukunWargaId: rw.id },
         attributes: ['name'],
         order: [['name', 'DESC']],
       })
-
-      const rw = await rukunWargaRepository.getByPk(formData.RukunWargaId)
 
       const rwBulkCreate = []
 

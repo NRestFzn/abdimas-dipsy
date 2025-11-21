@@ -154,7 +154,7 @@ export class QuestionnaireSubmissionRepository {
       options.QuestionnaireId
     )
 
-    const rw = await rukunWargaRepository.getById(options.RukunWargaId)
+    const rw = await rukunWargaRepository.getByPk(options.RukunWargaId)
 
     const replacements: IGetSummaryOptionsByRw = {
       QuestionnaireId: questionnaire.id,
@@ -301,9 +301,9 @@ export class QuestionnaireSubmissionRepository {
       options.QuestionnaireId
     )
 
-    const rw = await rukunWargaRepository.getById(options.RukunWargaId)
+    const rw = await rukunWargaRepository.getByPk(options.RukunWargaId)
 
-    const rt = await rukunTetanggaRepository.getById(options.RukunTetanggaId)
+    const rt = await rukunTetanggaRepository.getByPk(options.RukunTetanggaId)
 
     const replacements: Record<string, any> = {
       QuestionnaireId: questionnaire.id,
@@ -413,11 +413,9 @@ export class QuestionnaireSubmissionRepository {
   ): Promise<ISummarizeByUserIdDetailed> {
     const { startDate, endDate } = options
 
-    console.log(options)
+    const rw = await rukunWargaRepository.getByPk(options.RukunWargaId)
 
-    const rw = await rukunWargaRepository.getById(options.RukunWargaId)
-
-    const rt = await rukunTetanggaRepository.getById(options.RukunTetanggaId)
+    const rt = await rukunTetanggaRepository.getByPk(options.RukunTetanggaId)
 
     const questionnaire = await questionnaireRepository.getById(
       options.QuestionnaireId
