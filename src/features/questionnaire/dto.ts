@@ -5,6 +5,7 @@ export interface QuestionnaireDto {
   title: string
   description: string
   status: string
+  riskThreshold: number
   createdAt: Date
   updatedAt: Date
 }
@@ -17,6 +18,7 @@ export interface CreateQuestionnaireDto {
   title: string
   description: string
   status: string
+  riskThreshold: number
 }
 
 export interface UpdateQuestionnaireDto extends CreateQuestionnaireDto {}

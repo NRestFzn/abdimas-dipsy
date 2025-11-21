@@ -7,6 +7,7 @@ export const createQuestionnaireSchema = yup.object().shape({
     .string()
     .oneOf(['draft', 'publish'], "Status must be one of 'draft' or 'publish'")
     .required('Status is required'),
+  riskThreshold: yup.number().required('Risk threshold is required'),
 })
 
 export const updateQuestionnaireSchema = createQuestionnaireSchema.clone()

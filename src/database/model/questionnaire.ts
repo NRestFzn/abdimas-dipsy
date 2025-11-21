@@ -14,6 +14,9 @@ export default class Questionnaire extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.ENUM('draft', 'publish') })
   status: string
 
+  @Column({ allowNull: false, type: DataTypes.NUMBER })
+  riskThreshold: number
+
   @HasMany(() => QuestionnaireQuestion)
   questions: QuestionnaireQuestion[]
 }

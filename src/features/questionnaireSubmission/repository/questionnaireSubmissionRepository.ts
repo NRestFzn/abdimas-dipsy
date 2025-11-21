@@ -76,7 +76,7 @@ export class QuestionnaireSubmissionRepository {
     UserMentalState AS (SELECT ud.UserId, ud.RukunWargaId,
     CASE
       WHEN ds.trueCount IS NULL THEN NULL
-      WHEN ds.trueCount >= 6 THEN 1
+      WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1
       ELSE 0
     END AS healthStatus
     FROM userDetail ud LEFT JOIN UnstableMentalScore ds ON ud.UserId = ds.UserId)
@@ -214,7 +214,7 @@ export class QuestionnaireSubmissionRepository {
       ud.RukunTetanggaId,
       CASE
         WHEN ds.trueCount IS NULL THEN NULL
-        WHEN ds.trueCount >= 6 THEN 1
+        WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1
         ELSE 0
       END AS healthStatus
     FROM userDetail ud
@@ -353,7 +353,7 @@ export class QuestionnaireSubmissionRepository {
           u.fullname,
           ud.RukunTetanggaId,
           ds.submissionDate AS lastSubmissionDate,
-          CASE WHEN ds.trueCount >= 6 THEN 1 ELSE 0 END AS isMentalUnStable
+          CASE WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
         FROM userDetail ud
         INNER JOIN user u on ud.UserId = u.id
         LEFT JOIN UnstableMentalScore ds ON ds.UserId = ud.UserId
@@ -475,7 +475,7 @@ export class QuestionnaireSubmissionRepository {
       ac.submissionId,
       ac.submissionDate,
       ac.trueCount,
-    CASE WHEN ac.trueCount >= 6 THEN 1 ELSE 0 END AS isMentalUnStable
+    CASE WHEN ac.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
     FROM AnswerCounts ac
     ORDER BY ac.submissionDate DESC;`
 
@@ -529,6 +529,10 @@ export class QuestionnaireSubmissionRepository {
 
     if (!submission) throw new ErrorResponse.NotFound('Data not found')
 
+    const questionnaire = await questionnaireRepository.getByPk(
+      submission?.QuestionnaireId
+    )
+
     const trueCount = submission.questionnaireAnswer.filter(
       (e) => e.answerValue === 'true'
     ).length
@@ -545,7 +549,7 @@ export class QuestionnaireSubmissionRepository {
       trueCount,
       falseCount,
       answeredCount,
-      isMentalUnstable: falseCount >= 6,
+      isMentalUnstable: falseCount >= questionnaire.riskThreshold,
       ...submissionToJson,
     }
 

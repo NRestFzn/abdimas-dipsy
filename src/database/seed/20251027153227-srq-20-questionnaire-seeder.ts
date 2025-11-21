@@ -55,6 +55,7 @@ export async function up(
       title: 'Self-Reporting Questionnaire',
       description: 'lorem ipsum dolor sit amet',
       status: 'publish',
+      riskThreshold: 6,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
