@@ -8,6 +8,9 @@ export default class RukunWarga extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   name: number
 
+  @Column({ type: DataTypes.VIRTUAL })
+  userCount: number
+
   @HasMany(() => RukunTetangga)
   rukunTetangga: RukunTetangga[]
 }

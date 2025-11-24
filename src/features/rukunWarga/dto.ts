@@ -3,6 +3,8 @@ import { RukunTetanggaDto } from '../rukunTetangga/dto'
 export interface RukunWargaDto {
   id: string
   name: number
+  rtCount: number
+  userCount: number
   createdAt: Date
   updatedAt: Date
 }

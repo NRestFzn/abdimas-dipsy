@@ -4,6 +4,7 @@ export interface RukunTetanggaDto {
   id: string
   name: number
   RukunWargaId: string
+  userCount: number
   createdAt: Date
   updatedAt: Date
 }

@@ -16,6 +16,12 @@ export default class RukunTetangga extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   name: number
 
+  @Column({ type: DataTypes.VIRTUAL })
+  userCount: number
+
+  @Column({ type: DataTypes.VIRTUAL })
+  rtCount: number
+
   @IsUUID(4)
   @ForeignKey(() => RukunWarga)
   @Column({

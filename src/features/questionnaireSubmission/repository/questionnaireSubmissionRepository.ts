@@ -28,6 +28,9 @@ import { RukunWargaRepository } from '../../rukunWarga/repository/rukunWargaRepo
 import { RukunTetanggaRepository } from '../../rukunTetangga/repository/rukunTetanggaRepository'
 import { UserRepository } from '../../user/repository/userRepository'
 import Questionnaire from '@/database/model/questionnaire'
+import { Request } from 'express'
+import { QuestionnaireSubmissionQueryRepository } from './questionnaireSubmissionQueryRepository'
+import { UserLoginState } from '../../user/dto'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -36,13 +39,15 @@ const userRepository = new UserRepository()
 
 export class QuestionnaireSubmissionRepository {
   async getAllSummarizeByLoggedInUser(
-    userId: string
+    req: Request
   ): Promise<QuestionnaireSubmission[]> {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const query = new QuestionnaireSubmissionQueryRepository(req)
+
     const data = await QuestionnaireSubmission.findAll({
-      where: {
-        UserId: userId,
-      },
-      include: [{ model: Questionnaire, attributes: ['id', 'title'] }],
+      ...query.queryFilter(),
+      where: { UserId: user.uid },
     })
 
     return data

@@ -39,9 +39,7 @@ route.get(
   '/history-me',
   authorization(),
   asyncHandler(async (req: Request, res: Response) => {
-    const user: UserLoginState = req.getState('userLoginState')
-
-    const data = await repository.getAllSummarizeByLoggedInUser(user.uid)
+    const data = await repository.getAllSummarizeByLoggedInUser(req)
 
     const httpResponse = HttpResponse.get({
       message: 'Data retrieved successfully',

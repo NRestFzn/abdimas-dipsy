@@ -1,6 +1,11 @@
 import { QuestionnaireDto } from '../questionnaire/dto'
 import { UserDto } from '../user/dto'
 
+export interface QuestionnaireSubmissionQueryFilterDto {
+  UserId: string
+  QuestionnaireId: string
+}
+
 export interface QuestionnaireSubmissionDto {
   id: string
   UserId: string
