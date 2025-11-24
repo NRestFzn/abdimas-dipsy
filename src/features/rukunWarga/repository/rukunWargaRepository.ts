@@ -12,6 +12,7 @@ import {
 import RukunTetangga from '@/database/model/rukunTetangga'
 import { Op } from 'sequelize'
 import UserDetail from '@/database/model/userDetail'
+import { Sequelize } from 'sequelize-typescript'
 
 export class RukunWargaRepository {
   async getAll(req: Request): Promise<{
@@ -20,7 +21,29 @@ export class RukunWargaRepository {
   }> {
     const query = new RukunWargaQueryRepository(req)
 
-    const data = await RukunWarga.findAll(query.queryFilter())
+    const data = await RukunWarga.findAll({
+      ...query.queryFilter(),
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM RukunTetangga AS rt
+              WHERE rt.RukunWargaId = RukunWarga.id
+            )`),
+            'rtCount',
+          ],
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM UserDetail AS ud
+              WHERE ud.RukunWargaId = RukunWarga.id
+            )`),
+            'userCount',
+          ],
+        ],
+      },
+    })
 
     const rtCount = await RukunTetangga.count({
       where: { RukunWargaId: { [Op.in]: data.map((e) => e.id) } },

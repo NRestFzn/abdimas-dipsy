@@ -15,6 +15,7 @@ import {
   ISummarizeSubmission,
   ISummarizeSubmissionByUser,
   ISummarizeUserByRt,
+  QuestionnaireSubmissionDetailDto,
   QuestionnaireSubmissionDto,
 } from '../dto'
 import { QuestionnaireRepository } from '../../questionnaire/repository/questionnaireRepository'
@@ -26,6 +27,7 @@ import { QueryTypes } from 'sequelize'
 import { RukunWargaRepository } from '../../rukunWarga/repository/rukunWargaRepository'
 import { RukunTetanggaRepository } from '../../rukunTetangga/repository/rukunTetanggaRepository'
 import { UserRepository } from '../../user/repository/userRepository'
+import Questionnaire from '@/database/model/questionnaire'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -33,6 +35,19 @@ const rukunTetanggaRepository = new RukunTetanggaRepository()
 const userRepository = new UserRepository()
 
 export class QuestionnaireSubmissionRepository {
+  async getAllSummarizeByLoggedInUser(
+    userId: string
+  ): Promise<QuestionnaireSubmission[]> {
+    const data = await QuestionnaireSubmission.findAll({
+      where: {
+        UserId: userId,
+      },
+      include: [{ model: Questionnaire, attributes: ['id', 'title'] }],
+    })
+
+    return data
+  }
+
   async summarizeByQuestionnaireId(
     options: IGetSummaryOptions
   ): Promise<ISummarizeByQuestionnaireIdDetailed> {

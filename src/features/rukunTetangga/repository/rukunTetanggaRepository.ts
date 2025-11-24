@@ -12,6 +12,7 @@ import {
 import { RukunWargaRepository } from '@/features/rukunWarga/repository/rukunWargaRepository'
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
+import { Sequelize } from 'sequelize-typescript'
 
 const rukunWargaRepository = new RukunWargaRepository()
 
@@ -22,7 +23,21 @@ export class RukunTetanggaRepository {
   }> {
     const query = new RukunTetanggaQueryRepository(req)
 
-    const data = await RukunTetangga.findAll(query.queryFilter())
+    const data = await RukunTetangga.findAll({
+      ...query.queryFilter(),
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+                      SELECT COUNT(*)
+                      FROM UserDetail AS ud
+                      WHERE ud.RukunTetanggaId = RukunTetangga.id
+                    )`),
+            'userCount',
+          ],
+        ],
+      },
+    })
 
     const userCount = await UserDetail.count({
       where: {

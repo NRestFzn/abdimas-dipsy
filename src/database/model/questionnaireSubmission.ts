@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   ForeignKey,
   HasMany,
@@ -25,4 +26,7 @@ export default class QuestionnaireSubmission extends BaseSchema {
 
   @HasMany(() => QuestionnaireAnswer)
   questionnaireAnswer: QuestionnaireAnswer[]
+
+  @BelongsTo(() => Questionnaire)
+  questionnaire: Questionnaire
 }

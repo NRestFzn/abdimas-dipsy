@@ -29,10 +29,28 @@ import {
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
+import { UserLoginState } from '@/features/user/dto'
 
 const repository = new QuestionnaireSubmissionRepository()
 
 const route = express.Router()
+
+route.get(
+  '/history-me',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const data = await repository.getAllSummarizeByLoggedInUser(user.uid)
+
+    const httpResponse = HttpResponse.get({
+      message: 'Data retrieved successfully',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
 
 route.get(
   '/summary/:QuestionnaireId',
