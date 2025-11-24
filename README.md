@@ -13,8 +13,8 @@
 1. **Clone the repository**
 
    ```bash
-   https://github.com/chevalierlab-sas/CLearn-IsiPiringku-Web-BE.git
-   cd CLearn-IsiPiringku-Web-BE
+   https://github.com/NRestFzn/abdimas-dipsy.git
+   cd abdimas-dipsy
    ```
 
 2. **Set up environment variables**
