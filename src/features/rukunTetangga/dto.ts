@@ -24,4 +24,5 @@ export interface UpdateRukunTetanggaDto {
 
 export interface RukunTetanggaQueryFilterDto {
   name: number
+  RukunWargaId: string
 }

@@ -5,6 +5,7 @@ import { BaseQueryRequest } from '@/routes/version1/request/_baseQueryRequest'
 
 export class RukunTetanggaQueryRepository extends BaseQueryRequest {
   public name?: number
+  public RukunWargaId?: string
 
   constructor(req: Request) {
     super(req)
@@ -12,6 +13,7 @@ export class RukunTetanggaQueryRepository extends BaseQueryRequest {
     const query = req.query as unknown as RukunTetanggaQueryFilterDto
 
     this.name = query.name
+    this.RukunWargaId = query.RukunWargaId
   }
 
   public queryFilter(): FindOptions {
@@ -20,6 +22,12 @@ export class RukunTetanggaQueryRepository extends BaseQueryRequest {
     if (this.name) {
       whereCondition.push({
         name: this.name,
+      })
+    }
+
+    if (this.RukunWargaId) {
+      whereCondition.push({
+        RukunWargaId: this.RukunWargaId,
       })
     }
 
