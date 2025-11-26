@@ -78,6 +78,26 @@ export class RukunWargaRepository {
     const data = await RukunWarga.findOne({
       where: { id },
       include: [{ model: RukunTetangga }],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM RukunTetangga AS rt
+              WHERE rt.RukunWargaId = RukunWarga.id
+            )`),
+            'rtCount',
+          ],
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM UserDetail AS ud
+              WHERE ud.RukunWargaId = RukunWarga.id
+            )`),
+            'userCount',
+          ],
+        ],
+      },
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
