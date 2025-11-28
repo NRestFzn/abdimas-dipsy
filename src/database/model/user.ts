@@ -56,7 +56,7 @@ export default class User extends BaseSchema {
   gender: string
 
   @Column({ type: DataType.DATEONLY, allowNull: false })
-  birthDate: string
+  birthDate: Date
 
   @HasOne(() => UserDetail)
   userDetail: UserDetail

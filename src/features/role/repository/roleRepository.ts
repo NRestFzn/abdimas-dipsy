@@ -36,7 +36,7 @@ export class RoleRepository {
     const data = await this.getByPk(id)
 
     await db.sequelize!.transaction(async (transaction) => {
-      data.update({ ...formData }, { transaction })
+      await data.update({ ...formData }, { transaction })
     })
   }
 

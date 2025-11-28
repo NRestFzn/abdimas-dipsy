@@ -21,6 +21,10 @@ export const registerSchema = yup.object({
     .string()
     .min(8, 'Password min 8 characters')
     .required("New password can't be empty"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+    .required("Confirm password can't be empty"),
   gender: yup
     .string()
     .oneOf(['m', 'f'], "Gender must be one of 'm' or 'f'")
