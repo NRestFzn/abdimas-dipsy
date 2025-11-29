@@ -28,7 +28,7 @@ export async function up(
       allowNull: false,
       type: Sequelize.UUID,
       references: {
-        model: 'Questionnaire',
+        model: 'questionnaire',
         key: 'id',
       },
       onUpdate: 'cascade',
