@@ -9,13 +9,13 @@ import {
   ResidentDto,
   UpdateResidentDto,
 } from '../dto'
-import UserDetail from '@/src/database/model/userDetail'
-import RukunWarga from '@/src/database/model/rukunWarga'
-import RukunTetangga from '@/src/database/model/rukunTetangga'
-import MarriageStatus from '@/src/database/model/marriageStatus'
-import Education from '@/src/database/model/education'
-import SalaryRange from '@/src/database/model/salaryRange'
-import { RoleId } from '@/src/libs/constant/roleIds'
+import UserDetail from '@/database/model/userDetail'
+import RukunWarga from '@/database/model/rukunWarga'
+import RukunTetangga from '@/database/model/rukunTetangga'
+import MarriageStatus from '@/database/model/marriageStatus'
+import Education from '@/database/model/education'
+import SalaryRange from '@/database/model/salaryRange'
+import { RoleId } from '@/libs/constant/roleIds'
 
 export class ResidentRepository {
   async getAll(req: Request): Promise<ResidentDto[]> {
