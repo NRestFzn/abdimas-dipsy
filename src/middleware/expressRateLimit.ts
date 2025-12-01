@@ -4,7 +4,7 @@ import rateLimit, { Options, RateLimitRequestHandler } from 'express-rate-limit'
 export default function expressRateLimit(): RateLimitRequestHandler {
   return rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requests
+    max: 1000, // 100 requests
     handler: (
       _req: Request,
       res: Response,
