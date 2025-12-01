@@ -68,3 +68,9 @@ export interface ResidentQueryFilterDto {
   RoleId: string
   fullname: string
 }
+
+export interface ResidentDetailQueryFilterDto {
+  RukunWargaId: string
+  RukunTetanggaId: string
+  nik: string
+}

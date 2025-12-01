@@ -77,7 +77,23 @@ export class RukunWargaRepository {
   }> {
     const data = await RukunWarga.findOne({
       where: { id },
-      include: [{ model: RukunTetangga }],
+      include: [
+        {
+          model: RukunTetangga,
+          attributes: {
+            include: [
+              [
+                Sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM UserDetail AS ud
+                            WHERE ud.RukunTetanggaId = RukunTetangga.id
+                          )`),
+                'userCount',
+              ],
+            ],
+          },
+        },
+      ],
       attributes: {
         include: [
           [

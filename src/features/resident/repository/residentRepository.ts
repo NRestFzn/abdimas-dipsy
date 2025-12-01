@@ -2,26 +2,35 @@ import { Request } from 'express'
 import User from '@/database/model/user'
 import { db } from '@/database/databaseConnection'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
-import { ResidentQueryRepository } from './residentQueryRepository'
+import {
+  ResidentDetailQueryRepository,
+  ResidentQueryRepository,
+} from './residentQueryRepository'
 import {
   CreateResidentDto,
   ResidentDetailDto,
   ResidentDto,
   UpdateResidentDto,
 } from '../dto'
-import UserDetail from '@/src/database/model/userDetail'
-import RukunWarga from '@/src/database/model/rukunWarga'
-import RukunTetangga from '@/src/database/model/rukunTetangga'
-import MarriageStatus from '@/src/database/model/marriageStatus'
-import Education from '@/src/database/model/education'
-import SalaryRange from '@/src/database/model/salaryRange'
-import { RoleId } from '@/src/libs/constant/roleIds'
+import UserDetail from '@/database/model/userDetail'
+import RukunWarga from '@/database/model/rukunWarga'
+import RukunTetangga from '@/database/model/rukunTetangga'
+import MarriageStatus from '@/database/model/marriageStatus'
+import Education from '@/database/model/education'
+import SalaryRange from '@/database/model/salaryRange'
+import { RoleId } from '@/libs/constant/roleIds'
 
 export class ResidentRepository {
   async getAll(req: Request): Promise<ResidentDto[]> {
     const query = new ResidentQueryRepository(req)
+    const residentDetailQuery = new ResidentDetailQueryRepository(req)
 
-    const data = await User.findAll(query.queryFilter())
+    const data = await User.findAll({
+      ...query.queryFilter(),
+      include: [
+        { model: UserDetail, ...(residentDetailQuery.queryFilter() as any) },
+      ],
+    })
 
     return data
   }
