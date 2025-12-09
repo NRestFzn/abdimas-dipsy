@@ -67,6 +67,21 @@ route.get(
 )
 
 route.get(
+  '/me',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const data = await repository.getAllAvailabilityByUserId(req)
+
+    const httpResponse = HttpResponse.get({
+      message: 'Success get data',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
   '/:id',
   authorization(),
   permissionAccess([RoleId.adminMedis]),

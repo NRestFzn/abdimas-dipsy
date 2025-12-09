@@ -375,7 +375,7 @@ export class QuestionnaireSubmissionRepository {
           CASE WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
         FROM userDetail ud
         INNER JOIN user u on ud.UserId = u.id
-        LEFT JOIN UnstableMentalScore ds ON ds.UserId = ud.UserId
+        JOIN UnstableMentalScore ds ON ds.UserId = ud.UserId
       )
 
       SELECT

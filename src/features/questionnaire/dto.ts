@@ -6,6 +6,7 @@ export interface QuestionnaireDto {
   description: string
   status: string
   riskThreshold: number
+  cooldownInMinutes: number
   createdAt: Date
   updatedAt: Date
 }
@@ -19,6 +20,7 @@ export interface CreateQuestionnaireDto {
   description: string
   status: string
   riskThreshold: number
+  cooldownInMinutes: number
 }
 
 export interface UpdateQuestionnaireDto extends CreateQuestionnaireDto {}

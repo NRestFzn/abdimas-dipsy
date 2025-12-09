@@ -10,6 +10,8 @@ import {
   UpdateQuestionnaireDto,
 } from '../dto'
 import QuestionnaireQuestion from '@/database/model/questionnaireQuestion'
+import QuestionnaireSubmission from '@/src/database/model/questionnaireSubmission'
+import { UserLoginState } from '../../user/dto'
 
 export class QuestionnaireRepository {
   async getAll(req: Request): Promise<QuestionnaireDto[]> {
@@ -31,6 +33,67 @@ export class QuestionnaireRepository {
     }
 
     const data = await Questionnaire.findAll(queryFilter)
+
+    return data
+  }
+
+  async getAllAvailabilityByUserId(req: Request) {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const query = new QuestionnaireQueryRepository(req)
+
+    const queryFilter = query.queryFilter()
+
+    queryFilter.where = {
+      ...queryFilter.where,
+      status: 'publish',
+    }
+
+    const questionnaires = await Questionnaire.findAll({
+      ...queryFilter,
+      include: [
+        {
+          model: QuestionnaireSubmission,
+          where: { UserId: user.uid },
+          required: false,
+          order: [['createdAt', 'DESC']],
+          limit: 1,
+        },
+      ],
+    })
+
+    const data = questionnaires.map((q) => {
+      const latestSubmission =
+        q.submissions && q.submissions.length > 0 ? q.submissions[0] : null
+
+      let isAvailable = true
+
+      let availableAt = null
+
+      if (latestSubmission) {
+        const now = new Date()
+
+        const lastSubmitTime = new Date(latestSubmission.createdAt)
+
+        const cooldownMinutes = q.cooldownInMinutes
+
+        const nextAvailableTime = new Date(
+          lastSubmitTime.getTime() + cooldownMinutes * 60000
+        )
+
+        if (now < nextAvailableTime) {
+          isAvailable = false
+          availableAt = nextAvailableTime
+        }
+      }
+
+      return {
+        ...q.toJSON(),
+        isAvailable,
+        availableAt,
+        latestSubmission: latestSubmission ? latestSubmission.createdAt : null,
+      }
+    })
 
     return data
   }
