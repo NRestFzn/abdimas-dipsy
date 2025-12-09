@@ -6,22 +6,25 @@ import { v4 } from 'uuid'
 
 const data = [
   {
-    name: 'sd',
+    name: 'SD',
   },
   {
-    name: 'smp',
+    name: 'SMP',
   },
   {
-    name: 'sma/k',
+    name: 'SMA/K',
   },
   {
-    name: 's1',
+    name: 'S1',
   },
   {
-    name: 's2',
+    name: 'S2',
   },
   {
-    name: 's3',
+    name: 'S3',
+  },
+  {
+    name: 'Tidak Bersekolah',
   },
 ]
 

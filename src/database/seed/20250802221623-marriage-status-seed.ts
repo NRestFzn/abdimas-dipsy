@@ -6,13 +6,13 @@ import { v4 } from 'uuid'
 
 const data = [
   {
-    name: 'tidak menikah',
+    name: 'Menikah',
   },
   {
-    name: 'menikah',
+    name: 'Bercerai',
   },
   {
-    name: 'bercerai',
+    name: 'Belum Menikah',
   },
 ]
 

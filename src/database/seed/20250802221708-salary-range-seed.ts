@@ -6,6 +6,14 @@ import { v4 } from 'uuid'
 
 const data = [
   {
+    minRange: 0,
+    maxRange: 250000,
+  },
+  {
+    minRange: 250000,
+    maxRange: 500000,
+  },
+  {
     minRange: 500000,
     maxRange: 1000000,
   },
