@@ -5,10 +5,12 @@ export interface LoginDto {
 
 export interface RegisterDto {
   fullname: string
-  email: string
-  password: string
-  profession: string
   nik: string
+  email: string
+  phoneNumber: string
+  password: string
+  confirmPassword: string
+  profession: string
   birthDate: Date
   RukunWargaId: string
   RukunTetanggaId: string
