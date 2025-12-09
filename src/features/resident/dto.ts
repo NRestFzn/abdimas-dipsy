@@ -19,13 +19,13 @@ export interface ResidentDetailDto extends ResidentDto {
   userDetail: {
     profession: string
     nik: string
+    phoneNumber: string
     UserId: string
     RukunWargaId: string
     RukunTetanggaId: string
     MarriageStatusId: string
     EducationId: string
     SalaryRangeId: string
-
     rukunWarga: RukunWargaDto
     rukunTetangga: RukunTetanggaDto
     marriageStatus: MarriageStatusDto
@@ -36,12 +36,13 @@ export interface ResidentDetailDto extends ResidentDto {
 
 export interface CreateResidentDto {
   fullname: string
+  nik: string
   email: string
+  phoneNumber: string
   password: string
   confirmPassword: string
   gender: string
   profession: string
-  nik: string
   RukunWargaId: string
   RukunTetanggaId: string
   MarriageStatusId: string
@@ -51,12 +52,13 @@ export interface CreateResidentDto {
 
 export interface UpdateResidentDto {
   fullname: string
+  nik: string
   email: string
+  phoneNumber: string
   password?: string | null
   confirmPassword?: string | null
   gender: string
   profession: string
-  nik: string
   RukunWargaId: string
   RukunTetanggaId: string
   MarriageStatusId: string
@@ -73,4 +75,13 @@ export interface ResidentDetailQueryFilterDto {
   RukunWargaId: string
   RukunTetanggaId: string
   nik: string
+}
+
+export interface UpdateProfileDto {
+  phoneNumber: string
+  newPassword?: string
+  confirmNewPassword?: string
+  profession: string
+  EducationId: string
+  SalaryRangeId: string
 }

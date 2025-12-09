@@ -10,6 +10,7 @@ import {
   CreateResidentDto,
   ResidentDetailDto,
   ResidentDto,
+  UpdateProfileDto,
   UpdateResidentDto,
 } from '../dto'
 import UserDetail from '@/database/model/userDetail'
@@ -93,6 +94,19 @@ export class ResidentRepository {
   }
 
   async update(id: string, formData: UpdateResidentDto): Promise<void> {
+    const data = await this.getByPk(id)
+
+    await db.sequelize!.transaction(async (transaction) => {
+      await data.update({ ...formData }, { transaction })
+
+      await UserDetail.update(
+        { ...formData },
+        { where: { UserId: data.id }, transaction }
+      )
+    })
+  }
+
+  async updateByToken(id: string, formData: UpdateProfileDto): Promise<void> {
     const data = await this.getByPk(id)
 
     await db.sequelize!.transaction(async (transaction) => {

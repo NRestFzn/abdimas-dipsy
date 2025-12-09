@@ -5,11 +5,16 @@ import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
   createResidentSchema,
+  updateProfileSchema,
   updateResidentSchema,
 } from '@/features/resident/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
+import { UserLoginState } from '@/features/user/dto'
+import { MulterConfig, useMulter } from '@/libs/module/multer'
+import { allowed_image } from '@/src/libs/constant/allowedExtension'
+import { Mimetype } from '@/src/libs/constant/allowedMimetype'
 
 const repository = new ResidentRepository()
 
@@ -44,6 +49,46 @@ route.get(
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
+  '/me',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const data = await repository.getById(user.uid)
+
+    const httpResponse = HttpResponse.get({
+      message: 'Success get data',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.put(
+  '/me',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const formData = req.getBody()
+
+    const value = updateProfileSchema.validateSync(formData, {
+      stripUnknown: true,
+    })
+
+    const data = await repository.updateByToken(user.uid, value)
+
+    const httpResponse = HttpResponse.updated({
+      message: 'Data updated successfully',
       data,
     })
 
