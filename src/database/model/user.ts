@@ -58,6 +58,9 @@ export default class User extends BaseSchema {
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: Date
 
+  @Column({ type: DataType.STRING, allowNull: true })
+  profilePicture: Date
+
   @HasOne(() => UserDetail)
   userDetail: UserDetail
 

@@ -22,6 +22,9 @@ export default class UserDetail extends BaseSchema {
   @Column({ type: DataType.STRING, allowNull: false, unique: true })
   nik: string
 
+  @Column({ type: DataType.STRING, allowNull: false, unique: true })
+  phoneNumber: string
+
   @IsUUID(4)
   @ForeignKey(() => User)
   @Column({
