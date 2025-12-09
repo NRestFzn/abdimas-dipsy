@@ -4,6 +4,7 @@ import { db } from '@/database/databaseConnection'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
+import { UpdateUserDto } from '../dto'
 
 export class UserRepository {
   //   async getAll(req: Request): Promise<RoleDto[]> {
@@ -22,13 +23,33 @@ export class UserRepository {
     return data
   }
 
+  async update(id: string, formData: UpdateUserDto): Promise<User> {
+    const data = await this.getByPk(id)
+
+    await db.sequelize!.transaction(async (transaction) => {
+      await data.update({ ...formData }, { transaction })
+    })
+
+    return data
+  }
+
   async getById(id: string) {
     const data = await User.findOne({
       where: { id },
-      include: [{ model: UserDetail }],
+      include: [{ model: Role }],
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
+
+    return data
+  }
+
+  async updateProfilePict(id: string, profilePicture: string) {
+    const data = await this.getByPk(id)
+
+    await db.sequelize!.transaction(async (transaction) => {
+      await data.update({ profilePicture }, { transaction })
+    })
 
     return data
   }

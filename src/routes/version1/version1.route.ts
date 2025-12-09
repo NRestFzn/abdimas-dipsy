@@ -10,6 +10,7 @@ import { QuestionnaireController } from './controller/questionnaire.controller'
 import { QuestionnaireQuestionController } from './controller/questionnaireQuestion.controller'
 import { QuestionnaireSubmissionController } from './controller/questionnaireSubmission.controller'
 import { ResidentController } from './controller/resident.controller'
+import { UserController } from './controller/user.controller'
 
 const Route: Router = express.Router()
 
@@ -24,5 +25,6 @@ Route.use('/questionnaire', QuestionnaireController)
 Route.use('/questionnaire-question', QuestionnaireQuestionController)
 Route.use('/questionnaire-submission', QuestionnaireSubmissionController)
 Route.use('/resident', ResidentController)
+Route.use('/user', UserController)
 
 export { Route as v1Route }
