@@ -23,6 +23,7 @@ export interface RegisterDto {
 export interface AuthResponseDto {
   fullname: string
   email: string
+  RoleId: string
   uid: string
   accessToken: string
   expiresAt: Date
