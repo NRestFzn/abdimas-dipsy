@@ -30,13 +30,16 @@ export class AuthService {
         throw new ErrorResponse.BadRequest('Invalid credentials')
       }
 
-      const payload = JSON.parse(JSON.stringify({ uid: getUser.id }))
+      const payload = JSON.parse(
+        JSON.stringify({ uid: getUser.id, RoleId: getUser.RoleId })
+      )
 
       const { token, expiresIn } = jwt.generate(payload)
 
       data = {
         fullname: getUser.fullname,
         email: getUser.email,
+        RoleId: getUser.RoleId,
         uid: getUser.id,
         accessToken: token,
         expiresAt: new Date(Date.now() + expiresIn * 1000),

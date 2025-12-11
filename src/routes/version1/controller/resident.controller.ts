@@ -12,13 +12,25 @@ import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 import { UserLoginState } from '@/features/user/dto'
-import { MulterConfig, useMulter } from '@/libs/module/multer'
-import { allowed_image } from '@/src/libs/constant/allowedExtension'
+import { UserRepository } from '@/src/features/user/repository/userRepository'
 import { Mimetype } from '@/src/libs/constant/allowedMimetype'
+import { MulterConfig, useMulter } from '@/src/libs/module/multer'
+import { allowed_image } from '@/src/libs/constant/allowedExtension'
 
 const repository = new ResidentRepository()
 
+const userRepository = new UserRepository()
+
 const route = express.Router()
+
+const mimeType = new Mimetype()
+
+const multerConfig: MulterConfig = {
+  allowed_ext: allowed_image,
+  allowed_mimetype: mimeType.image,
+}
+
+const uploadFile = useMulter(multerConfig)
 
 route.post(
   '/',
@@ -143,6 +155,26 @@ route.put(
     const id = req.params.id
 
     const data = await repository.update(id, values)
+
+    const httpResponse = HttpResponse.updated({
+      message: 'Data updated successfully',
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.put(
+  '/update/profile-picture',
+  authorization(),
+  uploadFile.single('profilePicture'),
+  asyncHandler(async (req: Request, res: Response) => {
+    const user: UserLoginState = req.getState('userLoginState')
+
+    const file = req.file as Express.Multer.File
+
+    const data = await userRepository.updateProfilePict(user.uid, file.filename)
 
     const httpResponse = HttpResponse.updated({
       message: 'Data updated successfully',

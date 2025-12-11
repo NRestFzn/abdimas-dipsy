@@ -45,4 +45,5 @@ export interface UserQueryFilterDto {
 
 export type UserLoginState = {
   uid: string
+  RoleId: string
 }

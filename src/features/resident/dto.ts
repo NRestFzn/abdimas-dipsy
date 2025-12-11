@@ -10,6 +10,7 @@ export interface ResidentDto {
   email: string
   RoleId: string
   gender: string
+  profilePicture?: string | null
   birthDate: Date
   createdAt: Date
   updatedAt: Date
