@@ -6,9 +6,9 @@ import asyncHandler from '@/helper/asyncHandler'
 import _ from 'lodash'
 import { UserLoginState } from '@/features/user/dto'
 import { updateUserSchema, UpdateUserSchema } from '@/features/user/schema'
-import { Mimetype } from '@/src/libs/constant/allowedMimetype'
-import { allowed_image } from '@/src/libs/constant/allowedExtension'
-import { MulterConfig, useMulter } from '@/src/libs/module/multer'
+import { Mimetype } from '@/libs/constant/allowedMimetype'
+import { allowed_image } from '@/libs/constant/allowedExtension'
+import { MulterConfig, useMulter } from '@/libs/module/multer'
 
 const repository = new UserRepository()
 

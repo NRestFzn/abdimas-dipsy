@@ -12,10 +12,10 @@ import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 import { UserLoginState } from '@/features/user/dto'
-import { UserRepository } from '@/src/features/user/repository/userRepository'
-import { Mimetype } from '@/src/libs/constant/allowedMimetype'
-import { MulterConfig, useMulter } from '@/src/libs/module/multer'
-import { allowed_image } from '@/src/libs/constant/allowedExtension'
+import { UserRepository } from '@/features/user/repository/userRepository'
+import { Mimetype } from '@/libs/constant/allowedMimetype'
+import { MulterConfig, useMulter } from '@/libs/module/multer'
+import { allowed_image } from '@/libs/constant/allowedExtension'
 
 const repository = new ResidentRepository()
 

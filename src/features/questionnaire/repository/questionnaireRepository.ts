@@ -10,7 +10,7 @@ import {
   UpdateQuestionnaireDto,
 } from '../dto'
 import QuestionnaireQuestion from '@/database/model/questionnaireQuestion'
-import QuestionnaireSubmission from '@/src/database/model/questionnaireSubmission'
+import QuestionnaireSubmission from '@/database/model/questionnaireSubmission'
 import { UserLoginState } from '../../user/dto'
 
 export class QuestionnaireRepository {
