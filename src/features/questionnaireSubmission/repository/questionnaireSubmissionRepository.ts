@@ -568,7 +568,7 @@ export class QuestionnaireSubmissionRepository {
       trueCount,
       falseCount,
       answeredCount,
-      isMentalUnstable: falseCount >= questionnaire.riskThreshold,
+      isMentalUnstable: trueCount >= questionnaire.riskThreshold,
       ...submissionToJson,
     }
 
