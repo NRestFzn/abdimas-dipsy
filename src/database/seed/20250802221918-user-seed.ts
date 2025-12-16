@@ -94,6 +94,7 @@ export async function up(
       SalaryRangeId: salaryRange[0].id,
       profession: 'programmer',
       nik: '3204544444444444',
+      phoneNumber: '+6282118678778',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
