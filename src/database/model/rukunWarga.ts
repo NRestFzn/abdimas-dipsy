@@ -3,7 +3,7 @@ import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import RukunTetangga from './rukunTetangga'
 
-@Table({ tableName: 'rukunWarga' })
+@Table({ tableName: 'rukun_wargas' })
 export default class RukunWarga extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   name: number

@@ -10,7 +10,7 @@ import { DataTypes } from 'sequelize'
 import QuestionnaireSubmission from './questionnaireSubmission'
 import QuestionnaireQuestion from './questionnaireQuestion'
 
-@Table({ tableName: 'questionnaireAnswer' })
+@Table({ tableName: 'questionnaire_answers' })
 export default class QuestionnaireAnswer extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   answerValue: string

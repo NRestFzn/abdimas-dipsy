@@ -14,7 +14,7 @@ import Education from './education'
 import SalaryRange from './salaryRange'
 import User from './user'
 
-@Table({ tableName: 'userDetail' })
+@Table({ tableName: 'user_details' })
 export default class UserDetail extends BaseSchema {
   @Column({ type: DataType.STRING, allowNull: false })
   profession: string

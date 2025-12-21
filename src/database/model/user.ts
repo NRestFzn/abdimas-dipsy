@@ -28,7 +28,7 @@ const hashing = new Hashing()
 @Scopes(() => ({
   withPassword: {},
 }))
-@Table({ tableName: 'user' })
+@Table({ tableName: 'users' })
 export default class User extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   fullname: string

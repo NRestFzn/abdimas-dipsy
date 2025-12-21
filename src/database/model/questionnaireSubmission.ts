@@ -12,7 +12,7 @@ import Questionnaire from './questionnaire'
 import User from './user'
 import QuestionnaireAnswer from './questionnaireAnswer'
 
-@Table({ tableName: 'questionnaireSubmission' })
+@Table({ tableName: 'questionnaire_submissions' })
 export default class QuestionnaireSubmission extends BaseSchema {
   @IsUUID(4)
   @ForeignKey(() => User)

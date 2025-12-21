@@ -4,7 +4,7 @@ import { DataTypes } from 'sequelize'
 import QuestionnaireQuestion from './questionnaireQuestion'
 import QuestionnaireSubmission from './questionnaireSubmission'
 
-@Table({ tableName: 'questionnaire' })
+@Table({ tableName: 'questionnaires' })
 export default class Questionnaire extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   title: string
