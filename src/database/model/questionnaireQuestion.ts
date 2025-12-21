@@ -3,7 +3,7 @@ import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import Questionnaire from './questionnaire'
 
-@Table({ tableName: 'questionnaire_questions' })
+@Table({ freezeTableName: true, tableName: 'questionnaire_questions' })
 export default class QuestionnaireQuestion extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   questionText: string

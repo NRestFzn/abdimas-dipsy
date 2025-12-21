@@ -11,7 +11,7 @@ import { DataTypes } from 'sequelize'
 import RukunWarga from './rukunWarga'
 import UserDetail from './userDetail'
 
-@Table({ tableName: 'rukun_tetanggas' })
+@Table({ freezeTableName: true, tableName: 'rukun_tetanggas' })
 export default class RukunTetangga extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   name: number
