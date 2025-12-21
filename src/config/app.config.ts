@@ -18,24 +18,6 @@ import express, { Application, Request, Response } from 'express'
 import expressErrorValidation from '@/middleware/expresYupHandler'
 import expressErrorSequelize from '@/middleware/expressSequelizeHandler'
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://jernih-us.vercel.app',
-]
-
-const corsOptions: any = {
-  origin: (origin: string, callback: any) => {
-    console.log('Request datang dari Origin:', origin)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error('Origin ini tidak diizinkan oleh kebijakan CORS'))
-    }
-  },
-  credentials: true,
-}
-
 export class App {
   private _app: Application
 
@@ -53,7 +35,7 @@ export class App {
     this._app.use(compression())
     this._app.use(cookieParser())
     this._app.use(helmet())
-    this._app.use(cors(corsOptions))
+    this._app.use(cors({ allowedHeaders: allowedCors }))
     this._app.use(hpp())
     this._app.use(requestIp.mw())
     this._app.use(userAgent.express())
