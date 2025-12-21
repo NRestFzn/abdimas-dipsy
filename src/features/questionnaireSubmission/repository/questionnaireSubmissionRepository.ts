@@ -80,25 +80,25 @@ export class QuestionnaireSubmissionRepository {
     }
 
     const query = `
-    WITH RwRtCounts AS (SELECT RukunWargaId, COUNT(id) AS totalRt FROM rukunTetangga GROUP BY RukunWargaId),
+    WITH RwRtCounts AS (SELECT RukunWargaId, COUNT(id) AS totalRt FROM rukun_tetanggas GROUP BY RukunWargaId),
 
     LatestSubmissionsInRange AS (SELECT id, UserId FROM
     ( SELECT qs.id, qs.UserId, ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
-    FROM questionnaireSubmission qs WHERE qs.QuestionnaireId = :QuestionnaireId ${dateFilter}) t WHERE t.rn = 1),
+    FROM questionnaire_submissions qs WHERE qs.QuestionnaireId = :QuestionnaireId ${dateFilter}) t WHERE t.rn = 1),
     
     UnstableMentalScore AS (SELECT ls.UserId, SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END)
     AS trueCount FROM LatestSubmissionsInRange ls
-    JOIN questionnaireAnswer qa ON qa.QuestionnaireSubmissionId = ls.id
-    JOIN questionnaireQuestion qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
+    JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
+    JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
     GROUP BY ls.UserId),
     
     UserMentalState AS (SELECT ud.UserId, ud.RukunWargaId,
     CASE
       WHEN ds.trueCount IS NULL THEN NULL
-      WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1
+      WHEN ds.trueCount >= (select riskThreshold FROM questionnaires where id = :QuestionnaireId) THEN 1
       ELSE 0
     END AS healthStatus
-    FROM userDetail ud LEFT JOIN UnstableMentalScore ds ON ud.UserId = ds.UserId)
+    FROM user_details ud LEFT JOIN UnstableMentalScore ds ON ud.UserId = ds.UserId)
     
     SELECT rw.name AS rwName, rw.id as rwId,
     CAST(COALESCE(rtc.totalRt, 0) AS SIGNED) AS rtCount,
@@ -107,8 +107,8 @@ export class QuestionnaireSubmissionRepository {
     CAST(SUM(CASE WHEN ums.healthStatus = 0 THEN 1 ELSE 0 END) AS SIGNED) AS stableMentalCount,
     CAST(SUM(CASE WHEN ums.healthStatus = 1 THEN 1 ELSE 0 END) AS SIGNED) AS unStableMentalCount,
     CAST(COALESCE((SUM(CASE WHEN ums.healthStatus = 1 THEN 1 ELSE 0 END) * 100) / NULLIF(COUNT(ums.UserId), 0),0) AS UNSIGNED) AS unStableMentalPercentage
-    FROM rukunWarga rw
-    LEFT JOIN userDetail ud ON ud.RukunWargaId = rw.id
+    FROM rukun_wargas rw
+    LEFT JOIN user_details ud ON ud.RukunWargaId = rw.id
     LEFT JOIN (SELECT UserId, RukunWargaId, healthStatus
     FROM UserMentalState
     WHERE healthStatus IS NOT NULL OR EXISTS (SELECT 1 FROM UnstableMentalScore WHERE UnstableMentalScore.UserId = UserMentalState.UserId)) ums ON ud.UserId = ums.UserId
@@ -199,8 +199,8 @@ export class QuestionnaireSubmissionRepository {
       rt.id AS RukunTetanggaId,
       rt.RukunWargaId,
       COUNT(ud.UserId) AS userCount
-    FROM rukunTetangga rt
-    LEFT JOIN userDetail ud ON ud.RukunTetanggaId = rt.id
+    FROM rukun_tetanggas rt
+    LEFT JOIN user_details ud ON ud.RukunTetanggaId = rt.id
     WHERE rt.RukunWargaId = :RukunWargaId
     GROUP BY rt.id, rt.RukunWargaId),
     
@@ -211,7 +211,7 @@ export class QuestionnaireSubmissionRepository {
         qs.id,
         qs.UserId,
         ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
-      FROM questionnaireSubmission qs
+      FROM questionnaire_submissions qs
       WHERE qs.QuestionnaireId = :QuestionnaireId
         ${dateFilter}
     ) t
@@ -222,8 +222,8 @@ export class QuestionnaireSubmissionRepository {
       ls.UserId,
       SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
     FROM LatestSubmissionsInRange ls
-    JOIN questionnaireAnswer qa ON qa.QuestionnaireSubmissionId = ls.id
-    JOIN questionnaireQuestion qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
+    JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
+    JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
     GROUP BY ls.UserId),
 
     UserMentalState AS (
@@ -233,10 +233,10 @@ export class QuestionnaireSubmissionRepository {
       ud.RukunTetanggaId,
       CASE
         WHEN ds.trueCount IS NULL THEN NULL
-        WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1
+        WHEN ds.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1
         ELSE 0
       END AS healthStatus
-    FROM userDetail ud
+    FROM user_details ud
     LEFT JOIN UnstableMentalScore ds ON ud.UserId = ds.UserId)
 
     SELECT
@@ -252,7 +252,7 @@ export class QuestionnaireSubmissionRepository {
         0
       ) AS UNSIGNED
     ) AS unStableMentalPercentage
-    FROM rukunTetangga rt
+    FROM rukun_tetanggas rt
     LEFT JOIN RtUserCounts ruc ON ruc.RukunTetanggaId = rt.id
     LEFT JOIN (
     SELECT UserId, RukunWargaId, RukunTetanggaId, healthStatus
@@ -350,7 +350,7 @@ export class QuestionnaireSubmissionRepository {
           qs.UserId,
           qs.createdAt AS submissionDate,
           ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
-        FROM questionnaireSubmission qs
+        FROM questionnaire_submissions qs
         WHERE qs.QuestionnaireId = :QuestionnaireId
         ${dateFilter}
       ),
@@ -359,8 +359,8 @@ export class QuestionnaireSubmissionRepository {
         SELECT ls.UserId, ls.submissionDate,
         SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
         FROM LatestSubmissionsInRange ls
-        JOIN questionnaireAnswer qa ON qa.QuestionnaireSubmissionId = ls.id
-        JOIN questionnaireQuestion qq ON qa.QuestionnaireQuestionId = qq.id
+        JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
+        JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id
         WHERE ls.rn = 1 && qq.status = 'publish'
         GROUP BY ls.UserId, ls.submissionDate
       ),
@@ -372,9 +372,9 @@ export class QuestionnaireSubmissionRepository {
           u.fullname,
           ud.RukunTetanggaId,
           ds.submissionDate AS lastSubmissionDate,
-          CASE WHEN ds.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
-        FROM userDetail ud
-        INNER JOIN user u on ud.UserId = u.id
+          CASE WHEN ds.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
+        FROM user_details ud
+        INNER JOIN users u on ud.UserId = u.id
         JOIN UnstableMentalScore ds ON ds.UserId = ud.UserId
       )
 
@@ -384,8 +384,8 @@ export class QuestionnaireSubmissionRepository {
         um.lastSubmissionDate,
         um.isMentalUnStable
       FROM UserMentalState um
-      JOIN rukunTetangga rt ON um.RukunTetanggaId = rt.id
-      JOIN rukunWarga rw ON rt.RukunWargaId = rw.id
+      JOIN rukun_tetanggas rt ON um.RukunTetanggaId = rt.id
+      JOIN rukun_wargas rw ON rt.RukunWargaId = rw.id
       WHERE rw.id = :RukunWargaId AND rt.id = :RukunTetanggaId
       ORDER BY rw.name, rt.name, um.fullname;
     `
@@ -469,10 +469,10 @@ export class QuestionnaireSubmissionRepository {
       qs.id AS submissionId,
       qs.UserId,
       qs.createdAt AS submissionDate
-    FROM questionnaireSubmission qs
-    JOIN userDetail ud ON ud.UserId = qs.UserId
-    JOIN rukunTetangga rt ON ud.RukunTetanggaId = rt.id
-    JOIN rukunWarga rw ON rt.RukunWargaId = rw.id
+    FROM questionnaire_submissions qs
+    JOIN user_details ud ON ud.UserId = qs.UserId
+    JOIN rukun_tetanggas rt ON ud.RukunTetanggaId = rt.id
+    JOIN rukun_wargas rw ON rt.RukunWargaId = rw.id
     WHERE qs.QuestionnaireId = :QuestionnaireId
       AND rw.id = :RukunWargaId
       AND rt.id = :RukunTetanggaId
@@ -485,8 +485,8 @@ export class QuestionnaireSubmissionRepository {
       us.submissionDate,
       SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
     FROM UserSubmissions us
-    JOIN questionnaireAnswer qa ON qa.QuestionnaireSubmissionId = us.submissionId
-    JOIN questionnaireQuestion qq ON qq.id = qa.QuestionnaireQuestionId
+    JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = us.submissionId
+    JOIN questionnaire_questions qq ON qq.id = qa.QuestionnaireQuestionId
     WHERE qq.status = 'publish'
     GROUP BY us.submissionId, us.submissionDate)
 
@@ -494,7 +494,7 @@ export class QuestionnaireSubmissionRepository {
       ac.submissionId,
       ac.submissionDate,
       ac.trueCount,
-    CASE WHEN ac.trueCount >= (select riskThreshold from questionnaire where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
+    CASE WHEN ac.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
     FROM AnswerCounts ac
     ORDER BY ac.submissionDate DESC;`
 
