@@ -35,7 +35,7 @@ export class App {
     this._app.use(compression())
     this._app.use(cookieParser())
     this._app.use(helmet())
-    this._app.use(cors({ allowedHeaders: allowedCors }))
+    this._app.use(cors({ origin: allowedCors, credentials: true }))
     this._app.use(hpp())
     this._app.use(requestIp.mw())
     this._app.use(userAgent.express())
