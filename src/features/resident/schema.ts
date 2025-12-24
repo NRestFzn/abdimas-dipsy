@@ -86,7 +86,7 @@ export const updateProfileSchema = yup.object().shape({
     .transform((curr, orig) => (orig === '' ? null : curr))
     .nullable()
     .min(8, 'Password min 8 characters'),
-  confirmPassword: yup
+  confirmNewPassword: yup
     .string()
     .transform((curr, orig) => (orig === '' ? null : curr))
     .nullable()
