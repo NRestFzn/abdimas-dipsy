@@ -1,4 +1,5 @@
 export const allowedCors: string[] = [
   'http://localhost:3000',
-  'https://abdimas-dipsy-fe.vercel.app/',
+  'http://localhost:5173',
+  'https://abdimas-dipsy-fe.vercel.app',
 ]
