@@ -81,7 +81,7 @@ export interface ResidentDetailQueryFilterDto {
 export interface UpdateProfileDto {
   phoneNumber: string
   newPassword?: string
-  confirmNewPassword?: string
+  confirmNewPassword?: string | null
   profession: string
   EducationId: string
   SalaryRangeId: string
