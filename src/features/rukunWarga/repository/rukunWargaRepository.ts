@@ -100,7 +100,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM rukun_tetanggas AS rt
-              WHERE rt.RukunWargaId = rukun_wargas.id
+              WHERE rt.RukunWargaId = RukunWarga.id
             )`),
             'rtCount',
           ],
@@ -108,7 +108,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM user_details AS ud
-              WHERE ud.RukunWargaId = rukun_wargas.id
+              WHERE ud.RukunWargaId = RukunWarga.id
             )`),
             'userCount',
           ],
