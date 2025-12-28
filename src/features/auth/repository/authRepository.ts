@@ -59,9 +59,33 @@ export class AuthService {
         transaction,
       })
 
+      const duplicateNik = await UserDetail.findOne({
+        where: { nik: formData.nik },
+        transaction,
+      })
+
+      const duplicatePhoneNumber = await UserDetail.findOne({
+        where: { phoneNumber: formData.phoneNumber },
+        transaction,
+      })
+
       if (duplicateEmail)
         throw new ErrorResponse.BaseResponse(
           'Email already used',
+          'Conflict',
+          409
+        )
+
+      if (duplicateNik)
+        throw new ErrorResponse.BaseResponse(
+          'NIK already used',
+          'Conflict',
+          409
+        )
+
+      if (duplicatePhoneNumber)
+        throw new ErrorResponse.BaseResponse(
+          'Phone number already used',
           'Conflict',
           409
         )
