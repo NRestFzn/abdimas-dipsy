@@ -29,4 +29,7 @@ export default class QuestionnaireSubmission extends BaseSchema {
 
   @BelongsTo(() => Questionnaire)
   questionnaire: Questionnaire
+
+  @BelongsTo(() => User)
+  user: User
 }

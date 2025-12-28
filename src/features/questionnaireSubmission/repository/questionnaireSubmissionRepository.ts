@@ -30,6 +30,7 @@ import { UserRepository } from '../../user/repository/userRepository'
 import { Request } from 'express'
 import { QuestionnaireSubmissionQueryRepository } from './questionnaireSubmissionQueryRepository'
 import { UserLoginState } from '../../user/dto'
+import User from '@/database/model/user'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -541,7 +542,7 @@ export class QuestionnaireSubmissionRepository {
       include: [
         {
           model: QuestionnaireAnswer,
-          include: [{ model: QuestionnaireQuestion }],
+          include: [{ model: QuestionnaireQuestion }, { model: User }],
         },
       ],
     })

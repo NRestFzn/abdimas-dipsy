@@ -110,7 +110,7 @@ interface IQuestionnaireAnswer {
   answerValue: string
 }
 
-export interface ISummarizeSubmission extends QuestionnaireSubmissionDto {
+export interface ISummarizeSubmission extends QuestionnaireSubmissionDetailDto {
   trueCount: number
   falseCount: number
   answeredCount: number
