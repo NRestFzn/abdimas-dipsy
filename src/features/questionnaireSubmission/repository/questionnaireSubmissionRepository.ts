@@ -589,7 +589,7 @@ export class QuestionnaireSubmissionRepository {
     if (!questionnaire)
       throw new ErrorResponse.NotFound('Questionnaire not found')
 
-    if (formData.answers.length > 1) {
+    if (formData.answers.length > 0) {
       for (let i = 0; i < formData.answers.length; i++) {
         const { QuestionId, answerValue } = formData.answers[i]
 
