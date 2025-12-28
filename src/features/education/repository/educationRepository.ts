@@ -9,7 +9,10 @@ export class EducationRepository {
   async getAll(req: Request): Promise<EducationDto[]> {
     const query = new EducationQueryRepository(req)
 
-    const data = await Education.findAll(query.queryFilter())
+    const data = await Education.findAll({
+      ...query.queryFilter(),
+      order: [['order', 'asc']],
+    })
 
     return data
   }

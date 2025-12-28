@@ -13,6 +13,7 @@ import { RukunWargaRepository } from '@/features/rukunWarga/repository/rukunWarg
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { Sequelize } from 'sequelize-typescript'
+import RukunWarga from '@/database/model/rukunWarga'
 
 const rukunWargaRepository = new RukunWargaRepository()
 
@@ -25,6 +26,7 @@ export class RukunTetanggaRepository {
 
     const data = await RukunTetangga.findAll({
       ...query.queryFilter(),
+      include: [{ model: RukunWarga }],
       attributes: {
         include: [
           [

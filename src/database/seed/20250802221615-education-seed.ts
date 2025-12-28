@@ -15,6 +15,12 @@ const data = [
     name: 'SMA/K',
   },
   {
+    name: 'D3',
+  },
+  {
+    name: 'D4',
+  },
+  {
     name: 'S1',
   },
   {
@@ -45,6 +51,7 @@ export async function up(
 
       formData.push({
         ...item,
+        order: i + 1,
         id: v4(),
         createdAt: timeStamps,
         updatedAt: timeStamps,
@@ -52,12 +59,12 @@ export async function up(
     }
   }
 
-  await queryInterface.bulkInsert('education', formData)
+  await queryInterface.bulkInsert('educations', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('education', {})
+  await queryInterface.bulkDelete('educations', {})
 }
