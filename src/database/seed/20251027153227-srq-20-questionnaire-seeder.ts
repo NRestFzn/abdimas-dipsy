@@ -49,7 +49,7 @@ export async function up(
     })
   }
 
-  await queryInterface.bulkInsert('questionnaire', [
+  await queryInterface.bulkInsert('questionnaires', [
     {
       id: questionnaireId,
       title: 'Self-Reporting Questionnaire',
@@ -61,7 +61,7 @@ export async function up(
     },
   ])
   await queryInterface.bulkInsert(
-    'questionnaireQuestion',
+    'questionnaire_questions',
     questionnaireQuestionFormData
   )
 }
@@ -70,5 +70,6 @@ export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('questionnaireQuestions', {})
+  await queryInterface.bulkDelete('questionnaires', {})
+  await queryInterface.bulkDelete('questionnaire_questions', {})
 }

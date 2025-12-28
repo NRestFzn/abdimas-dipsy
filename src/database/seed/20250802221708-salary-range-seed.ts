@@ -51,12 +51,12 @@ export async function up(
     }
   }
 
-  await queryInterface.bulkInsert('salaryRange', formData)
+  await queryInterface.bulkInsert('salary_ranges', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('salaryRange', {})
+  await queryInterface.bulkDelete('salary_ranges', {})
 }

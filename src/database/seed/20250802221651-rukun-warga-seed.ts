@@ -18,12 +18,12 @@ export async function up(
     },
   ]
 
-  await queryInterface.bulkInsert('rukunWarga', formData)
+  await queryInterface.bulkInsert('rukun_wargas', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('rukunWarga', {})
+  await queryInterface.bulkDelete('rukun_wargas', {})
 }

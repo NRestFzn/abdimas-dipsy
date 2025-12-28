@@ -19,27 +19,6 @@ export async function up(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  const education: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `education` LIMIT 1',
-    { type: QueryTypes.SELECT }
-  )
-  const rukunWarga: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `rukunWarga` LIMIT 1',
-    { type: QueryTypes.SELECT }
-  )
-  const rukunTetangga: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `rukunTetangga` LIMIT 1',
-    { type: QueryTypes.SELECT }
-  )
-  const marriageStatus: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `marriageStatus` LIMIT 1',
-    { type: QueryTypes.SELECT }
-  )
-  const salaryRange: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `salaryRange` LIMIT 1',
-    { type: QueryTypes.SELECT }
-  )
-
   const data: any[] = [
     {
       fullname: 'Admin Medis',
@@ -55,14 +34,6 @@ export async function up(
       gender: 'm',
       birthDate: '2004-12-06',
       RoleId: RoleId.adminDesa,
-      password: await hashing.hash(defaultPassword),
-    },
-    {
-      fullname: 'user',
-      email: 'user@example.com',
-      gender: 'm',
-      birthDate: '2004-12-06',
-      RoleId: RoleId.user,
       password: await hashing.hash(defaultPassword),
     },
   ]
@@ -82,28 +53,12 @@ export async function up(
     }
   }
 
-  await queryInterface.bulkInsert('user', formData)
-  await queryInterface.bulkInsert('userDetail', [
-    {
-      id: uuidv4(),
-      UserId: formData[2].id,
-      EducationId: education[0].id,
-      MarriageStatusId: marriageStatus[0].id,
-      RukunTetanggaId: rukunTetangga[0].id,
-      RukunWargaId: rukunWarga[0].id,
-      SalaryRangeId: salaryRange[0].id,
-      profession: 'programmer',
-      nik: '3204544444444444',
-      phoneNumber: '+6282118678778',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ])
+  await queryInterface.bulkInsert('users', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('user', {})
+  await queryInterface.bulkDelete('users', {})
 }

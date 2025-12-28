@@ -38,12 +38,12 @@ export async function up(
     }
   }
 
-  await queryInterface.bulkInsert('role', formData)
+  await queryInterface.bulkInsert('roles', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('role', {})
+  await queryInterface.bulkDelete('roles', {})
 }

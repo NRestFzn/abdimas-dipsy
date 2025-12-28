@@ -12,7 +12,7 @@ export async function up(
   const formData: any[] = []
 
   const rukunWarga: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `rukunWarga` LIMIT 1',
+    'SELECT id FROM `rukun_wargas` LIMIT 1',
     { type: QueryTypes.SELECT }
   )
 
@@ -26,12 +26,12 @@ export async function up(
     })
   }
 
-  await queryInterface.bulkInsert('rukunTetangga', formData)
+  await queryInterface.bulkInsert('rukun_tetanggas', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('rukunTetangga', {})
+  await queryInterface.bulkDelete('rukun_tetanggas', {})
 }

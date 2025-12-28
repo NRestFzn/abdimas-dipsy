@@ -40,12 +40,12 @@ export async function up(
     }
   }
 
-  await queryInterface.bulkInsert('marriageStatus', formData)
+  await queryInterface.bulkInsert('marriage_statuses', formData)
 }
 
 export async function down(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  await queryInterface.bulkDelete('marriageStatus', {})
+  await queryInterface.bulkDelete('marriage_statuses', {})
 }
