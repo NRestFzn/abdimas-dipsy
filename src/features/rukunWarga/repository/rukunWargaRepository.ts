@@ -92,6 +92,7 @@ export class RukunWargaRepository {
               ],
             ],
           },
+          as: 'RukunTetangga',
         },
       ],
       attributes: {
