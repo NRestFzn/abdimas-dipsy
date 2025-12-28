@@ -29,7 +29,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM rukun_tetanggas AS rt
-              WHERE rt.RukunWargaId = RukunWargas.id
+              WHERE rt.RukunWargaId = RukunWarga.id
             )`),
             'rtCount',
           ],
@@ -37,7 +37,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM user_details AS ud
-              WHERE ud.RukunWargaId = RukunWargas.id
+              WHERE ud.RukunWargaId = RukunWarga.id
             )`),
             'userCount',
           ],
@@ -86,7 +86,7 @@ export class RukunWargaRepository {
                 Sequelize.literal(`(
                             SELECT COUNT(*)
                             FROM user_details AS ud
-                            WHERE ud.RukunTetanggaId = RukunTetanggas.id
+                            WHERE ud.RukunTetanggaId = RukunTetangga.id
                           )`),
                 'userCount',
               ],
@@ -100,7 +100,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM rukun_tetanggas AS rt
-              WHERE rt.RukunWargaId = RukunWargas.id
+              WHERE rt.RukunWargaId = RukunWarga.id
             )`),
             'rtCount',
           ],
@@ -108,7 +108,7 @@ export class RukunWargaRepository {
             Sequelize.literal(`(
               SELECT COUNT(*)
               FROM user_details AS ud
-              WHERE ud.RukunWargaId = RukunWargas.id
+              WHERE ud.RukunWargaId = RukunWarga.id
             )`),
             'userCount',
           ],
