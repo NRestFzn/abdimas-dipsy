@@ -17,6 +17,7 @@ import expressErrorHandle from '@/middleware/expressErrorHandler'
 import express, { Application, Request, Response } from 'express'
 import expressErrorValidation from '@/middleware/expresYupHandler'
 import expressErrorSequelize from '@/middleware/expressSequelizeHandler'
+import { corsOptions } from '../libs/module/corsOption'
 
 export class App {
   private _app: Application
@@ -28,6 +29,7 @@ export class App {
   }
 
   private _plugins() {
+    this._app.set('trust proxy', 1)
     this._app.use(httpLogger)
     this._app.use(express.json({ limit: '20mb', type: 'application/json' }))
     this._app.use(express.urlencoded({ extended: true }))
@@ -35,7 +37,7 @@ export class App {
     this._app.use(compression())
     this._app.use(cookieParser())
     this._app.use(helmet())
-    this._app.use(cors())
+    this._app.use(cors(corsOptions))
     this._app.use(hpp())
     this._app.use(requestIp.mw())
     this._app.use(userAgent.express())
