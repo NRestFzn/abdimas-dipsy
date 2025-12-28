@@ -542,8 +542,9 @@ export class QuestionnaireSubmissionRepository {
       include: [
         {
           model: QuestionnaireAnswer,
-          include: [{ model: QuestionnaireQuestion }, { model: User }],
+          include: [{ model: QuestionnaireQuestion }],
         },
+        { model: User },
       ],
     })
 
