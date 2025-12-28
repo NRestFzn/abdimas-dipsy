@@ -3,6 +3,7 @@ import { CorsOptions } from 'cors'
 export const allowedOrigins = [
   'http://localhost:5173',
   'https://abdimas-dipsy-fe.vercel.app',
+  'https://dipsy.chevalierlabsas.org',
 ]
 
 export const corsOptions: CorsOptions = {
