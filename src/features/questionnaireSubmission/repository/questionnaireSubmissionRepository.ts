@@ -31,6 +31,7 @@ import { Request } from 'express'
 import { QuestionnaireSubmissionQueryRepository } from './questionnaireSubmissionQueryRepository'
 import { UserLoginState } from '../../user/dto'
 import User from '@/database/model/user'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -38,9 +39,10 @@ const rukunTetanggaRepository = new RukunTetanggaRepository()
 const userRepository = new UserRepository()
 
 export class QuestionnaireSubmissionRepository {
-  async getAllSummarizeByLoggedInUser(
-    req: Request
-  ): Promise<QuestionnaireSubmission[]> {
+  async getAllSubmissionByLoggedInUser(req: Request): Promise<{
+    data: QuestionnaireSubmission[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const user: UserLoginState = req.getState('userLoginState')
 
     const query = new QuestionnaireSubmissionQueryRepository(req)
@@ -50,7 +52,19 @@ export class QuestionnaireSubmissionRepository {
       where: { UserId: user.uid },
     })
 
-    return data
+    const dataCount = await QuestionnaireSubmission.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async summarizeByQuestionnaireId(

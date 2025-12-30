@@ -14,13 +14,14 @@ import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { Sequelize } from 'sequelize-typescript'
 import RukunWarga from '@/database/model/rukunWarga'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 const rukunWargaRepository = new RukunWargaRepository()
 
 export class RukunTetanggaRepository {
   async getAll(req: Request): Promise<{
     data: RukunTetanggaDto[]
-    metadata: { userCount: number }
+    meta: { pagination: MetaPaginationDto }
   }> {
     const query = new RukunTetanggaQueryRepository(req)
 
@@ -41,13 +42,19 @@ export class RukunTetanggaRepository {
       },
     })
 
-    const userCount = await UserDetail.count({
-      where: {
-        RukunTetanggaId: data.map((e) => e.id),
-      },
-    })
+    const dataCount = await RukunTetangga.count()
 
-    return { data, metadata: { userCount } }
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<RukunTetangga> {
@@ -58,24 +65,27 @@ export class RukunTetanggaRepository {
     return data
   }
 
-  async getById(id: string): Promise<{
-    data: RukunTetanggaDetailDto
-    metadata: { userCount: number }
-  }> {
+  async getById(id: string): Promise<RukunTetanggaDetailDto> {
     const data = await RukunTetangga.findOne({
       where: { id },
       include: [{ model: UserDetail, include: [{ model: User }] }],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+                      SELECT COUNT(*)
+                      FROM user_details AS ud
+                      WHERE ud.RukunTetanggaId = RukunTetangga.id
+                    )`),
+            'userCount',
+          ],
+        ],
+      },
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
 
-    const userCount = await UserDetail.count({
-      where: {
-        RukunTetanggaId: data.id,
-      },
-    })
-
-    return { data, metadata: { userCount } }
+    return data
   }
 
   async add(formData: CreateRukunTetanggaDto): Promise<RukunTetanggaDto[]> {

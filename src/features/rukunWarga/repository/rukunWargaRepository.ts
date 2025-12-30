@@ -13,11 +13,12 @@ import RukunTetangga from '@/database/model/rukunTetangga'
 import { Op } from 'sequelize'
 import UserDetail from '@/database/model/userDetail'
 import { Sequelize } from 'sequelize-typescript'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class RukunWargaRepository {
   async getAll(req: Request): Promise<{
     data: RukunWargaDto[]
-    metadata: { rwCount: number; rtCount: number; userCount: number }
+    meta: { pagination: MetaPaginationDto }
   }> {
     const query = new RukunWargaQueryRepository(req)
 
@@ -53,12 +54,17 @@ export class RukunWargaRepository {
       where: { RukunWargaId: { [Op.in]: data.map((e) => e.id) } },
     })
 
+    const dataCount = await RukunWarga.count()
+
     return {
       data,
-      metadata: {
-        rwCount: data.length,
-        rtCount,
-        userCount,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
       },
     }
   }
@@ -71,10 +77,7 @@ export class RukunWargaRepository {
     return data
   }
 
-  async getById(id: string): Promise<{
-    data: RukunWargaDetailDto
-    metadata: { rtCount: number; userCount: number }
-  }> {
+  async getById(id: string): Promise<RukunWargaDetailDto> {
     const data = await RukunWarga.findOne({
       where: { id },
       include: [
@@ -119,13 +122,7 @@ export class RukunWargaRepository {
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
 
-    const userCount = await UserDetail.count({
-      where: {
-        RukunWargaId: data.id,
-      },
-    })
-
-    return { data, metadata: { rtCount: data.rukunTetangga.length, userCount } }
+    return data
   }
 
   async add(formData: CreateRukunWargaDto): Promise<RukunWargaDto[]> {

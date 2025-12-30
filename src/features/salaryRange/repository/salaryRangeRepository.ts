@@ -8,14 +8,30 @@ import {
   SalaryRangeDto,
   UpdateSalaryRangeDto,
 } from '../dto'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class SalaryRangeRepository {
-  async getAll(req: Request): Promise<SalaryRangeDto[]> {
+  async getAll(req: Request): Promise<{
+    data: SalaryRangeDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new SalaryRangeQueryRepository(req)
 
     const data = await SalaryRange.findAll(query.queryFilter())
 
-    return data
+    const dataCount = await SalaryRange.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<SalaryRange> {

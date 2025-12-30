@@ -20,9 +20,12 @@ import MarriageStatus from '@/database/model/marriageStatus'
 import Education from '@/database/model/education'
 import SalaryRange from '@/database/model/salaryRange'
 import { RoleId } from '@/libs/constant/roleIds'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class ResidentRepository {
-  async getAll(req: Request): Promise<ResidentDto[]> {
+  async getAll(
+    req: Request
+  ): Promise<{ data: ResidentDto[]; meta: { pagination: MetaPaginationDto } }> {
     const query = new ResidentQueryRepository(req)
     const residentDetailQuery = new ResidentDetailQueryRepository(req)
 
@@ -33,7 +36,19 @@ export class ResidentRepository {
       ],
     })
 
-    return data
+    const dataCount = await MarriageStatus.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<User> {

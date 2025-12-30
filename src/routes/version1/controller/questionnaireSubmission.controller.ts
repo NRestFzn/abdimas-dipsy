@@ -1,5 +1,4 @@
 import { QuestionnaireSubmissionRepository } from '@/features/questionnaireSubmission/repository/questionnaireSubmissionRepository'
-import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
@@ -17,7 +16,6 @@ import {
   SummarizeByUserIdQuery,
 } from '@/features/questionnaireSubmission/schema'
 import asyncHandler from '@/helper/asyncHandler'
-import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
 import {
   CreateQuestionnaireSubmissionDto,
@@ -29,7 +27,6 @@ import {
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
-import { UserLoginState } from '@/features/user/dto'
 
 const repository = new QuestionnaireSubmissionRepository()
 
@@ -39,11 +36,11 @@ route.get(
   '/history-me',
   authorization(),
   asyncHandler(async (req: Request, res: Response) => {
-    const data = await repository.getAllSummarizeByLoggedInUser(req)
+    const data = await repository.getAllSubmissionByLoggedInUser(req)
 
     const httpResponse = HttpResponse.get({
       message: 'Data retrieved successfully',
-      data,
+      ...data,
     })
 
     res.status(httpResponse.statusCode).json(httpResponse)

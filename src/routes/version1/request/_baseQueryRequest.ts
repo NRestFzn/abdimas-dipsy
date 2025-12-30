@@ -6,9 +6,15 @@ export class BaseQueryRequest {
   public limit: number
   public offset: number
   public order: Order
+  public page: number
+  public pageSize: number
 
   constructor(req: Request) {
     const { query } = req
+
+    this.page = query.page ? Number(query.page) : 1
+
+    this.pageSize = query.pageSize ? Number(query.pageSize) : 10
 
     this.limit = query.pageSize ? Number(query.pageSize) : 10
 

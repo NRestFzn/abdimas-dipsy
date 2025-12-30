@@ -4,9 +4,13 @@ import { db } from '@/database/databaseConnection'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
 import { EducationQueryRepository } from './educationQueryRepository'
 import { CreateEducationDto, EducationDto, UpdateEducationDto } from '../dto'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class EducationRepository {
-  async getAll(req: Request): Promise<EducationDto[]> {
+  async getAll(req: Request): Promise<{
+    data: EducationDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new EducationQueryRepository(req)
 
     const data = await Education.findAll({
@@ -14,7 +18,19 @@ export class EducationRepository {
       order: [['order', 'asc']],
     })
 
-    return data
+    const dataCount = await Education.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<Education> {

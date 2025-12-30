@@ -8,14 +8,30 @@ import {
   MarriageStatusDto,
   UpdateMarriageStatusDto,
 } from '../dto'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class MarriageStatusRepository {
-  async getAll(req: Request): Promise<MarriageStatusDto[]> {
+  async getAll(req: Request): Promise<{
+    data: MarriageStatusDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new MarriageStatusQueryRepository(req)
 
     const data = await MarriageStatus.findAll(query.queryFilter())
 
-    return data
+    const dataCount = await MarriageStatus.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<MarriageStatus> {
