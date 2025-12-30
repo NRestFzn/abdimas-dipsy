@@ -25,6 +25,12 @@ export default class UserDetail extends BaseSchema {
   @Column({ type: DataType.STRING, allowNull: true, unique: true })
   phoneNumber: string
 
+  @Column({ type: DataType.ENUM('m', 'f'), allowNull: false })
+  gender: string
+
+  @Column({ type: DataType.DATEONLY, allowNull: false })
+  birthDate: Date
+
   @IsUUID(4)
   @ForeignKey(() => User)
   @Column({

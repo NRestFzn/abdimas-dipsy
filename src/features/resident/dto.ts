@@ -9,9 +9,7 @@ export interface ResidentDto {
   fullname: string
   email: string
   RoleId: string
-  gender: string
   profilePicture?: string | null
-  birthDate: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -27,6 +25,8 @@ export interface ResidentDetailDto extends ResidentDto {
     MarriageStatusId: string
     EducationId: string
     SalaryRangeId: string
+    gender: string
+    birthDate: Date
     rukunWarga: RukunWargaDto
     rukunTetangga: RukunTetanggaDto
     marriageStatus: MarriageStatusDto

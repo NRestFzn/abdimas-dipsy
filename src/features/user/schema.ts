@@ -2,11 +2,6 @@ import * as yup from 'yup'
 
 export const updateUserSchema = yup.object().shape({
   fullname: yup.string().required('Fullname is required'),
-  birthDate: yup.date().required('Birthdate is required'),
-  gender: yup
-    .string()
-    .oneOf(['f', 'm'], 'Gender must be male or female')
-    .required('Gender is required'),
   newPassword: yup
     .string()
     .transform((curr, orig) => (orig === '' ? null : curr))
