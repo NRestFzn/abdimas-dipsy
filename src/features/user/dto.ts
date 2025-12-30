@@ -3,9 +3,7 @@ export interface UserDto {
   fullname: string
   email: string
   RoleId: string
-  gender: string
   profilePicture?: string | null
-  birthDate: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -27,14 +25,10 @@ export interface CreateUserDto {
   email: string
   password: string
   RoleId: string
-  gender: string
-  birthDate: Date
 }
 
 export interface UpdateUserDto {
   fullname: string
-  gender: string
-  birthDate: Date
   newPassword?: string | null
   confirmNewPassword?: string | null
 }
