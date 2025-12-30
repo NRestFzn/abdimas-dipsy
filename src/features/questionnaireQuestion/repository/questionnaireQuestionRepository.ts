@@ -8,14 +8,30 @@ import {
   QuestionnaireQuestionDto,
   UpdateQuestionnaireQuestionDto,
 } from '../dto'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class QuestionnaireQuestionRepository {
-  async getAll(req: Request): Promise<QuestionnaireQuestionDto[]> {
+  async getAll(req: Request): Promise<{
+    data: QuestionnaireQuestionDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new QuestionnaireQuestionQueryRepository(req)
 
     const data = await QuestionnaireQuestion.findAll(query.queryFilter())
 
-    return data
+    const dataCount = await QuestionnaireQuestion.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getByPk(id: string): Promise<QuestionnaireQuestion> {

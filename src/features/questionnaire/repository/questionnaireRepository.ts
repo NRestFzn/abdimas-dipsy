@@ -12,14 +12,30 @@ import {
 import QuestionnaireQuestion from '@/database/model/questionnaireQuestion'
 import QuestionnaireSubmission from '@/database/model/questionnaireSubmission'
 import { UserLoginState } from '../../user/dto'
+import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 
 export class QuestionnaireRepository {
-  async getAll(req: Request): Promise<QuestionnaireDto[]> {
+  async getAll(req: Request): Promise<{
+    data: QuestionnaireDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new QuestionnaireQueryRepository(req)
 
     const data = await Questionnaire.findAll(query.queryFilter())
 
-    return data
+    const dataCount = await Questionnaire.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getAllPublic(req: Request): Promise<QuestionnaireDto[]> {

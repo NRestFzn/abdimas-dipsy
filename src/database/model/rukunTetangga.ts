@@ -19,9 +19,6 @@ export default class RukunTetangga extends BaseSchema {
   @Column({ type: DataTypes.VIRTUAL })
   userCount: number
 
-  @Column({ type: DataTypes.VIRTUAL })
-  rtCount: number
-
   @IsUUID(4)
   @ForeignKey(() => RukunWarga)
   @Column({

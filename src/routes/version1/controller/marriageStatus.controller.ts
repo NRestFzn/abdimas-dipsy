@@ -39,7 +39,7 @@ route.get(
 
     const httpResponse = HttpResponse.get({
       message: 'Success get data',
-      data,
+      ...data,
     })
 
     res.status(200).json(httpResponse)
