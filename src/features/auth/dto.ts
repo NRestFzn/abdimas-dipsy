@@ -3,11 +3,16 @@ export interface LoginDto {
   password: string
 }
 
+export interface LoginWithNikDto {
+  nik: string
+  password: string
+}
+
 export interface RegisterDto {
   fullname: string
   nik: string
-  email: string
-  phoneNumber: string
+  email?: string | null
+  phoneNumber?: string | null
   password: string
   confirmPassword: string
   profession: string

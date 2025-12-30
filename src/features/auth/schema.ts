@@ -10,6 +10,19 @@ export const loginSchema = yup.object({
     .min(8, 'Password min 8 characters')
     .required("Password can't be empty"),
 })
+
+export const loginWithNikSchema = yup.object({
+  nik: yup
+    .string()
+    .required("NIK can't be empty")
+    .min(16, 'NIK min 16 characters')
+    .max(16, 'NIK max 16 caharcters'),
+  password: yup
+    .string()
+    .min(8, 'Password min 8 characters')
+    .required("Password can't be empty"),
+})
+
 export const registerSchema = yup.object({
   fullname: yup.string().required("Fullname can't be empty"),
   nik: yup
@@ -20,8 +33,9 @@ export const registerSchema = yup.object({
   email: yup
     .string()
     .email({ message: 'Invalid email address' })
-    .required("Email can't be empty"),
-  phoneNumber: yup.string().required("Phone number can't be empty"),
+    .optional()
+    .nullable(),
+  phoneNumber: yup.string().optional().nullable(),
   password: yup
     .string()
     .min(8, 'Password min 8 characters')

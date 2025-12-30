@@ -26,7 +26,11 @@ const hashing = new Hashing()
   },
 }))
 @Scopes(() => ({
-  withPassword: {},
+  withPassword: {
+    attributes: {
+      include: ['password'],
+    },
+  },
 }))
 @Table({ freezeTableName: true, tableName: 'users' })
 export default class User extends BaseSchema {
