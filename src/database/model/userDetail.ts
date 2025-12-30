@@ -16,13 +16,13 @@ import User from './user'
 
 @Table({ freezeTableName: true, tableName: 'user_details' })
 export default class UserDetail extends BaseSchema {
-  @Column({ type: DataType.STRING, allowNull: false })
-  profession: string
-
   @Column({ type: DataType.STRING, allowNull: false, unique: true })
   nik: string
 
-  @Column({ type: DataType.STRING, allowNull: false, unique: true })
+  @Column({ type: DataType.STRING, allowNull: false })
+  profession: string
+
+  @Column({ type: DataType.STRING, allowNull: true, unique: true })
   phoneNumber: string
 
   @IsUUID(4)
