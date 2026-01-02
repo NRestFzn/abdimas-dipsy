@@ -6,6 +6,7 @@ import { env } from '@/config/env.config'
 import { AuthResponseDto, LoginDto, LoginWithNikDto, RegisterDto } from '../dto'
 import { RoleId } from '@/libs/constant/roleIds'
 import UserDetail from '@/database/model/userDetail'
+import { Encryption } from '@/libs/encryption'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
@@ -58,7 +59,7 @@ export class AuthService {
 
   async loginWithNik(formData: LoginWithNikDto): Promise<AuthResponseDto> {
     const getUser = await UserDetail.findOne({
-      where: { nik: formData.nik },
+      where: { nikHash: Encryption.hashIndex(formData.nik) },
       include: [{ model: User.scope('withPassword') }],
     })
 
@@ -83,8 +84,10 @@ export class AuthService {
     let data: any
 
     await db.sequelize!.transaction(async (transaction) => {
-      const duplicateNik = await UserDetail.findOne({
-        where: { nik: formData.nik },
+      const nikBlindIndex = Encryption.hashIndex(formData.nik)
+
+      const duplicateNik = await UserDetail.scope('withNik').findOne({
+        where: { nikHash: nikBlindIndex },
         transaction,
       })
 
@@ -136,6 +139,8 @@ export class AuthService {
       await UserDetail.create(
         {
           ...formData,
+          nikHash: formData.nik,
+          nikEncrypted: formData.nik,
           UserId: data.id,
         },
         { transaction }

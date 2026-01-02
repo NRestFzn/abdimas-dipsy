@@ -9,7 +9,6 @@ import cookieParser from 'cookie-parser'
 import userAgent from 'express-useragent'
 import { httpLogger } from './httplogger.config'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
-import { allowedCors } from '@/libs/constant/allowedCors'
 import expressUserAgent from '@/middleware/expressUserAgent'
 import expressRateLimit from '@/middleware/expressRateLimit'
 import expressWithState from '@/middleware/expressWithState'
@@ -18,6 +17,7 @@ import express, { Application, Request, Response } from 'express'
 import expressErrorValidation from '@/middleware/expresYupHandler'
 import expressErrorSequelize from '@/middleware/expressSequelizeHandler'
 import { corsOptions } from '../libs/module/corsOption'
+import expressCryptoError from '../middleware/cryptoErrorHandler'
 
 export class App {
   private _app: Application
@@ -67,6 +67,8 @@ export class App {
     this._app.use(expressErrorValidation)
 
     this._app.use(expressErrorSequelize)
+
+    this._app.use(expressCryptoError)
 
     this._app.use(expressErrorHandle)
 

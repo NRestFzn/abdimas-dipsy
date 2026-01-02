@@ -23,16 +23,12 @@ export async function up(
     {
       fullname: 'Admin Medis',
       email: 'admin.medis@example.com',
-      gender: 'm',
-      birthDate: '2004-12-06',
       RoleId: RoleId.adminMedis,
       password: await hashing.hash(defaultPassword),
     },
     {
       fullname: 'Admin Desa',
       email: 'admin.desa@example.com',
-      gender: 'm',
-      birthDate: '2004-12-06',
       RoleId: RoleId.adminDesa,
       password: await hashing.hash(defaultPassword),
     },
