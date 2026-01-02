@@ -13,6 +13,7 @@ import QuestionnaireQuestion from '@/database/model/questionnaireQuestion'
 import QuestionnaireSubmission from '@/database/model/questionnaireSubmission'
 import { UserLoginState } from '../../user/dto'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
+import QuestionnaireCategory from '@/src/database/model/questionnaireCategory'
 
 export class QuestionnaireRepository {
   async getAll(req: Request): Promise<{
@@ -21,7 +22,10 @@ export class QuestionnaireRepository {
   }> {
     const query = new QuestionnaireQueryRepository(req)
 
-    const data = await Questionnaire.findAll(query.queryFilter())
+    const data = await Questionnaire.findAll({
+      ...query.queryFilter(),
+      include: [{ model: QuestionnaireCategory }],
+    })
 
     const dataCount = await Questionnaire.count()
 
@@ -38,7 +42,10 @@ export class QuestionnaireRepository {
     }
   }
 
-  async getAllPublic(req: Request): Promise<QuestionnaireDto[]> {
+  async getAllPublic(req: Request): Promise<{
+    data: QuestionnaireDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new QuestionnaireQueryRepository(req)
 
     const queryFilter = query.queryFilter()
@@ -48,9 +55,26 @@ export class QuestionnaireRepository {
       status: 'publish',
     }
 
-    const data = await Questionnaire.findAll(queryFilter)
+    const data = await Questionnaire.findAll({
+      ...queryFilter,
+      include: [{ model: QuestionnaireCategory }],
+    })
 
-    return data
+    const dataCount = await Questionnaire.count({
+      where: { status: 'publish' },
+    })
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getAllAvailabilityByUserId(req: Request) {
@@ -74,6 +98,9 @@ export class QuestionnaireRepository {
           required: false,
           order: [['createdAt', 'DESC']],
           limit: 1,
+        },
+        {
+          model: QuestionnaireCategory,
         },
       ],
     })
@@ -125,7 +152,10 @@ export class QuestionnaireRepository {
   async getById(id: string): Promise<QuestionnaireDto> {
     const data = await Questionnaire.findOne({
       where: { id },
-      include: [{ model: QuestionnaireQuestion }],
+      include: [
+        { model: QuestionnaireQuestion },
+        { model: QuestionnaireCategory },
+      ],
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')
@@ -136,7 +166,10 @@ export class QuestionnaireRepository {
   async getByIdPublic(id: string): Promise<QuestionnaireDetailDto> {
     const data = await Questionnaire.findOne({
       where: { id, status: 'publish' },
-      include: [{ model: QuestionnaireQuestion, where: { status: 'publish' } }],
+      include: [
+        { model: QuestionnaireQuestion, where: { status: 'publish' } },
+        { model: QuestionnaireCategory },
+      ],
     })
 
     if (!data) throw new ErrorResponse.NotFound('Data not found')

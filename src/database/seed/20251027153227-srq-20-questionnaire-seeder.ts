@@ -10,6 +10,7 @@ export async function up(
   Sequelize: typeof DataTypes
 ) {
   const questionnaireId = v4()
+  const questionnaireCategoryId = v4()
 
   const questions = [
     'Apakah Anda sering merasa sakit kepala?',
@@ -49,6 +50,15 @@ export async function up(
     })
   }
 
+  await queryInterface.bulkInsert('questionnaire_categories', [
+    {
+      id: questionnaireCategoryId,
+      name: 'Dewasa',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ])
+
   await queryInterface.bulkInsert('questionnaires', [
     {
       id: questionnaireId,
@@ -56,6 +66,7 @@ export async function up(
       description: 'lorem ipsum dolor sit amet',
       status: 'publish',
       riskThreshold: 6,
+      CategoryId: questionnaireCategoryId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

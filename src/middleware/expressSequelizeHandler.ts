@@ -1,7 +1,12 @@
 import { green } from 'colorette'
 import { NextFunction, Request, Response } from 'express'
 import _ from 'lodash'
-import { BaseError, EmptyResultError, ValidationError } from 'sequelize'
+import {
+  BaseError,
+  EmptyResultError,
+  UniqueConstraintError,
+  ValidationError,
+} from 'sequelize'
 import { logger } from '@/config/httplogger.config'
 
 export default async function expressErrorSequelize(
@@ -18,7 +23,20 @@ export default async function expressErrorSequelize(
       return res.status(404).json({
         code: 404,
         error: 'Not Found',
-        message: `${msgType} ${err.message}`,
+        message: `${err.message}`,
+      })
+    }
+
+    if (err instanceof UniqueConstraintError) {
+      const detailMessage =
+        err.errors.length > 0
+          ? err.errors[0].message
+          : 'Duplicate Entry detected'
+
+      return res.status(409).json({
+        code: 409,
+        error: 'Duplicate Entry',
+        message: `${detailMessage}`,
       })
     }
 
@@ -43,7 +61,7 @@ export default async function expressErrorSequelize(
     return res.status(500).json({
       code: 500,
       error: 'Internal Server Error',
-      message: `${msgType} ${err.message}`,
+      message: `${err.message}`,
     })
   }
 

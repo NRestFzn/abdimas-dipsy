@@ -1,3 +1,4 @@
+import { QuestionnaireCategoryDto } from '../questionnaireCategory/dto'
 import { QuestionnaireQuestionDto } from '../questionnaireQuestion/dto'
 
 export interface QuestionnaireDto {
@@ -7,6 +8,8 @@ export interface QuestionnaireDto {
   status: string
   riskThreshold: number
   cooldownInMinutes: number
+  CategoryId: string
+  category: QuestionnaireCategoryDto
   createdAt: Date
   updatedAt: Date
 }
@@ -21,6 +24,7 @@ export interface CreateQuestionnaireDto {
   status: string
   riskThreshold: number
   cooldownInMinutes: number
+  CategoryId: string
 }
 
 export interface UpdateQuestionnaireDto extends CreateQuestionnaireDto {}
