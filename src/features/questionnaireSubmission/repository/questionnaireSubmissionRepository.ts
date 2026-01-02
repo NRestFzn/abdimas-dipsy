@@ -53,7 +53,9 @@ export class QuestionnaireSubmissionRepository {
       where: { UserId: user.uid },
     })
 
-    const dataCount = await QuestionnaireSubmission.count()
+    const dataCount = await QuestionnaireSubmission.count({
+      where: { UserId: user.uid },
+    })
 
     return {
       data,
