@@ -54,7 +54,7 @@ export async function up(
     for (const row of results) {
       if (row.nik) {
         const encrypted = Encryption.encrypt(row.nik)
-        const hashed = await hashing.hash(row.nik)
+        const hashed =  Encryption.hashIndex(row.nik)
 
         await queryInterface.sequelize.query(
           `UPDATE user_details 
