@@ -17,7 +17,7 @@ export interface ResidentDto {
 export interface ResidentDetailDto extends ResidentDto {
   userDetail: {
     profession: string
-    nik: string
+    nik?: string | null
     phoneNumber: string
     UserId: string
     RukunWargaId: string

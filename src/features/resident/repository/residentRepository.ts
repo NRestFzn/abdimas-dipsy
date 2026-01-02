@@ -32,11 +32,16 @@ export class ResidentRepository {
     const data = await User.findAll({
       ...query.queryFilter(),
       include: [
-        { model: UserDetail, ...(residentDetailQuery.queryFilter() as any) },
+        {
+          model: UserDetail.scope('withNik'),
+          ...(residentDetailQuery.queryFilter() as any),
+        },
       ],
     })
 
-    const dataCount = await MarriageStatus.count()
+    const dataCount = await User.count({
+      where: { RoleId: RoleId.user },
+    })
 
     return {
       data,
@@ -64,7 +69,7 @@ export class ResidentRepository {
       where: { id },
       include: [
         {
-          model: UserDetail,
+          model: UserDetail.scope('withNik'),
           include: [
             { model: RukunWarga },
             { model: RukunTetangga },
@@ -115,8 +120,8 @@ export class ResidentRepository {
       await data.update({ ...formData }, { transaction })
 
       await UserDetail.update(
-        { ...formData },
-        { where: { UserId: data.id }, transaction }
+        { ...formData, nikHash: formData.nik, nikEncrypted: formData.nik },
+        { where: { UserId: data.id }, transaction, individualHooks: true }
       )
     })
   }

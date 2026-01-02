@@ -12,11 +12,7 @@ export const loginSchema = yup.object({
 })
 
 export const loginWithNikSchema = yup.object({
-  nik: yup
-    .string()
-    .required("NIK can't be empty")
-    .min(16, 'NIK min 16 characters')
-    .max(16, 'NIK max 16 caharcters'),
+  nik: yup.string().required("NIK or Email can't be empty"),
   password: yup
     .string()
     .min(8, 'Password min 8 characters')

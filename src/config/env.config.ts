@@ -20,4 +20,9 @@ export const env = {
 
   JWT_SECRET: process.env.JWT_SECRET || 'your_secret_key',
   JWT_EXPIRES: process.env.JWT_EXPIRES || '7d',
+
+  CRYPTO_ENCRYPTION_KEY:
+    process.env.CRYPTO_ENCRYPTION_KEY || 'your_crypto_encryption_key_32_chars',
+  BLIND_INDEX_KEY:
+    process.env.BLIND_INDEX_KEY || 'your_blind_index_key_64_chars',
 }

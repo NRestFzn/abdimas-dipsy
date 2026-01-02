@@ -3,6 +3,7 @@ import { ResidentDetailQueryFilterDto, ResidentQueryFilterDto } from '../dto'
 import { FindOptions, WhereOptions, Op } from 'sequelize'
 import { BaseQueryRequest } from '@/routes/version1/request/_baseQueryRequest'
 import { RoleId } from '@/libs/constant/roleIds'
+import { Encryption } from '@/libs/encryption'
 
 export class ResidentQueryRepository extends BaseQueryRequest {
   public fullname?: string
@@ -55,10 +56,13 @@ export class ResidentDetailQueryRepository extends BaseQueryRequest {
 
     this.RukunWargaId = query.RukunWargaId
     this.RukunTetanggaId = query.RukunTetanggaId
+    this.nik = query.nik
   }
 
   public queryFilter(): FindOptions {
-    const whereCondition: WhereOptions<ResidentDetailQueryFilterDto>[] = []
+    const whereCondition: WhereOptions<
+      ResidentDetailQueryFilterDto & { nikHash: string }
+    >[] = []
 
     if (this.RukunWargaId) {
       whereCondition.push({
@@ -74,9 +78,7 @@ export class ResidentDetailQueryRepository extends BaseQueryRequest {
 
     if (this.nik) {
       whereCondition.push({
-        nik: {
-          [Op.like]: `%${this.nik}%`,
-        },
+        nikHash: Encryption.hashIndex(this.nik),
       })
     }
 
