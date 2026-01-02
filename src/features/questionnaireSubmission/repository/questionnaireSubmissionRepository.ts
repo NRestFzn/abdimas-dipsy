@@ -15,7 +15,6 @@ import {
   ISummarizeSubmission,
   ISummarizeSubmissionByUser,
   ISummarizeUserByRt,
-  QuestionnaireSubmissionDetailDto,
   QuestionnaireSubmissionDto,
 } from '../dto'
 import { QuestionnaireRepository } from '../../questionnaire/repository/questionnaireRepository'
@@ -32,6 +31,7 @@ import { QuestionnaireSubmissionQueryRepository } from './questionnaireSubmissio
 import { UserLoginState } from '../../user/dto'
 import User from '@/database/model/user'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
+import Questionnaire from '@/database/model/questionnaire'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -49,6 +49,7 @@ export class QuestionnaireSubmissionRepository {
 
     const data = await QuestionnaireSubmission.findAll({
       ...query.queryFilter(),
+      include: [{ model: Questionnaire }],
       where: { UserId: user.uid },
     })
 
@@ -562,7 +563,7 @@ export class QuestionnaireSubmissionRepository {
       ],
     })
 
-    if (!submission) throw new ErrorResponse.NotFound('Data not found')
+    if (!submission) throw new ErrorResponse.NotFound('errors.notFound')
 
     const questionnaire = await questionnaireRepository.getByPk(
       submission?.QuestionnaireId
@@ -603,7 +604,7 @@ export class QuestionnaireSubmissionRepository {
     )
 
     if (!questionnaire)
-      throw new ErrorResponse.NotFound('Questionnaire not found')
+      throw new ErrorResponse.NotFound('questionnaire.notFound')
 
     if (formData.answers.length > 0) {
       for (let i = 0; i < formData.answers.length; i++) {
@@ -624,15 +625,11 @@ export class QuestionnaireSubmissionRepository {
     }
 
     if (formData.answers.length < questionnaire.questions.length) {
-      throw new ErrorResponse.BadRequest(
-        `Please answer all the available question`
-      )
+      throw new ErrorResponse.BadRequest('questionnaire.inCompleteAnswer')
     }
 
     if (formData.answers.length > questionnaire.questions.length) {
-      throw new ErrorResponse.BadRequest(
-        `Submitted answer is more than the available questions`
-      )
+      throw new ErrorResponse.BadRequest('questionnaire.exceededAnswer')
     }
 
     await db.sequelize!.transaction(async (transaction) => {
