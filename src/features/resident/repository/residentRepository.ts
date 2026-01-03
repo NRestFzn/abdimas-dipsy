@@ -39,9 +39,7 @@ export class ResidentRepository {
       ],
     })
 
-    const dataCount = await User.count({
-      where: { RoleId: RoleId.user },
-    })
+    const dataCount = await UserDetail.count()
 
     return {
       data,
