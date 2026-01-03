@@ -37,7 +37,7 @@ export class MarriageStatusRepository {
   async getByPk(id: string): Promise<MarriageStatus> {
     const data = await MarriageStatus.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }

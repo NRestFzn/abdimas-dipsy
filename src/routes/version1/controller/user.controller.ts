@@ -31,7 +31,7 @@ route.get(
     const data = await repository.getById(user.uid)
 
     const httpResponse = HttpResponse.get({
-      message: 'Success get data',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -52,7 +52,7 @@ route.put(
     const data = await repository.update(user.uid, value)
 
     const httpResponse = HttpResponse.updated({
-      message: 'Data updated successfully',
+      message: req.t.user.profileUpdated,
       data,
     })
 
@@ -72,7 +72,7 @@ route.put(
     const data = await repository.updateProfilePict(user.uid, file.filename)
 
     const httpResponse = HttpResponse.updated({
-      message: 'Data updated successfully',
+      message: req.t.user.profilePictureUpdated,
       data,
     })
 

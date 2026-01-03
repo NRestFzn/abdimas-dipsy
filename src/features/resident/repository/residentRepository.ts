@@ -59,7 +59,7 @@ export class ResidentRepository {
   async getByPk(id: string): Promise<User> {
     const data = await User.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -81,7 +81,7 @@ export class ResidentRepository {
       ],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -94,14 +94,14 @@ export class ResidentRepository {
     })
 
     if (duplicateNik)
-      throw new ErrorResponse.BaseResponse('Nik already used', 'Conflict', 409)
+      throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
     const duplicateEmail = await UserDetail.findOne({
       where: { nik: formData.nik },
     })
 
     if (duplicateEmail)
-      throw new ErrorResponse.BaseResponse('Nik already used', 'Conflict', 409)
+      throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
     await db.sequelize!.transaction(async (transaction) => {
       data = await User.create(

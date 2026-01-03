@@ -1,46 +1,53 @@
 class BaseResponse extends Error {
   public statusCode: number
+  args?: Record<string, string | number>
 
-  constructor(message: string, name = 'Internal Server', statusCode = 500) {
+  constructor(
+    message: string,
+    name = 'Internal Server',
+    statusCode = 500,
+    args?: Record<string, string | number>
+  ) {
     super(message)
     this.message = message
     this.name = name
     this.statusCode = statusCode
+    this.args = args
     Object.setPrototypeOf(this, BaseResponse.prototype)
   }
 }
 
 class BadRequest extends BaseResponse {
-  constructor(message: string) {
-    super(message, 'Bad Request', 400)
+  constructor(message: string, args?: Record<string, string | number>) {
+    super(message, 'Bad Request', 400, args)
     Object.setPrototypeOf(this, BadRequest.prototype)
   }
 }
 
 class Unauthorized extends BaseResponse {
-  constructor(message: string) {
-    super(message, 'Unauthorized', 401)
+  constructor(message: string, args?: Record<string, string | number>) {
+    super(message, 'Unauthorized', 401, args)
     Object.setPrototypeOf(this, Unauthorized.prototype)
   }
 }
 
 class Forbidden extends BaseResponse {
-  constructor(message: string) {
-    super(message, 'Forbidden', 403)
+  constructor(message: string, args?: Record<string, string | number>) {
+    super(message, 'Forbidden', 403, args)
     Object.setPrototypeOf(this, Forbidden.prototype)
   }
 }
 
 class NotFound extends BaseResponse {
-  constructor(message: string) {
-    super(message, 'Not Found', 404)
+  constructor(message: string, args?: Record<string, string | number>) {
+    super(message, 'Not Found', 404, args)
     Object.setPrototypeOf(this, NotFound.prototype)
   }
 }
 
-class InternalServer extends BaseResponse {
-  constructor(message: string) {
-    super(message, 'Internal Server', 500)
+export class InternalServer extends BaseResponse {
+  constructor(message: string, args?: Record<string, string | number>) {
+    super(message, 'Internal Server', 500, args)
     Object.setPrototypeOf(this, InternalServer.prototype)
   }
 }

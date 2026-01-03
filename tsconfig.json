@@ -15,7 +15,7 @@
       "@/libs/*": ["./src/libs/*"],
       "@/config/*": ["./src/config/*"],
       "@/controllers/*": ["./src/controllers/*"],
-      // "@/modules/*" : ["./src/modules/*"],
+      "@/locales/*": ["./src/locales/*"],
       "@/routes/*": ["./src/routes/*"],
       "@/middleware/*": ["./src/middleware/*"],
       "@/database/*": ["./src/database/*"],

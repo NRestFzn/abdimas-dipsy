@@ -23,7 +23,7 @@ route.post(
     const data = await service.register({ ...values, RoleId: RoleId.user })
 
     const httpResponse = HttpResponse.created({
-      message: 'User registered successfully',
+      message: req.t.auth.registerSuccess,
       data,
     })
 
@@ -41,7 +41,7 @@ route.post(
     const data = await service.login(values)
 
     const httpResponse = HttpResponse.get({
-      message: 'Login successfully',
+      message: req.t.auth.loginSuccess,
       data,
     })
 
@@ -59,7 +59,7 @@ route.post(
     const data = await service.loginWithNik(values)
 
     const httpResponse = HttpResponse.get({
-      message: 'Login successfully',
+      message: req.t.auth.loginSuccess,
       data,
     })
 

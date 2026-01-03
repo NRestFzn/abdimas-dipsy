@@ -28,13 +28,13 @@ export class AuthService {
       })
 
       if (!getUser) {
-        throw new ErrorResponse.NotFound('Invalid credentials')
+        throw new ErrorResponse.NotFound('auth.loginFailed')
       }
 
       const isPasswordMatch = await getUser.comparePassword(formData.password)
 
       if (!isPasswordMatch) {
-        throw new ErrorResponse.BadRequest('Invalid credentials')
+        throw new ErrorResponse.BadRequest('auth.loginFailed')
       }
 
       const payload = JSON.parse(
@@ -63,14 +63,14 @@ export class AuthService {
       include: [{ model: User.scope('withPassword') }],
     })
 
-    if (!getUser) throw new ErrorResponse.NotFound('Invalid credentials')
+    if (!getUser) throw new ErrorResponse.NotFound('auth.loginNikFailed')
 
     const isPasswordMatch = await getUser.user.comparePassword(
       formData.password
     )
 
     if (!isPasswordMatch)
-      throw new ErrorResponse.BadRequest('Invalid credentials')
+      throw new ErrorResponse.BadRequest('auth.loginNikFailed')
 
     const data = await this.login({
       email: getUser.user.email,
@@ -92,11 +92,7 @@ export class AuthService {
       })
 
       if (duplicateNik)
-        throw new ErrorResponse.BaseResponse(
-          'NIK already used',
-          'Conflict',
-          409
-        )
+        throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
       if (!formData.email) {
         formData.email = this.createEmailFromFullnameAndNik(
@@ -111,11 +107,7 @@ export class AuthService {
       })
 
       if (duplicateEmail)
-        throw new ErrorResponse.BaseResponse(
-          'Email already used',
-          'Conflict',
-          409
-        )
+        throw new ErrorResponse.BaseResponse('auth.emailUsed', 'Conflict', 409)
 
       if (formData.phoneNumber) {
         const duplicatePhoneNumber = await UserDetail.findOne({
@@ -125,7 +117,7 @@ export class AuthService {
 
         if (duplicatePhoneNumber)
           throw new ErrorResponse.BaseResponse(
-            'Phone number already used',
+            'auth.phoneUsed',
             'Conflict',
             409
           )

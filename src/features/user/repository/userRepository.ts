@@ -18,7 +18,7 @@ export class UserRepository {
   async getByPk(id: string): Promise<User> {
     const data = await User.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -39,7 +39,7 @@ export class UserRepository {
       include: [{ model: Role }],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }

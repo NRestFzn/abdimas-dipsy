@@ -12,12 +12,13 @@ import { ErrorResponse } from '@/libs/http/ErrorResponse'
 import expressUserAgent from '@/middleware/expressUserAgent'
 import expressRateLimit from '@/middleware/expressRateLimit'
 import expressWithState from '@/middleware/expressWithState'
-import expressErrorHandle from '@/middleware/expressErrorHandler'
+import expressErrorHandler from '@/middleware/expressErrorHandler'
 import express, { Application, Request, Response } from 'express'
 import expressErrorValidation from '@/middleware/expresYupHandler'
 import expressErrorSequelize from '@/middleware/expressSequelizeHandler'
 import { corsOptions } from '../libs/module/corsOption'
 import expressCryptoError from '../middleware/cryptoErrorHandler'
+import { langHandler } from '../middleware/langHandler'
 
 export class App {
   private _app: Application
@@ -44,6 +45,7 @@ export class App {
     this._app.use(expressRateLimit())
     this._app.use(expressWithState())
     this._app.use(expressUserAgent())
+    this._app.use(langHandler)
   }
 
   private _routes() {
@@ -70,7 +72,7 @@ export class App {
 
     this._app.use(expressCryptoError)
 
-    this._app.use(expressErrorHandle)
+    this._app.use(expressErrorHandler)
 
     return this._app
   }

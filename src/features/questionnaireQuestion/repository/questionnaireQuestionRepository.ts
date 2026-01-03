@@ -37,7 +37,7 @@ export class QuestionnaireQuestionRepository {
   async getByPk(id: string): Promise<QuestionnaireQuestion> {
     const data = await QuestionnaireQuestion.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -47,7 +47,7 @@ export class QuestionnaireQuestionRepository {
       where: { id },
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -80,7 +80,7 @@ export class QuestionnaireQuestionRepository {
     const duplicateOrder = this.checkDuplicateOrder(formData)
 
     if (duplicateOrder)
-      throw new ErrorResponse.BadRequest('Duplicate order found')
+      throw new ErrorResponse.BadRequest('questionnaire.duplicateOrder')
 
     for (let i = 0; i < formData.length; i++) {
       const { id, questionText, questionType, order, status } = formData[i]

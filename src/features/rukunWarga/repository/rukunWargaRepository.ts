@@ -72,7 +72,7 @@ export class RukunWargaRepository {
   async getByPk(id: string): Promise<RukunWarga> {
     const data = await RukunWarga.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -120,7 +120,7 @@ export class RukunWargaRepository {
       },
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
