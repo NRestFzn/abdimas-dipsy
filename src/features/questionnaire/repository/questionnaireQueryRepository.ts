@@ -7,6 +7,7 @@ export class QuestionnaireQueryRepository extends BaseQueryRequest {
   public title?: string
   public description?: string
   public status?: string
+  public CategoryId?: string
 
   constructor(req: Request) {
     super(req)
@@ -16,6 +17,7 @@ export class QuestionnaireQueryRepository extends BaseQueryRequest {
     this.title = query.title
     this.description = query.description
     this.status = query.status
+    this.CategoryId = query.CategoryId
   }
 
   public queryFilter(): FindOptions {
@@ -30,7 +32,11 @@ export class QuestionnaireQueryRepository extends BaseQueryRequest {
     }
 
     if (this.status) {
-      whereCondition.status = { [Op.like]: `%${this.status}%` }
+      whereCondition.status = this.status
+    }
+
+    if (this.CategoryId) {
+      whereCondition.CategoryId = this.CategoryId
     }
 
     const findCondition = {

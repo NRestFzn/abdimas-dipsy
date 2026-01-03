@@ -9,6 +9,7 @@ export const createQuestionnaireSchema = yup.object().shape({
     .required('Status is required'),
   riskThreshold: yup.number().required('Risk threshold is required'),
   cooldownInMinutes: yup.number().required('Cooldown in minutes is required'),
+  CategoryId: yup.string().required('CategoryId is required'),
 })
 
 export const updateQuestionnaireSchema = createQuestionnaireSchema.clone()
