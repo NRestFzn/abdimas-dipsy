@@ -37,7 +37,7 @@ export class SalaryRangeRepository {
   async getByPk(id: string): Promise<SalaryRange> {
     const data = await SalaryRange.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }

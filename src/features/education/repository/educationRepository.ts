@@ -36,7 +36,7 @@ export class EducationRepository {
   async getByPk(id: string): Promise<Education> {
     const data = await Education.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }

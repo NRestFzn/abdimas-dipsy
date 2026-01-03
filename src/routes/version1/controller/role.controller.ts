@@ -24,7 +24,7 @@ route.post(
     const data = await repository.add(values)
 
     const httpResponse = HttpResponse.created({
-      message: 'Data created successfully',
+      message: req.t.success.created,
       data,
     })
 
@@ -40,7 +40,7 @@ route.get(
     const data = await repository.getAll(req)
 
     const httpResponse = HttpResponse.get({
-      message: 'Success get data',
+      message: req.t.success.retrieved,
       ...data,
     })
 
@@ -58,7 +58,7 @@ route.get(
     const data = await repository.getByPk(id)
 
     const httpResponse = HttpResponse.get({
-      message: 'Success get data',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -76,7 +76,7 @@ route.delete(
     const data = await repository.delete(id)
 
     const httpResponse = HttpResponse.deleted({
-      message: 'Data deleted successfully',
+      message: req.t.success.deleted,
     })
 
     res.status(httpResponse.statusCode).json(httpResponse)
@@ -97,7 +97,7 @@ route.put(
     const data = await repository.update(id, values)
 
     const httpResponse = HttpResponse.updated({
-      message: 'Data updated successfully',
+      message: req.t.success.updated,
       data,
     })
 

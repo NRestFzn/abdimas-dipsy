@@ -39,7 +39,7 @@ route.get(
     const data = await repository.getAllSubmissionByLoggedInUser(req)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       ...data,
     })
 
@@ -63,7 +63,7 @@ route.get(
     const data = await repository.summarizeByQuestionnaireId(options)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -89,7 +89,7 @@ route.get(
     const data = await repository.summarizeByRwId(options)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -115,7 +115,7 @@ route.get(
     const data = await repository.summarizeByRtId(options)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -141,7 +141,7 @@ route.get(
     const data = await repository.summarizeByUserId(options)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -160,11 +160,11 @@ route.get(
     })
 
     if (!user) {
-      throw new ErrorResponse.NotFound('User not found')
+      throw new ErrorResponse.NotFound(req.t.user.notFound)
     }
 
     if (!user.userDetail) {
-      throw new ErrorResponse.BadRequest('User has not filled complete data')
+      throw new ErrorResponse.BadRequest(req.t.user.inCompleteDetail)
     }
 
     const query: SummarizeByUserIdQuery = summarizeByUserIdQuery.validateSync({
@@ -182,7 +182,7 @@ route.get(
     const data = await repository.summarizeByUserId(options)
 
     const httpResponse = HttpResponse.get({
-      message: 'Data retrieved successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -199,7 +199,7 @@ route.get(
     const data = await repository.submissionDetail(params.id)
 
     const httpResponse = HttpResponse.created({
-      message: 'Data created successfully',
+      message: req.t.success.retrieved,
       data,
     })
 
@@ -228,7 +228,7 @@ route.post(
     const data = await repository.add(newFormData)
 
     const httpResponse = HttpResponse.created({
-      message: 'Data created successfully',
+      message: req.t.success.created,
       data,
     })
 

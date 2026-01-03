@@ -1,3 +1,5 @@
+import { Translation, SupportedLanguage } from '@/locales'
+
 import type WithState from '@/libs/module/withState'
 
 declare global {
@@ -47,6 +49,10 @@ declare global {
        * `fields()`, and `any()` middleware.
        */
       files?: Record<string, Multer.File[]> | Multer.File[] | undefined
+
+      t: Translation
+
+      lang: SupportedLanguage
     }
   }
 }

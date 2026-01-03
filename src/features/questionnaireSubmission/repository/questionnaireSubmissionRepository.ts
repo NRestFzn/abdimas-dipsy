@@ -615,9 +615,9 @@ export class QuestionnaireSubmissionRepository {
         const question = await QuestionnaireQuestion.findByPk(QuestionId)
 
         if (!question)
-          throw new ErrorResponse.NotFound(
-            `Question with id ${QuestionId} not found`
-          )
+          throw new ErrorResponse.NotFound('questionnaire.questionNotFound', {
+            id: QuestionId,
+          })
 
         answerData.push({
           QuestionId: QuestionId,

@@ -60,7 +60,7 @@ export class RukunTetanggaRepository {
   async getByPk(id: string): Promise<RukunTetangga> {
     const data = await RukunTetangga.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -83,7 +83,7 @@ export class RukunTetanggaRepository {
       },
     })
 
-    if (!data) throw new ErrorResponse.NotFound('Data not found')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
