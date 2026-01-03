@@ -38,7 +38,10 @@ export class QuestionnaireRepository {
     }
   }
 
-  async getAllPublic(req: Request): Promise<QuestionnaireDto[]> {
+  async getAllPublic(req: Request): Promise<{
+    data: QuestionnaireDto[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
     const query = new QuestionnaireQueryRepository(req)
 
     const queryFilter = query.queryFilter()
@@ -48,9 +51,21 @@ export class QuestionnaireRepository {
       status: 'publish',
     }
 
-    const data = await Questionnaire.findAll(queryFilter)
+    const data = await Questionnaire.findAll({ ...queryFilter })
 
-    return data
+    const dataCount = await Questionnaire.count()
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
   }
 
   async getAllAvailabilityByUserId(req: Request) {
