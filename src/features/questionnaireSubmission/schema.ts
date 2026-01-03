@@ -3,6 +3,8 @@ import * as yup from 'yup'
 export const createQuestionnaireSubmissionSchema = yup.object().shape({
   QuestionnaireId: yup.string().required('QuestionnaireId is required'),
   UserId: yup.string().required('UserId is required'),
+  SubmittedBy: yup.string().required('SubmittedBy is required'),
+  isAssisted: yup.boolean().required('isAssisted is required'),
   answers: yup
     .array(
       yup.object().shape({

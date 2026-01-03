@@ -10,6 +10,8 @@ export interface QuestionnaireSubmissionDto {
   id: string
   UserId: string
   QuestionnaireId: string
+  SubmittedBy: string
+  isAssisted: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -23,6 +25,8 @@ export interface QuestionnaireSubmissionDetailDto
 export interface CreateQuestionnaireSubmissionDto {
   UserId: string
   QuestionnaireId: string
+  SubmittedBy: string
+  isAssisted: boolean
   answers: [
     {
       QuestionId: string

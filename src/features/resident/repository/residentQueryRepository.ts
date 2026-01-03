@@ -2,7 +2,6 @@ import { Request } from 'express'
 import { ResidentDetailQueryFilterDto, ResidentQueryFilterDto } from '../dto'
 import { FindOptions, WhereOptions, Op } from 'sequelize'
 import { BaseQueryRequest } from '@/routes/version1/request/_baseQueryRequest'
-import { RoleId } from '@/libs/constant/roleIds'
 import { Encryption } from '@/libs/encryption'
 
 export class ResidentQueryRepository extends BaseQueryRequest {
@@ -18,11 +17,6 @@ export class ResidentQueryRepository extends BaseQueryRequest {
 
   public queryFilter(): FindOptions {
     const whereCondition: WhereOptions<ResidentQueryFilterDto>[] = []
-
-    whereCondition.push({
-      RoleId: RoleId.user,
-    })
-
     if (this.fullname) {
       whereCondition.push({
         fullname: {

@@ -27,6 +27,9 @@ import {
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
+import { RoleId } from '@/src/libs/constant/roleIds'
+import { UserLoginState } from '@/src/features/user/dto'
+import { permissionAccess } from '@/src/middleware/permissionAccess'
 
 const repository = new QuestionnaireSubmissionRepository()
 
@@ -213,14 +216,22 @@ route.post(
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
 
-    const user = req.getState('userLoginState')
+    const user = req.getState('userLoginState') as UserLoginState
 
     const params = req.getParams()
 
+    const activeRoleId = req.header('x-active-role')
+
+    const isKaderDesa =
+      activeRoleId === RoleId.kaderDesa &&
+      user.RoleIds.includes(RoleId.kaderDesa)
+
     const newFormData: CreateQuestionnaireSubmissionDto = {
-      UserId: user.uid,
+      UserId: isKaderDesa ? formData.UserId : user.uid,
       QuestionnaireId: params.questionnaireId,
       answers: formData.answers,
+      isAssisted: isKaderDesa,
+      SubmittedBy: user.uid,
     }
 
     const values = createQuestionnaireSubmissionSchema.validateSync(newFormData)

@@ -24,6 +24,12 @@ export default class QuestionnaireSubmission extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.UUID })
   QuestionnaireId: string
 
+  @Column({ allowNull: false, type: DataTypes.UUID })
+  submittedBy: string
+
+  @Column({ allowNull: false, type: DataTypes.BOOLEAN })
+  isAssisted: boolean
+
   @HasMany(() => QuestionnaireAnswer)
   questionnaireAnswer: QuestionnaireAnswer[]
 

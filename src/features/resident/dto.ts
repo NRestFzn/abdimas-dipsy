@@ -1,5 +1,6 @@
 import { EducationDto } from '../education/dto'
 import { MarriageStatusDto } from '../marriageStatus/dto'
+import { RoleDto } from '../role/dto'
 import { RukunTetanggaDto } from '../rukunTetangga/dto'
 import { RukunWargaDto } from '../rukunWarga/dto'
 import { SalaryRangeDto } from '../salaryRange/dto'
@@ -8,7 +9,7 @@ export interface ResidentDto {
   id: string
   fullname: string
   email: string
-  RoleId: string
+  roles: RoleDto[]
   profilePicture?: string | null
   createdAt: Date
   updatedAt: Date
@@ -68,7 +69,6 @@ export interface UpdateResidentDto {
 }
 
 export interface ResidentQueryFilterDto {
-  RoleId: string
   fullname: string
 }
 
