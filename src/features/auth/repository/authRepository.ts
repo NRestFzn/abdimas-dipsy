@@ -139,8 +139,8 @@ export class AuthService {
       )
     })
 
-    data = await this.login({
-      email: data.email,
+    data = await this.loginWithNik({
+      nik: data.nik,
       password: formData.password,
     })
 
