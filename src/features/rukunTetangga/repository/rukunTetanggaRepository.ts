@@ -42,7 +42,9 @@ export class RukunTetanggaRepository {
       },
     })
 
-    const dataCount = await RukunTetangga.count()
+    const dataCount = await RukunTetangga.count({
+      where: { RukunWargaId: req.query.RukunWargaId },
+    })
 
     return {
       data,
