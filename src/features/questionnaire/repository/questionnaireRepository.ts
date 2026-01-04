@@ -13,7 +13,7 @@ import QuestionnaireQuestion from '@/database/model/questionnaireQuestion'
 import QuestionnaireSubmission from '@/database/model/questionnaireSubmission'
 import { UserLoginState } from '../../user/dto'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
-import QuestionnaireCategory from '@/src/database/model/questionnaireCategory'
+import QuestionnaireCategory from '@/database/model/questionnaireCategory'
 
 export class QuestionnaireRepository {
   async getAll(req: Request): Promise<{
