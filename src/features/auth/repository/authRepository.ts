@@ -13,7 +13,7 @@ import UserHasRoles from '@/database/model/userHasRoles'
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
 export class AuthRepository {
-  private createEmailFromFullnameAndNik(fullname: string, nik: string): string {
+  public createEmailFromFullnameAndNik(fullname: string, nik: string): string {
     const nameForEmail = fullname.toLowerCase().split(' ').slice(0, 2).join('')
     const lastDigitNik = nik.slice(-4)
     return `${nameForEmail}.${lastDigitNik}@cibiru.wetan`

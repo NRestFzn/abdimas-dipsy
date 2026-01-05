@@ -45,6 +45,8 @@ export interface CreateResidentDto {
   confirmPassword: string
   gender: string
   profession: string
+  isKader: boolean
+  birthDate: Date
   RukunWargaId: string
   RukunTetanggaId: string
   MarriageStatusId: string
@@ -61,6 +63,8 @@ export interface UpdateResidentDto {
   confirmPassword?: string | null
   gender: string
   profession: string
+  isKader: boolean
+  birthDate: Date
   RukunWargaId: string
   RukunTetanggaId: string
   MarriageStatusId: string

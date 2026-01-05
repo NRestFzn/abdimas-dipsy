@@ -23,6 +23,10 @@ import { RoleId } from '@/libs/constant/roleIds'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 import UserHasRoles from '@/database/model/userHasRoles'
 import Role from '@/database/model/role'
+import { AuthRepository } from '../../auth/repository/authRepository'
+import { Encryption } from '@/src/libs/encryption'
+
+const authRepository = new AuthRepository()
 
 export class ResidentRepository {
   async getAll(
@@ -91,32 +95,66 @@ export class ResidentRepository {
   async add(formData: CreateResidentDto): Promise<void> {
     let data: any
 
-    const duplicateNik = await UserDetail.findOne({
-      where: { nik: formData.nik },
+    const nikBlindIndex = Encryption.hashIndex(formData.nik)
+
+    const duplicateNik = await UserDetail.scope('withNik').findOne({
+      where: { nikHash: nikBlindIndex },
     })
 
     if (duplicateNik)
       throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
-    const duplicateEmail = await UserDetail.findOne({
-      where: { nik: formData.nik },
+    if (!formData.email) {
+      formData.email = authRepository.createEmailFromFullnameAndNik(
+        formData.fullname,
+        formData.nik
+      )
+    }
+
+    const duplicateEmail = await User.findOne({
+      where: { email: formData.email },
     })
 
     if (duplicateEmail)
-      throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
+      throw new ErrorResponse.BaseResponse('auth.emailUsed', 'Conflict', 409)
+
+    if (formData.phoneNumber) {
+      const duplicatePhoneNumber = await UserDetail.findOne({
+        where: { phoneNumber: formData.phoneNumber },
+      })
+
+      if (duplicatePhoneNumber)
+        throw new ErrorResponse.BaseResponse('auth.phoneUsed', 'Conflict', 409)
+    }
 
     await db.sequelize!.transaction(async (transaction) => {
       data = await User.create({ ...formData }, { transaction })
 
-      await UserHasRoles.create(
+      const userRolesData = [
         {
           RoleId: RoleId.user,
           UserId: data.id,
         },
+      ]
+
+      if (formData.isKader) {
+        userRolesData.push({
+          RoleId: RoleId.kaderDesa,
+          UserId: data.id,
+        })
+      }
+
+      await UserHasRoles.bulkCreate(userRolesData, { transaction })
+
+      await UserDetail.create(
+        {
+          ...formData,
+          nikHash: formData.nik,
+          nikEncrypted: formData.nik,
+          UserId: data.id,
+        },
         { transaction }
       )
-
-      await UserDetail.create({ ...formData, UserId: data.id }, { transaction })
     })
   }
 
@@ -130,6 +168,27 @@ export class ResidentRepository {
         { ...formData, nikHash: formData.nik, nikEncrypted: formData.nik },
         { where: { UserId: data.id }, transaction, individualHooks: true }
       )
+
+      await UserHasRoles.destroy({
+        where: { UserId: data.id },
+        transaction,
+      })
+
+      const userRolesData = [
+        {
+          RoleId: RoleId.user,
+          UserId: data.id,
+        },
+      ]
+
+      if (formData.isKader) {
+        userRolesData.push({
+          RoleId: RoleId.kaderDesa,
+          UserId: data.id,
+        })
+      }
+
+      await UserHasRoles.bulkCreate(userRolesData, { transaction })
     })
   }
 

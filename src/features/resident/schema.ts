@@ -10,7 +10,8 @@ export const createResidentSchema = yup.object().shape({
   email: yup
     .string()
     .email({ message: 'Invalid email address' })
-    .required("Email can't be empty"),
+    .optional()
+    .nullable(),
   phoneNumber: yup.string().required("Phone number can't be empty"),
   password: yup
     .string()
@@ -26,6 +27,7 @@ export const createResidentSchema = yup.object().shape({
     .required("Gender can't be empty"),
   birthDate: yup.date().required("Birth date can't be empty"),
   profession: yup.string().required("Profession can't be empty"),
+  isKader: yup.boolean().required("Is kader can't be empty"),
   RukunWargaId: yup.string().required("RukunWargaId can't be empty"),
   RukunTetanggaId: yup.string().required("RukunTetanggaId can't be empty"),
   MarriageStatusId: yup.string().required("MarriageStatusId can't be empty"),
@@ -71,7 +73,7 @@ export const updateResidentSchema = yup.object().shape({
     .required("Gender can't be empty"),
   birthDate: yup.date().required("Birth date can't be empty"),
   profession: yup.string().required("Profession can't be empty"),
-
+  isKader: yup.boolean().required("Is kader can't be empty"),
   RukunWargaId: yup.string().required("RukunWargaId can't be empty"),
   RukunTetanggaId: yup.string().required("RukunTetanggaId can't be empty"),
   MarriageStatusId: yup.string().required("MarriageStatusId can't be empty"),
