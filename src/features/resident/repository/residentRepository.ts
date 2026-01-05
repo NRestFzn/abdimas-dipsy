@@ -24,7 +24,7 @@ import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 import UserHasRoles from '@/database/model/userHasRoles'
 import Role from '@/database/model/role'
 import { AuthRepository } from '../../auth/repository/authRepository'
-import { Encryption } from '@/src/libs/encryption'
+import { Encryption } from '@/libs/encryption'
 
 const authRepository = new AuthRepository()
 

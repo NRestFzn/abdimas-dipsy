@@ -39,7 +39,7 @@ export interface ResidentDetailDto extends ResidentDto {
 export interface CreateResidentDto {
   fullname: string
   nik: string
-  email: string
+  email?: string | null
   phoneNumber: string
   password: string
   confirmPassword: string
