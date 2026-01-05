@@ -24,7 +24,7 @@ route.post(
 
     const values = createQuestionnaireSchema.validateSync(formData)
 
-    const data = await repository.add(values)
+    const data = await repository.add({ ...values, status: 'draft' })
 
     const httpResponse = HttpResponse.created({
       message: req.t.success.created,

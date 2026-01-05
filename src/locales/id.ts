@@ -48,6 +48,7 @@ const id: Translation = {
       'Jawaban yang dikirim melebihi jumlah pertanyaan yang tersedia',
     notFound: 'Kuesioner tidak ditemukan',
     questionNotFound: 'Pertanyaan dengan id {id} tidak ditemukan',
+    noQuestion: 'Kuesioner belum memiliki pertanyaan',
   },
 }
 

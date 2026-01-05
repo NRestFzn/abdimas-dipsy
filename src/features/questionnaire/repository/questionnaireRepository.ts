@@ -144,7 +144,7 @@ export class QuestionnaireRepository {
   async getByPk(id: string): Promise<Questionnaire> {
     const data = await Questionnaire.findByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('error.notFound')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -158,7 +158,7 @@ export class QuestionnaireRepository {
       ],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('error.notFound')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -172,7 +172,7 @@ export class QuestionnaireRepository {
       ],
     })
 
-    if (!data) throw new ErrorResponse.NotFound('error.notFound')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     return data
   }
@@ -188,9 +188,15 @@ export class QuestionnaireRepository {
   }
 
   async update(id: string, formData: UpdateQuestionnaireDto): Promise<void> {
-    const data = await this.getByPk(id)
+    const data = await Questionnaire.findOne({
+      where: { id },
+      include: [{ model: QuestionnaireQuestion }],
+    })
 
-    if (!data) throw new ErrorResponse.NotFound('error.notFound')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
+
+    if (data.questions.length <= 0)
+      throw new ErrorResponse.BadRequest('questionnaire.noQuestion')
 
     await db.sequelize!.transaction(async (transaction) => {
       await data.update({ ...formData }, { transaction })
@@ -200,7 +206,7 @@ export class QuestionnaireRepository {
   async delete(id: string): Promise<void> {
     const data = await this.getByPk(id)
 
-    if (!data) throw new ErrorResponse.NotFound('error.notFound')
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
     await data.destroy()
   }

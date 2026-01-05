@@ -48,7 +48,7 @@ export async function up(
     for (let i = 0; i < data.length; i += 1) {
       const item = data[i]
 
-      const UserId = uuidv4
+      const UserId = uuidv4()
 
       formData.push({
         id: UserId,

@@ -43,5 +43,6 @@ export default {
     exceededAnswer: 'Submitted answers exceed the available questions',
     notFound: 'QUestionnaire not found',
     questionNotFound: 'Question with id {id} not found',
+    noQuestion: "Questionnaire doesn't have question yet",
   },
 }
