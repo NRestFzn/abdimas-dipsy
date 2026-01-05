@@ -19,37 +19,60 @@ export async function up(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  const data: any[] = [
+  const data = [
     {
       fullname: 'Admin Medis',
       email: 'admin.medis@example.com',
-      RoleId: RoleId.adminMedis,
+      RoleIds: [RoleId.adminMedis],
       password: await hashing.hash(defaultPassword),
     },
     {
       fullname: 'Admin Desa',
       email: 'admin.desa@example.com',
-      RoleId: RoleId.adminDesa,
+      RoleIds: [RoleId.adminDesa],
+      password: await hashing.hash(defaultPassword),
+    },
+    {
+      fullname: 'Kader Desa',
+      email: 'kader.desa@example.com',
+      RoleIds: [RoleId.kaderDesa, RoleId.user],
       password: await hashing.hash(defaultPassword),
     },
   ]
 
-  const formData: any[] = []
+  const formData = []
+
+  const userHasRolesFormData = []
 
   if (!_.isEmpty(data)) {
     for (let i = 0; i < data.length; i += 1) {
       const item = data[i]
 
+      const UserId = uuidv4
+
       formData.push({
-        ...item,
-        id: uuidv4(),
+        id: UserId,
+        fullname: item.fullname,
+        email: item.email,
+        password: item.password,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
+
+      for (let j = 0; j < item.RoleIds.length; j++) {
+        userHasRolesFormData.push({
+          id: uuidv4(),
+          RoleId: data[i].RoleIds[j],
+          UserId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      }
     }
   }
 
   await queryInterface.bulkInsert('users', formData)
+  await queryInterface.bulkInsert('user_has_roles', userHasRolesFormData)
 }
 
 export async function down(
