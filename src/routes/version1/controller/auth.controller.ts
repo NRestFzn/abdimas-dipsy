@@ -1,15 +1,14 @@
 import asyncHandler from '@/helper/asyncHandler'
 import express, { Response, Request } from 'express'
-import { AuthService } from '@/features/auth/repository/authRepository'
+import { AuthRepository } from '@/features/auth/repository/authRepository'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { RoleId } from '@/libs/constant/roleIds'
 import {
   loginSchema,
   loginWithNikSchema,
   registerSchema,
 } from '@/features/auth/schema'
 
-const service = new AuthService()
+const repository = new AuthRepository()
 
 const route = express.Router()
 
@@ -20,7 +19,7 @@ route.post(
 
     const values = registerSchema.validateSync(formData)
 
-    const data = await service.register({ ...values, RoleId: RoleId.user })
+    const data = await repository.register({ ...values })
 
     const httpResponse = HttpResponse.created({
       message: req.t.auth.registerSuccess,
@@ -38,7 +37,7 @@ route.post(
 
     const values = loginSchema.validateSync(formData)
 
-    const data = await service.login(values)
+    const data = await repository.login(values)
 
     const httpResponse = HttpResponse.get({
       message: req.t.auth.loginSuccess,
@@ -56,7 +55,7 @@ route.post(
 
     const values = loginWithNikSchema.validateSync(formData)
 
-    const data = await service.loginWithNik(values)
+    const data = await repository.loginWithNik(values)
 
     const httpResponse = HttpResponse.get({
       message: req.t.auth.loginSuccess,

@@ -7,10 +7,12 @@ import { AuthResponseDto, LoginDto, LoginWithNikDto, RegisterDto } from '../dto'
 import { RoleId } from '@/libs/constant/roleIds'
 import UserDetail from '@/database/model/userDetail'
 import { Encryption } from '@/libs/encryption'
+import Role from '@/database/model/role'
+import UserHasRoles from '@/src/database/model/userHasRoles'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 
-export class AuthService {
+export class AuthRepository {
   private createEmailFromFullnameAndNik(fullname: string, nik: string): string {
     const nameForEmail = fullname.toLowerCase().split(' ').slice(0, 2).join('')
     const lastDigitNik = nik.slice(-4)
@@ -22,8 +24,9 @@ export class AuthService {
 
     await db.sequelize!.transaction(async (transaction) => {
       const getUser = await User.findOne({
-        attributes: ['id', 'fullname', 'email', 'password', 'RoleId'],
+        attributes: ['id', 'fullname', 'email', 'password'],
         where: { email: formData.email },
+        include: [{ model: Role }],
         transaction,
       })
 
@@ -37,8 +40,13 @@ export class AuthService {
         throw new ErrorResponse.BadRequest('auth.loginFailed')
       }
 
+      const RoleIds = getUser.roles.map((role) => role.id)
+
       const payload = JSON.parse(
-        JSON.stringify({ uid: getUser.id, RoleId: getUser.RoleId })
+        JSON.stringify({
+          uid: getUser.id,
+          RoleIds,
+        })
       )
 
       const { token, expiresIn } = jwt.generate(payload)
@@ -46,7 +54,7 @@ export class AuthService {
       data = {
         fullname: getUser.fullname,
         email: getUser.email,
-        RoleId: getUser.RoleId,
+        RoleIds,
         uid: getUser.id,
         accessToken: token,
         expiresAt: new Date(Date.now() + expiresIn * 1000),
@@ -123,10 +131,12 @@ export class AuthService {
           )
       }
 
-      data = await User.create(
-        { ...formData, RoleId: RoleId.user },
-        { transaction }
-      )
+      data = await User.create({ ...formData }, { transaction })
+
+      await UserHasRoles.create({
+        UserId: data.id,
+        RoleId: RoleId.user,
+      })
 
       await UserDetail.create(
         {

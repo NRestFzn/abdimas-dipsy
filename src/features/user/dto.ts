@@ -1,8 +1,10 @@
+import { RoleDto } from '../role/dto'
+
 export interface UserDto {
   id: string
   fullname: string
   email: string
-  RoleId: string
+  roles: RoleDto[]
   profilePicture?: string | null
   createdAt: Date
   updatedAt: Date
@@ -24,7 +26,7 @@ export interface CreateUserDto {
   fullname: string
   email: string
   password: string
-  RoleId: string
+  RoleIds: string[]
 }
 
 export interface UpdateUserDto {
@@ -39,5 +41,5 @@ export interface UserQueryFilterDto {
 
 export type UserLoginState = {
   uid: string
-  RoleId: string
+  RoleIds: string[]
 }

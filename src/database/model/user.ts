@@ -1,13 +1,11 @@
 import {
   BeforeCreate,
   BeforeUpdate,
-  BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   DefaultScope,
-  ForeignKey,
   HasOne,
-  IsUUID,
   Scopes,
   Table,
   Unique,
@@ -17,6 +15,7 @@ import BaseSchema from './_baseModel'
 import Role from './role'
 import { DataTypes } from 'sequelize'
 import UserDetail from './userDetail'
+import UserHasRoles from './userHasRoles'
 
 const hashing = new Hashing()
 
@@ -44,23 +43,14 @@ export default class User extends BaseSchema {
   @Column({ type: DataTypes.STRING })
   password: string
 
-  @IsUUID(4)
-  @ForeignKey(() => Role)
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  RoleId: string
-
-  @BelongsTo(() => Role)
-  role: Role
-
   @Column({ type: DataType.STRING, allowNull: true })
   profilePicture: string
 
   @HasOne(() => UserDetail)
   userDetail: UserDetail
+
+  @BelongsToMany(() => Role, () => UserHasRoles)
+  roles!: Role[]
 
   comparePassword: (current_password: string) => Promise<boolean>
 

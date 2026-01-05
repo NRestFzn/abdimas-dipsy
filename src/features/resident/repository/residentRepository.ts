@@ -21,6 +21,8 @@ import Education from '@/database/model/education'
 import SalaryRange from '@/database/model/salaryRange'
 import { RoleId } from '@/libs/constant/roleIds'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
+import UserHasRoles from '@/database/model/userHasRoles'
+import Role from '@/database/model/role'
 
 export class ResidentRepository {
   async getAll(
@@ -36,6 +38,7 @@ export class ResidentRepository {
           model: UserDetail.scope('withNik'),
           ...(residentDetailQuery.queryFilter() as any),
         },
+        { model: Role, through: { attributes: [] } },
       ],
     })
 
@@ -66,6 +69,7 @@ export class ResidentRepository {
     const data = await User.findOne({
       where: { id },
       include: [
+        { model: Role, through: { attributes: [] } },
         {
           model: UserDetail.scope('withNik'),
           include: [
@@ -102,8 +106,13 @@ export class ResidentRepository {
       throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
     await db.sequelize!.transaction(async (transaction) => {
-      data = await User.create(
-        { ...formData, RoleId: RoleId.user },
+      data = await User.create({ ...formData }, { transaction })
+
+      await UserHasRoles.create(
+        {
+          RoleId: RoleId.user,
+          UserId: data.id,
+        },
         { transaction }
       )
 

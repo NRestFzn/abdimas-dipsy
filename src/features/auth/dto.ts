@@ -22,13 +22,12 @@ export interface RegisterDto {
   MarriageStatusId: string
   EducationId: string
   SalaryRangeId: string
-  RoleId: string
 }
 
 export interface AuthResponseDto {
   fullname: string
   email: string
-  RoleId: string
+  RoleIds: string[]
   uid: string
   accessToken: string
   expiresAt: Date
