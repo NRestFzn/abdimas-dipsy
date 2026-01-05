@@ -8,7 +8,7 @@ import { RoleId } from '@/libs/constant/roleIds'
 import UserDetail from '@/database/model/userDetail'
 import { Encryption } from '@/libs/encryption'
 import Role from '@/database/model/role'
-import UserHasRoles from '@/src/database/model/userHasRoles'
+import UserHasRoles from '@/database/model/userHasRoles'
 
 const jwt = new JwtToken({ secret: env.JWT_SECRET, expires: env.JWT_EXPIRES })
 

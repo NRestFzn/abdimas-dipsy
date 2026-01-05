@@ -17,6 +17,10 @@ const data = [
     id: RoleId.user,
     name: 'user',
   },
+  {
+    id: RoleId.kaderDesa,
+    name: 'kader desa',
+  },
 ]
 
 /** @type {import('sequelize-cli').Migration} */

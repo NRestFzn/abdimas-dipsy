@@ -27,9 +27,9 @@ import {
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
-import { RoleId } from '@/src/libs/constant/roleIds'
-import { UserLoginState } from '@/src/features/user/dto'
-import { permissionAccess } from '@/src/middleware/permissionAccess'
+import { RoleId } from '@/libs/constant/roleIds'
+import { UserLoginState } from '@/features/user/dto'
+import { permissionAccess } from '@/middleware/permissionAccess'
 
 const repository = new QuestionnaireSubmissionRepository()
 
