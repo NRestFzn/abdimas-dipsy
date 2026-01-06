@@ -1,57 +1,51 @@
 import * as yup from 'yup'
 
 export const createResidentSchema = yup.object().shape({
-  fullname: yup.string().required("Fullname can't be empty"),
+  fullname: yup.string().required('validation.required'),
   nik: yup
     .string()
-    .required("NIK can't be empty")
-    .min(16, 'NIK min 16 characters')
-    .max(16, 'NIK max 16 caharcters'),
-  email: yup
-    .string()
-    .email({ message: 'Invalid email address' })
-    .optional()
-    .nullable(),
-  phoneNumber: yup.string().required("Phone number can't be empty"),
+    .required('validation.required')
+    .min(16, 'validation.min')
+    .max(16, 'validation.max'),
+  email: yup.string().email('validation.email').optional().nullable(),
+  phoneNumber: yup.string().required('validation.required'),
   password: yup
     .string()
-    .min(8, 'Password min 8 characters')
-    .required("New password can't be empty"),
+    .min(8, 'validation.min')
+    .required('validation.required'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), undefined], 'Passwords must match')
-    .required("Confirm password can't be empty"),
+    .oneOf([yup.ref('password'), undefined], 'validation.same')
+    .required('validation.required'),
   gender: yup
     .string()
-    .oneOf(['m', 'f'], "Gender must be one of 'm' or 'f'")
-    .required("Gender can't be empty"),
-  birthDate: yup.date().required("Birth date can't be empty"),
-  profession: yup.string().required("Profession can't be empty"),
-  isKader: yup.boolean().required("Is kader can't be empty"),
-  RukunWargaId: yup.string().required("RukunWargaId can't be empty"),
-  RukunTetanggaId: yup.string().required("RukunTetanggaId can't be empty"),
-  MarriageStatusId: yup.string().required("MarriageStatusId can't be empty"),
-  EducationId: yup.string().required("EducationId can't be empty"),
-  SalaryRangeId: yup.string().required("SalaryRangeId can't be empty"),
+    .oneOf(['m', 'f'], 'validation.oneOf')
+    .required('validation.required'),
+  birthDate: yup.date().required('validation.required'),
+  profession: yup.string().required('validation.required'),
+  isKader: yup.boolean().required('validation.required'),
+  RukunWargaId: yup.string().required('validation.required'),
+  RukunTetanggaId: yup.string().required('validation.required'),
+  MarriageStatusId: yup.string().required('validation.required'),
+  EducationId: yup.string().required('validation.required'),
+  SalaryRangeId: yup.string().required('validation.required'),
 })
 
 export const updateResidentSchema = yup.object().shape({
-  fullname: yup.string().required("Fullname can't be empty"),
+  fullname: yup.string().required('validation.required'),
   nik: yup
     .string()
-    .required("NIK can't be empty")
-    .min(16, 'NIK min 16 characters')
-    .max(16, 'NIK max 16 caharcters'),
-  email: yup
-    .string()
-    .email({ message: 'Invalid email address' })
-    .required("Email can't be empty"),
-  phoneNumber: yup.string().required("Phone number can't be empty"),
+    .required('validation.required')
+    .min(16, 'validation.min')
+    .max(16, 'validation.max'),
+  email: yup.string().email('validation.email').required('validation.required'),
+  phoneNumber: yup.string().required('validation.required'),
+
   password: yup
     .string()
     .transform((curr, orig) => (orig === '' ? null : curr))
     .nullable()
-    .min(8, 'Password min 8 characters'),
+    .min(8, 'validation.min'),
 
   confirmPassword: yup
     .string()
@@ -62,32 +56,34 @@ export const updateResidentSchema = yup.object().shape({
         val !== null && val !== undefined && val !== '',
       then: (schema) =>
         schema
-          .required('Confirm password is required when changing password')
-          .oneOf([yup.ref('password')], 'Passwords must match'),
+          .required('validation.required')
+          .oneOf([yup.ref('password')], 'validation.same'),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
 
   gender: yup
     .string()
-    .oneOf(['m', 'f'], "Gender must be one of 'm' or 'f'")
-    .required("Gender can't be empty"),
-  birthDate: yup.date().required("Birth date can't be empty"),
-  profession: yup.string().required("Profession can't be empty"),
-  isKader: yup.boolean().required("Is kader can't be empty"),
-  RukunWargaId: yup.string().required("RukunWargaId can't be empty"),
-  RukunTetanggaId: yup.string().required("RukunTetanggaId can't be empty"),
-  MarriageStatusId: yup.string().required("MarriageStatusId can't be empty"),
-  EducationId: yup.string().required("EducationId can't be empty"),
-  SalaryRangeId: yup.string().required("SalaryRangeId can't be empty"),
+    .oneOf(['m', 'f'], 'validation.oneOf')
+    .required('validation.required'),
+  birthDate: yup.date().required('validation.required'),
+  profession: yup.string().required('validation.required'),
+  isKader: yup.boolean().required('validation.required'),
+  RukunWargaId: yup.string().required('validation.required'),
+  RukunTetanggaId: yup.string().required('validation.required'),
+  MarriageStatusId: yup.string().required('validation.required'),
+  EducationId: yup.string().required('validation.required'),
+  SalaryRangeId: yup.string().required('validation.required'),
 })
 
 export const updateProfileSchema = yup.object().shape({
-  phoneNumber: yup.string().required("Phone number can't be empty"),
+  phoneNumber: yup.string().required('validation.required'),
+
   password: yup
     .string()
     .transform((curr, orig) => (orig === '' ? null : curr))
     .nullable()
-    .min(8, 'Password min 8 characters'),
+    .min(8, 'validation.min'),
+
   confirmNewPassword: yup
     .string()
     .transform((curr, orig) => (orig === '' ? null : curr))
@@ -97,15 +93,15 @@ export const updateProfileSchema = yup.object().shape({
         val !== null && val !== undefined && val !== '',
       then: (schema) =>
         schema
-          .required('Confirm password is required when changing password')
-          .oneOf([yup.ref('password')], 'Passwords must match'),
+          .required('validation.required')
+          .oneOf([yup.ref('password')], 'validation.same'),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
-  profession: yup.string().required("Profession can't be empty"),
-  EducationId: yup.string().required("EducationId can't be empty"),
-  SalaryRangeId: yup.string().required("SalaryRangeId can't be empty"),
-})
 
+  profession: yup.string().required('validation.required'),
+  EducationId: yup.string().required('validation.required'),
+  SalaryRangeId: yup.string().required('validation.required'),
+})
 export type CreateResident = yup.InferType<typeof createResidentSchema>
 
 export type UpdateResident = yup.InferType<typeof updateResidentSchema>
