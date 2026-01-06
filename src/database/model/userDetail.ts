@@ -18,6 +18,8 @@ import Education from './education'
 import SalaryRange from './salaryRange'
 import User from './user'
 import { Encryption } from '@/libs/encryption'
+import Role from './role'
+import { RoleId } from '@/libs/constant/roleIds'
 
 @DefaultScope(() => ({
   attributes: {
@@ -48,6 +50,15 @@ export default class UserDetail extends BaseSchema {
 
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: Date
+
+  @Column({ type: DataType.VIRTUAL })
+  get isKader(): boolean {
+    if (this.user && this.user.roles) {
+      return this.user.roles.some((role: Role) => role.id === RoleId.kaderDesa)
+    }
+
+    return false
+  }
 
   @Column({ type: DataType.VIRTUAL })
   get nik(): string | null {

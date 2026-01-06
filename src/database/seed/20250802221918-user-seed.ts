@@ -32,12 +32,6 @@ export async function up(
       RoleIds: [RoleId.adminDesa],
       password: await hashing.hash(defaultPassword),
     },
-    {
-      fullname: 'Kader Desa',
-      email: 'kader.desa@example.com',
-      RoleIds: [RoleId.kaderDesa, RoleId.user],
-      password: await hashing.hash(defaultPassword),
-    },
   ]
 
   const formData = []
