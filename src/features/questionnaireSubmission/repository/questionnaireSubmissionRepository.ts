@@ -639,6 +639,8 @@ export class QuestionnaireSubmissionRepository {
 
       const questionnaireSubmission = await QuestionnaireSubmission.create(
         {
+          isAssisted: formData.isAssisted,
+          SubmittedBy: formData.SubmittedBy,
           UserId: formData.UserId,
           QuestionnaireId: formData.QuestionnaireId,
         },
