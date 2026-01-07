@@ -25,9 +25,9 @@ import UserHasRoles from '@/database/model/userHasRoles'
 import Role from '@/database/model/role'
 import { AuthRepository } from '../../auth/repository/authRepository'
 import { Encryption } from '@/libs/encryption'
+import { UserLoginState } from '../../user/dto'
 
 const authRepository = new AuthRepository()
-
 export class ResidentRepository {
   async getAll(
     req: Request
@@ -36,12 +36,27 @@ export class ResidentRepository {
 
     const residentDetailQuery = new ResidentDetailQueryRepository(req)
 
+    const residentDetailQueryFilter = residentDetailQuery.queryFilter()
+
+    const userLogin = req.getState('userLoginState') as UserLoginState
+
+    const isKader = userLogin.RoleIds.includes(RoleId.kaderDesa)
+
+    const user = await this.getById(userLogin.uid)
+
+    if (isKader) {
+      residentDetailQueryFilter.where = {
+        ...residentDetailQueryFilter.where,
+        RukunWargaId: user.userDetail.RukunWargaId,
+      }
+    }
+
     const data = await User.findAll({
       ...query.queryFilter(),
       include: [
         {
           model: UserDetail.scope('withNik'),
-          ...(residentDetailQuery.queryFilter() as any),
+          ...(residentDetailQueryFilter as any),
         },
         { model: Role, through: { attributes: [] } },
       ],

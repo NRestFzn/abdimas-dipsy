@@ -111,7 +111,7 @@ route.put(
 route.get(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
+  permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
