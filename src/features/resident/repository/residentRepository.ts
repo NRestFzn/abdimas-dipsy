@@ -33,36 +33,38 @@ export class ResidentRepository {
     req: Request
   ): Promise<{ data: ResidentDto[]; meta: { pagination: MetaPaginationDto } }> {
     const query = new ResidentQueryRepository(req)
-
     const residentDetailQuery = new ResidentDetailQueryRepository(req)
 
-    const residentDetailQueryFilter = residentDetailQuery.queryFilter()
+    let detailFilter = residentDetailQuery.queryFilter()
 
     const userLogin = req.getState('userLoginState') as UserLoginState
-
     const isKader = userLogin.RoleIds.includes(RoleId.kaderDesa)
 
-    const user = await this.getById(userLogin.uid)
+    let isDetailRequired = false
 
     if (isKader) {
-      residentDetailQueryFilter.where = {
-        ...residentDetailQueryFilter.where,
+      const user = await this.getById(userLogin.uid)
+
+      detailFilter.where = {
+        ...detailFilter.where,
         RukunWargaId: user.userDetail.RukunWargaId,
       }
+
+      isDetailRequired = true
     }
 
-    const data = await User.findAll({
+    const { rows: data, count: totalRows } = await User.findAndCountAll({
       ...query.queryFilter(),
+      distinct: true,
       include: [
         {
           model: UserDetail.scope('withNik'),
-          ...(residentDetailQueryFilter as any),
+          ...(detailFilter as any),
+          required: isDetailRequired,
         },
         { model: Role, through: { attributes: [] } },
       ],
     })
-
-    const dataCount = await UserDetail.count()
 
     return {
       data,
@@ -71,7 +73,7 @@ export class ResidentRepository {
           page: query.page,
           pageSize: query.pageSize,
           pageCount: data.length,
-          total: dataCount,
+          total: totalRows,
         },
       },
     }
