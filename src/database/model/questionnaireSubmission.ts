@@ -25,7 +25,7 @@ export default class QuestionnaireSubmission extends BaseSchema {
   QuestionnaireId: string
 
   @Column({ allowNull: false, type: DataTypes.UUID })
-  submittedBy: string
+  SubmittedBy: string
 
   @Column({ allowNull: false, type: DataTypes.BOOLEAN })
   isAssisted: boolean
