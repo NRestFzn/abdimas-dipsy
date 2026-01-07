@@ -33,6 +33,7 @@ export class ResidentRepository {
     req: Request
   ): Promise<{ data: ResidentDto[]; meta: { pagination: MetaPaginationDto } }> {
     const query = new ResidentQueryRepository(req)
+
     const residentDetailQuery = new ResidentDetailQueryRepository(req)
 
     const data = await User.findAll({

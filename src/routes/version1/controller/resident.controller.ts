@@ -55,7 +55,7 @@ route.post(
 route.get(
   '/',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const data = await repository.getAll(req)
 
@@ -111,7 +111,7 @@ route.put(
 route.get(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id
 
