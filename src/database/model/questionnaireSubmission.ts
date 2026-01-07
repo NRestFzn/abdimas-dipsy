@@ -36,6 +36,9 @@ export default class QuestionnaireSubmission extends BaseSchema {
   @BelongsTo(() => Questionnaire)
   questionnaire: Questionnaire
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, 'UserId')
   user: User
+
+  @BelongsTo(() => User, 'SubmittedBy')
+  submittedBy: User
 }

@@ -49,7 +49,7 @@ export class QuestionnaireSubmissionRepository {
 
     const data = await QuestionnaireSubmission.findAll({
       ...query.queryFilter(),
-      include: [{ model: Questionnaire }],
+      include: [{ model: Questionnaire }, { model: User, as: 'submittedBy' }],
       where: { UserId: user.uid },
     })
 
@@ -561,7 +561,8 @@ export class QuestionnaireSubmissionRepository {
           model: QuestionnaireAnswer,
           include: [{ model: QuestionnaireQuestion }],
         },
-        { model: User },
+        { model: User, as: 'user' },
+        { model: User, as: 'submittedBy' },
       ],
     })
 
