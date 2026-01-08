@@ -26,6 +26,7 @@ import Role from '@/database/model/role'
 import { AuthRepository } from '../../auth/repository/authRepository'
 import { Encryption } from '@/libs/encryption'
 import { UserLoginState } from '../../user/dto'
+import { Op } from 'sequelize'
 
 const authRepository = new AuthRepository()
 export class ResidentRepository {
@@ -65,7 +66,10 @@ export class ResidentRepository {
         },
         {
           model: Role,
-          through: { attributes: [], where: { id: RoleId.user } },
+          where: {
+            [Op.or]: [RoleId.user, RoleId.kaderDesa], // <--- Ambil Warga ATAU Kader
+          },
+          through: { attributes: [] },
         },
       ],
     })
