@@ -126,13 +126,13 @@ export class ResidentRepository {
             as: 'userHasRolesData',
             attributes: ['id', 'RoleId'],
             where: {
-              RoleId: RoleId.kaderDesa,
+              RoleId: RoleId.adminDesa,
             },
           },
         ],
       })
 
-      if (!actor) throw new ErrorResponse.NotFound('check error')
+      if (!actor) throw new ErrorResponse.NotFound('auth.loginFailed')
 
       const isPasswordMatch = await actor.comparePassword(option.password)
 
