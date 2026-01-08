@@ -38,6 +38,7 @@ export class ResidentRepository {
     let detailFilter = residentDetailQuery.queryFilter()
 
     const userLogin = req.getState('userLoginState') as UserLoginState
+
     const isKader = userLogin.RoleIds.includes(RoleId.kaderDesa)
 
     let isDetailRequired = false
@@ -62,7 +63,10 @@ export class ResidentRepository {
           ...(detailFilter as any),
           required: isDetailRequired,
         },
-        { model: Role, through: { attributes: [] } },
+        {
+          model: Role,
+          through: { attributes: [], where: { id: RoleId.user } },
+        },
       ],
     })
 
