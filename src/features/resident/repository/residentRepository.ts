@@ -87,7 +87,14 @@ export class ResidentRepository {
     return data
   }
 
-  async getById(id: string): Promise<ResidentDetailDto> {
+  async getById(
+    id: string,
+    option?: {
+      showNik: boolean
+      actorId: string
+      password: string
+    }
+  ): Promise<ResidentDetailDto> {
     const data = await User.findOne({
       where: { id },
       include: [
@@ -106,6 +113,34 @@ export class ResidentRepository {
     })
 
     if (!data) throw new ErrorResponse.NotFound('errors.notFound')
+
+    if (option?.showNik && option?.actorId) {
+      const actor = await User.findOne({
+        where: {
+          id: option.actorId,
+        },
+        attributes: ['id', 'password'],
+        include: [
+          {
+            model: UserHasRoles,
+            attributes: ['id', 'RoleId'],
+            where: {
+              RoleId: RoleId.kaderDesa,
+            },
+          },
+        ],
+      })
+
+      if (!actor) throw new ErrorResponse.NotFound('errors.notFound')
+
+      const isPasswordMatch = await actor.comparePassword(option.password)
+
+      if (!isPasswordMatch) {
+        throw new ErrorResponse.BadRequest('auth.loginFailed')
+      }
+
+      data.userDetail.nik = Encryption.decrypt(data.userDetail.nikEncrypted)
+    }
 
     return data
   }

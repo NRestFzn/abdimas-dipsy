@@ -51,14 +51,8 @@ export default class UserDetail extends BaseSchema {
   @Column({ type: DataType.DATEONLY, allowNull: false })
   birthDate: Date
 
-  @Column({ type: DataType.VIRTUAL })
-  get isKader(): boolean {
-    if (this.user && this.user.roles) {
-      return this.user.roles.some((role: Role) => role.id === RoleId.kaderDesa)
-    }
-
-    return false
-  }
+  @Column({ type: DataType.BOOLEAN, allowNull: false })
+  isKader: boolean
 
   @Column({ type: DataType.VIRTUAL })
   get nik(): string | null {
@@ -74,6 +68,10 @@ export default class UserDetail extends BaseSchema {
     const maskLength = decrypted.length - 8
 
     return decrypted.slice(0, 4) + '*'.repeat(maskLength) + decrypted.slice(-4)
+  }
+
+  set nik(value: string) {
+    this.setDataValue('nik', value)
   }
 
   @IsUUID(4)
@@ -164,8 +162,16 @@ export default class UserDetail extends BaseSchema {
   @BeforeUpdate
   @BeforeCreate
   static async encryptNikResident(instance: UserDetail): Promise<void> {
-    if (instance.nikEncrypted) {
-      const encrypt = Encryption.encrypt(instance.nikEncrypted)
+    if (instance.changed('nikEncrypted')) {
+      const value = instance.getDataValue('nikEncrypted')
+
+      if (value && value.includes('*')) {
+        const oldVal = instance.previous('nikEncrypted')
+        instance.setDataValue('nikEncrypted', oldVal)
+        return
+      }
+
+      const encrypt = Encryption.encrypt(value)
       instance.setDataValue('nikEncrypted', encrypt)
     }
   }
@@ -173,8 +179,16 @@ export default class UserDetail extends BaseSchema {
   @BeforeUpdate
   @BeforeCreate
   static async hashNikResident(instance: UserDetail): Promise<void> {
-    if (instance.nikHash) {
-      const blindIndex = Encryption.hashIndex(instance.nikHash)
+    if (instance.changed('nikHash')) {
+      const value = instance.getDataValue('nikHash')
+
+      if (value && value.includes('*')) {
+        const oldVal = instance.previous('nikHash')
+        instance.setDataValue('nikHash', oldVal)
+        return
+      }
+
+      const blindIndex = Encryption.hashIndex(value)
       instance.setDataValue('nikHash', blindIndex)
     }
   }

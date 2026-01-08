@@ -126,6 +126,30 @@ route.get(
   })
 )
 
+route.get(
+  '/:id/reveal-nik',
+  authorization(),
+  permissionAccess([RoleId.adminDesa]),
+  asyncHandler(async (req: Request, res: Response) => {
+    const id = req.params.id
+
+    const actorId = req.getState('userLoginState').uid
+
+    const data = await repository.getById(id, {
+      actorId,
+      password: req.body.password,
+      showNik: true,
+    })
+
+    const httpResponse = HttpResponse.get({
+      message: req.t.success.retrieved,
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
 route.delete(
   '/:id',
   authorization(),
