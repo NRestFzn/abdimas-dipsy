@@ -56,6 +56,11 @@ export default class UserDetail extends BaseSchema {
 
   @Column({ type: DataType.VIRTUAL })
   get nik(): string | null {
+    const manualValue = this.getDataValue('nik')
+
+    if (manualValue) {
+      return manualValue
+    }
     const encrypted = this.getDataValue('nikEncrypted')
     if (!encrypted) return null
 
@@ -64,7 +69,6 @@ export default class UserDetail extends BaseSchema {
     }
 
     const decrypted = Encryption.decrypt(encrypted)
-
     const maskLength = decrypted.length - 8
 
     return decrypted.slice(0, 4) + '*'.repeat(maskLength) + decrypted.slice(-4)
