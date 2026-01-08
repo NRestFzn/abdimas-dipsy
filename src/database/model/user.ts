@@ -51,7 +51,7 @@ export default class User extends BaseSchema {
   userDetail: UserDetail
 
   @HasMany(() => UserHasRoles)
-  UserHasRoles: UserHasRoles[]
+  userHasRolesData: UserHasRoles[]
 
   @BelongsToMany(() => Role, () => UserHasRoles)
   roles!: Role[]

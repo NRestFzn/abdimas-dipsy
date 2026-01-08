@@ -123,6 +123,7 @@ export class ResidentRepository {
         include: [
           {
             model: UserHasRoles,
+            as: 'userHasRolesData',
             attributes: ['id', 'RoleId'],
             where: {
               RoleId: RoleId.kaderDesa,
