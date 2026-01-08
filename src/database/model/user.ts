@@ -5,6 +5,7 @@ import {
   Column,
   DataType,
   DefaultScope,
+  HasMany,
   HasOne,
   Scopes,
   Table,
@@ -48,6 +49,9 @@ export default class User extends BaseSchema {
 
   @HasOne(() => UserDetail)
   userDetail: UserDetail
+
+  @HasMany(() => UserHasRoles)
+  UserHasRoles: UserHasRoles[]
 
   @BelongsToMany(() => Role, () => UserHasRoles)
   roles!: Role[]
