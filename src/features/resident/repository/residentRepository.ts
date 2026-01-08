@@ -132,7 +132,7 @@ export class ResidentRepository {
         ],
       })
 
-      if (!actor) throw new ErrorResponse.NotFound('errors.notFound')
+      if (!actor) throw new ErrorResponse.NotFound('check error')
 
       const isPasswordMatch = await actor.comparePassword(option.password)
 
