@@ -95,7 +95,7 @@ export class ResidentRepository {
       password: string
     }
   ): Promise<ResidentDetailDto> {
-    let data = await User.findOne({
+    const data = await User.findOne({
       where: { id },
       include: [
         { model: Role, through: { attributes: [] } },
@@ -139,6 +139,8 @@ export class ResidentRepository {
       if (!isPasswordMatch) {
         throw new ErrorResponse.BadRequest('auth.loginFailed')
       }
+
+      data.userDetail.nik = Encryption.decrypt(data.userDetail.nikEncrypted)
     }
 
     return data
