@@ -67,7 +67,7 @@ export class ResidentRepository {
         {
           model: Role,
           where: {
-            [Op.or]: [RoleId.user, RoleId.kaderDesa], // <--- Ambil Warga ATAU Kader
+            [Op.or]: [RoleId.user, RoleId.kaderDesa],
           },
           through: { attributes: [] },
         },
