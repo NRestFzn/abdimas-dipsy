@@ -67,7 +67,7 @@ export class ResidentRepository {
         {
           model: Role,
           where: {
-            [Op.or]: [RoleId.user, RoleId.kaderDesa],
+            RoleId: { [Op.in]: [RoleId.kaderDesa, RoleId.user] },
           },
           through: { attributes: [] },
         },
