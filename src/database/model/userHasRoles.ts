@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -28,4 +29,10 @@ export default class UserHasRoles extends BaseSchema {
     allowNull: false,
   })
   UserId: string
+
+  @BelongsTo(() => User)
+  user: User
+
+  @BelongsTo(() => Role)
+  role: Role
 }
