@@ -24,7 +24,7 @@ export class QuestionnaireRepository {
 
     const data = await Questionnaire.findAll({
       ...query.queryFilter(),
-      include: [{ model: QuestionnaireCategory }],
+      include: [{ model: QuestionnaireCategory }, { model: QuestionnaireQuestion }],
     })
 
     const dataCount = await Questionnaire.count()
