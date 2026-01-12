@@ -126,7 +126,7 @@ route.get(
   })
 )
 
-route.get(
+route.post(
   '/:id/reveal-nik',
   authorization(),
   permissionAccess([RoleId.adminDesa]),
