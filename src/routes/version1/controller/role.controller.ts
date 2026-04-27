@@ -3,7 +3,7 @@ import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { roleSchema } from '@/features/role/schema'
+import { RoleQuery, roleQuerySchema, roleSchema } from '@/features/role/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
@@ -53,9 +53,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: RoleQuery = req.getParams()
 
-    const data = await repository.getByPk(id)
+    const querySchema = roleQuerySchema.validateSync(params)
+
+    const data = await repository.getByPk(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
