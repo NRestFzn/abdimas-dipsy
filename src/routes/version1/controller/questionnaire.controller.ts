@@ -4,7 +4,9 @@ import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
+  QuestionnaireQuery,
   createQuestionnaireSchema,
+  questionnaireQuerySchema,
   updateQuestionnaireSchema,
 } from '@/features/questionnaire/schema'
 import asyncHandler from '@/helper/asyncHandler'
@@ -86,9 +88,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: QuestionnaireQuery = req.getParams()
 
-    const data = await repository.getById(id)
+    const querySchema = questionnaireQuerySchema.validateSync(params)
+
+    const data = await repository.getById(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -103,9 +107,11 @@ route.get(
   '/:id/public',
   authorization(),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: QuestionnaireQuery = req.getParams()
 
-    const data = await repository.getByIdPublic(id)
+    const querySchema = questionnaireQuerySchema.validateSync(params)
+
+    const data = await repository.getByIdPublic(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -121,9 +127,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: QuestionnaireQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = questionnaireQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,
@@ -142,9 +150,11 @@ route.put(
 
     const values = updateQuestionnaireSchema.validateSync(formData)
 
-    const id = req.params.id
+    const params: QuestionnaireQuery = req.getParams()
 
-    const data = await repository.update(id, values)
+    const querySchema = questionnaireQuerySchema.validateSync(params)
+
+    const data = await repository.update(querySchema.id, values)
 
     const httpResponse = HttpResponse.updated({
       message: req.t.success.updated,

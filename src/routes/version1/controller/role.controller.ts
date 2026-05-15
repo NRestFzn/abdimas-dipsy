@@ -73,9 +73,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: RoleQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = roleQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,
@@ -94,9 +96,11 @@ route.put(
 
     const values = roleSchema.validateSync(formData)
 
-    const id = req.params.id
+    const params: RoleQuery = req.getParams()
 
-    const data = await repository.update(id, values)
+    const querySchema = roleQuerySchema.validateSync(params)
+
+    const data = await repository.update(querySchema.id, values)
 
     const httpResponse = HttpResponse.updated({
       message: req.t.success.updated,

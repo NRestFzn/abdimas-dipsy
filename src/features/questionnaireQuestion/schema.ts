@@ -24,3 +24,11 @@ export const updateQuestionnaireQuestionSchema = yup
     })
   )
   .required('validation.required')
+
+export const questionnaireQuestionQuerySchema = yup.object().shape({
+  id: yup.string().required('validation.required'),
+})
+
+export type QuestionnaireQuestionQuery = yup.InferType<
+  typeof questionnaireQuestionQuerySchema
+>

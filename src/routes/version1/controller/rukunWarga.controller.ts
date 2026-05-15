@@ -4,7 +4,9 @@ import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
+  RukunWargaQuery,
   createRukunWargaSchema,
+  rukunWargaQuerySchema,
   updateRukunWargaSchema,
 } from '@/features/rukunWarga/schema'
 import asyncHandler from '@/helper/asyncHandler'
@@ -54,9 +56,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: RukunWargaQuery = req.getParams()
 
-    const data = await repository.getById(id)
+    const querySchema = rukunWargaQuerySchema.validateSync(params)
+
+    const data = await repository.getById(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -72,9 +76,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: RukunWargaQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = rukunWargaQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,
@@ -93,9 +99,11 @@ route.put(
 
     const values = updateRukunWargaSchema.validateSync(formData)
 
-    const id = req.params.id
+    const params: RukunWargaQuery = req.getParams()
 
-    const data = await repository.update(id, values)
+    const querySchema = rukunWargaQuerySchema.validateSync(params)
+
+    const data = await repository.update(querySchema.id, values)
 
     const httpResponse = HttpResponse.updated({
       message: req.t.success.updated,

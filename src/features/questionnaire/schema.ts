@@ -13,3 +13,9 @@ export const createQuestionnaireSchema = yup.object().shape({
 })
 
 export const updateQuestionnaireSchema = createQuestionnaireSchema.clone()
+
+export const questionnaireQuerySchema = yup.object().shape({
+  id: yup.string().required('validation.required'),
+})
+
+export type QuestionnaireQuery = yup.InferType<typeof questionnaireQuerySchema>

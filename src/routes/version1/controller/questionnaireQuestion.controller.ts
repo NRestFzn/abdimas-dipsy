@@ -4,7 +4,9 @@ import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
+  QuestionnaireQuestionQuery,
   createQuestionnaireQuestionSchema,
+  questionnaireQuestionQuerySchema,
   updateQuestionnaireQuestionSchema,
 } from '@/features/questionnaireQuestion/schema'
 import asyncHandler from '@/helper/asyncHandler'
@@ -56,9 +58,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: QuestionnaireQuestionQuery = req.getParams()
 
-    const data = await repository.getByPk(id)
+    const querySchema = questionnaireQuestionQuerySchema.validateSync(params)
+
+    const data = await repository.getByPk(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -74,9 +78,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: QuestionnaireQuestionQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = questionnaireQuestionQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,

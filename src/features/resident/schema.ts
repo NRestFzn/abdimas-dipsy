@@ -102,6 +102,12 @@ export const updateProfileSchema = yup.object().shape({
   EducationId: yup.string().required('validation.required'),
   SalaryRangeId: yup.string().required('validation.required'),
 })
+export const residentQuerySchema = yup.object().shape({
+  id: yup.string().required('validation.required'),
+})
+
+export type ResidentQuery = yup.InferType<typeof residentQuerySchema>
+
 export type CreateResident = yup.InferType<typeof createResidentSchema>
 
 export type UpdateResident = yup.InferType<typeof updateResidentSchema>

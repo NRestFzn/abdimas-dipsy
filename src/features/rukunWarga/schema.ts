@@ -15,3 +15,9 @@ export const updateRukunWargaSchema = yup.object().shape({
     .moreThan(0, 'validation.positive')
     .required('validation.required'),
 })
+
+export const rukunWargaQuerySchema = yup.object().shape({
+  id: yup.string().required('validation.required'),
+})
+
+export type RukunWargaQuery = yup.InferType<typeof rukunWargaQuerySchema>

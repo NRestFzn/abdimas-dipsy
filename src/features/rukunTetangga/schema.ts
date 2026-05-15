@@ -16,3 +16,9 @@ export const updateRukunTetanggaSchema = yup.object().shape({
     .moreThan(0, 'validation.positive')
     .required('validation.required'),
 })
+
+export const rukunTetanggaQuerySchema = yup.object().shape({
+  id: yup.string().required('validation.required'),
+})
+
+export type RukunTetanggaQuery = yup.InferType<typeof rukunTetanggaQuerySchema>

@@ -3,7 +3,11 @@ import { permissionAccess } from '@/middleware/permissionAccess'
 import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
-import { marriageStatusSchema } from '@/features/marriageStatus/schema'
+import {
+  MarriageStatusQuery,
+  marriageStatusQuerySchema,
+  marriageStatusSchema,
+} from '@/features/marriageStatus/schema'
 import asyncHandler from '@/helper/asyncHandler'
 import { RoleId } from '@/libs/constant/roleIds'
 import _ from 'lodash'
@@ -51,9 +55,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: MarriageStatusQuery = req.getParams()
 
-    const data = await repository.getByPk(id)
+    const querySchema = marriageStatusQuerySchema.validateSync(params)
+
+    const data = await repository.getByPk(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -69,9 +75,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminMedis]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: MarriageStatusQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = marriageStatusQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,
@@ -90,9 +98,11 @@ route.put(
 
     const values = marriageStatusSchema.validateSync(formData)
 
-    const id = req.params.id
+    const params: MarriageStatusQuery = req.getParams()
 
-    const data = await repository.update(id, values)
+    const querySchema = marriageStatusQuerySchema.validateSync(params)
+
+    const data = await repository.update(querySchema.id, values)
 
     const httpResponse = HttpResponse.updated({
       message: req.t.success.updated,

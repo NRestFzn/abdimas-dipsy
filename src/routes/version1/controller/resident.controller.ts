@@ -4,7 +4,9 @@ import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
+  ResidentQuery,
   createResidentSchema,
+  residentQuerySchema,
   updateProfileSchema,
   updateResidentSchema,
 } from '@/features/resident/schema'
@@ -113,9 +115,11 @@ route.get(
   authorization(),
   permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: ResidentQuery = req.getParams()
 
-    const data = await repository.getById(id)
+    const querySchema = residentQuerySchema.validateSync(params)
+
+    const data = await repository.getById(querySchema.id)
 
     const httpResponse = HttpResponse.get({
       message: req.t.success.retrieved,
@@ -131,11 +135,13 @@ route.post(
   authorization(),
   permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: ResidentQuery = req.getParams()
+
+    const querySchema = residentQuerySchema.validateSync(params)
 
     const actorId = req.getState('userLoginState').uid
 
-    const data = await repository.getById(id, {
+    const data = await repository.getById(querySchema.id, {
       actorId,
       password: req.body.password,
       showNik: true,
@@ -155,9 +161,11 @@ route.delete(
   authorization(),
   permissionAccess([RoleId.adminDesa]),
   asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params.id
+    const params: ResidentQuery = req.getParams()
 
-    const data = await repository.delete(id)
+    const querySchema = residentQuerySchema.validateSync(params)
+
+    const data = await repository.delete(querySchema.id)
 
     const httpResponse = HttpResponse.deleted({
       message: req.t.success.deleted,
@@ -176,9 +184,11 @@ route.put(
 
     const values = updateResidentSchema.validateSync(formData)
 
-    const id = req.params.id
+    const params: ResidentQuery = req.getParams()
 
-    const data = await repository.update(id, values)
+    const querySchema = residentQuerySchema.validateSync(params)
+
+    const data = await repository.update(querySchema.id, values)
 
     const httpResponse = HttpResponse.updated({
       message: req.t.success.updated,
