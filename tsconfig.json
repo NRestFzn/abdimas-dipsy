@@ -31,7 +31,6 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "downlevelIteration": true,
-    "ignoreDeprecations": "6.0",
 
     /* Interop Constraints */
     "esModuleInterop": true,
