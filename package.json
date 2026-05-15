@@ -50,9 +50,7 @@
     "yup": "^1.6.1",
     "zod": "^4.0.8",
     "tsc-alias": "^1.8.17",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
+    "typescript": "^5.9.3",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -62,7 +60,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
     "@types/multer": "^2.1.0",
-    "@types/request-ip": "^0.0.41",
+    "@types/request-ip": "^0.0.41"
+  },
+  "devDependencies": {
     "colorette": "^2.0.20",
     "concurrently": "^9.2.0",
     "dotenv": "^17.4.2",
