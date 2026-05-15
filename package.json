@@ -14,8 +14,8 @@
   "main": "main.ts",
   "scripts": {
     "generate:secret": "node dist/helper/keyGenerate.js",
+    "build": "rm -rf dist && tsc && tsc-alias",
     "build:dev": "rimraf dist && tsc && tsc-alias",
-    "build:prod": "rm -rf dist && tsc && tsc-alias",
     "start:prod": "node dist/main.js",
     "watch:dev": "node --import=tsx --watch src/main.ts",
     "db:create": "sequelize-cli db:create",
