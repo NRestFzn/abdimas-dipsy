@@ -45,4 +45,5 @@ export const registerSchema = yup.object({
   MarriageStatusId: yup.string().required('validation.required'),
   EducationId: yup.string().required('validation.required'),
   SalaryRangeId: yup.string().required('validation.required'),
+  isKader: yup.boolean().optional().nullable(),
 })

@@ -19,7 +19,7 @@ route.post(
 
     const values = registerSchema.validateSync(formData)
 
-    const data = await repository.register({ ...values })
+    const data = await repository.register({ ...values, isKader: false })
 
     const httpResponse = HttpResponse.created({
       message: req.t.auth.registerSuccess,

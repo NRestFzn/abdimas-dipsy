@@ -22,6 +22,7 @@ export interface RegisterDto {
   MarriageStatusId: string
   EducationId: string
   SalaryRangeId: string
+  isKader?: boolean
 }
 
 export interface AuthResponseDto {

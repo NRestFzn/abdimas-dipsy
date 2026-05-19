@@ -70,6 +70,45 @@ export class QuestionnaireSubmissionRepository {
     }
   }
 
+  async getAllSubmissionBySubmitter(req: Request): Promise<{
+    data: QuestionnaireSubmission[]
+    meta: { pagination: MetaPaginationDto }
+  }> {
+    const user: UserLoginState = req.getState('userLoginState')
+    const query = new QuestionnaireSubmissionQueryRepository(req)
+
+    const whereCondition: any = { SubmittedBy: user.uid }
+    if (query.QuestionnaireId) {
+      whereCondition.QuestionnaireId = query.QuestionnaireId
+    }
+
+    const data = await QuestionnaireSubmission.findAll({
+      limit: query.limit,
+      offset: query.offset,
+      order: query.order,
+      include: [
+        { model: Questionnaire },
+        { model: User, as: 'submittedBy' },
+        { model: User, as: 'user' },
+      ],
+      where: whereCondition,
+    })
+
+    const dataCount = await QuestionnaireSubmission.count({ where: whereCondition })
+
+    return {
+      data,
+      meta: {
+        pagination: {
+          page: query.page,
+          pageSize: query.pageSize,
+          pageCount: data.length,
+          total: dataCount,
+        },
+      },
+    }
+  }
+
   async summarizeByQuestionnaireId(
     options: IGetSummaryOptions
   ): Promise<ISummarizeByQuestionnaireIdDetailed> {
