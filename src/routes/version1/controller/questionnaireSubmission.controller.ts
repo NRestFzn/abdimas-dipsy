@@ -51,6 +51,21 @@ route.get(
 )
 
 route.get(
+  '/history-submitted',
+  authorization(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const data = await repository.getAllSubmissionBySubmitter(req)
+
+    const httpResponse = HttpResponse.get({
+      message: req.t.success.retrieved,
+      ...data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
   '/summary/:QuestionnaireId',
   authorization(),
   asyncHandler(async (req: Request, res: Response) => {
@@ -226,11 +241,17 @@ route.post(
       activeRoleId === RoleId.kaderDesa &&
       user.RoleIds.includes(RoleId.kaderDesa)
 
+    const isKepalaKeluarga =
+      activeRoleId === RoleId.kepalaKeluarga &&
+      user.RoleIds.includes(RoleId.kepalaKeluarga)
+
+    const isAssisted = isKaderDesa || isKepalaKeluarga
+
     const newFormData: CreateQuestionnaireSubmissionDto = {
-      UserId: isKaderDesa ? formData.UserId : user.uid,
+      UserId: isAssisted ? formData.UserId : user.uid,
       QuestionnaireId: params.questionnaireId,
       answers: formData.answers,
-      isAssisted: isKaderDesa,
+      isAssisted: isAssisted,
       SubmittedBy: user.uid,
     }
 

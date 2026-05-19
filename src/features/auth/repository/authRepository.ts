@@ -89,8 +89,6 @@ export class AuthRepository {
   }
 
   async register(formData: RegisterDto): Promise<AuthResponseDto> {
-    let data: any
-
     await db.sequelize!.transaction(async (transaction) => {
       const nikBlindIndex = Encryption.hashIndex(formData.nik)
 
@@ -131,26 +129,26 @@ export class AuthRepository {
           )
       }
 
-      data = await User.create({ ...formData }, { transaction })
+      const user = await User.create({ ...formData }, { transaction })
 
       await UserHasRoles.create({
-        UserId: data.id,
+        UserId: user.id,
         RoleId: RoleId.user,
-      })
+      }, { transaction })
 
       await UserDetail.create(
         {
           ...formData,
           nikHash: formData.nik,
           nikEncrypted: formData.nik,
-          UserId: data.id,
+          UserId: user.id,
         },
         { transaction }
       )
     })
 
-    data = await this.loginWithNik({
-      nik: data.nik,
+    const data = await this.loginWithNik({
+      nik: formData.nik,
       password: formData.password,
     })
 

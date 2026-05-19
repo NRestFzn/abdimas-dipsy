@@ -20,6 +20,7 @@ import User from './user'
 import { Encryption } from '@/libs/encryption'
 import Role from './role'
 import { RoleId } from '@/libs/constant/roleIds'
+import Family from './family'
 
 @DefaultScope(() => ({
   attributes: {
@@ -149,6 +150,17 @@ export default class UserDetail extends BaseSchema {
 
   @BelongsTo(() => SalaryRange)
   salaryRange: SalaryRange
+
+  @IsUUID(4)
+  @ForeignKey(() => Family)
+  @Column({
+    type: DataType.UUID,
+    allowNull: true,
+  })
+  FamilyId: string
+
+  @BelongsTo(() => Family)
+  family: Family
 
   compareNik: (current_nik: string) => Promise<boolean>
 
