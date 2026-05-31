@@ -24,7 +24,6 @@ import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 import UserHasRoles from '@/database/model/userHasRoles'
 import Role from '@/database/model/role'
 import { AuthRepository } from '../../auth/repository/authRepository'
-import { Encryption } from '@/libs/encryption'
 import { UserLoginState } from '../../user/dto'
 import { Op } from 'sequelize'
 
@@ -60,7 +59,7 @@ export class ResidentRepository {
       distinct: true,
       include: [
         {
-          model: UserDetail.scope('withNik'),
+          model: UserDetail,
           ...(detailFilter as any),
           required: isDetailRequired,
         },
@@ -95,20 +94,13 @@ export class ResidentRepository {
     return data
   }
 
-  async getById(
-    id: string,
-    option?: {
-      showNik: boolean
-      actorId: string
-      password: string
-    }
-  ): Promise<ResidentDetailDto> {
+  async getById(id: string): Promise<ResidentDetailDto> {
     const data = await User.findOne({
       where: { id },
       include: [
         { model: Role, through: { attributes: [] } },
         {
-          model: UserDetail.scope('withNik'),
+          model: UserDetail,
           include: [
             { model: RukunWarga },
             { model: RukunTetangga },
@@ -122,45 +114,14 @@ export class ResidentRepository {
 
     if (!data) throw new ErrorResponse.NotFound('errors.notFound')
 
-    if (option?.showNik && option?.actorId) {
-      const actor = await User.findOne({
-        where: {
-          id: option.actorId,
-        },
-        attributes: ['id', 'password'],
-        include: [
-          {
-            model: UserHasRoles,
-            as: 'userHasRolesData',
-            attributes: ['id', 'RoleId'],
-            where: {
-              RoleId: RoleId.adminDesa,
-            },
-          },
-        ],
-      })
-
-      if (!actor) throw new ErrorResponse.NotFound('auth.loginFailed')
-
-      const isPasswordMatch = await actor.comparePassword(option.password)
-
-      if (!isPasswordMatch) {
-        throw new ErrorResponse.BadRequest('auth.loginFailed')
-      }
-
-      data.userDetail.nik = Encryption.decrypt(data.userDetail.nikEncrypted)
-    }
-
     return data
   }
 
   async add(formData: CreateResidentDto): Promise<void> {
     let data: any
 
-    const nikBlindIndex = Encryption.hashIndex(formData.nik)
-
-    const duplicateNik = await UserDetail.scope('withNik').findOne({
-      where: { nikHash: nikBlindIndex },
+    const duplicateNik = await UserDetail.findOne({
+      where: { nik: formData.nik },
     })
 
     if (duplicateNik)
@@ -211,8 +172,7 @@ export class ResidentRepository {
       await UserDetail.create(
         {
           ...formData,
-          nikHash: formData.nik,
-          nikEncrypted: formData.nik,
+          nik: formData.nik,
           UserId: data.id,
         },
         { transaction }
@@ -227,8 +187,8 @@ export class ResidentRepository {
       await data.update({ ...formData }, { transaction })
 
       await UserDetail.update(
-        { ...formData, nikHash: formData.nik, nikEncrypted: formData.nik },
-        { where: { UserId: data.id }, transaction, individualHooks: true }
+        { ...formData, nik: formData.nik },
+        { where: { UserId: data.id }, transaction }
       )
 
       await UserHasRoles.destroy({
