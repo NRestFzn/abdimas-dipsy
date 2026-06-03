@@ -13,6 +13,7 @@ import { ResidentController } from './controller/resident.controller'
 import { UserController } from './controller/user.controller'
 import { QuestionnaireCategoryController } from './controller/questionnaireCategory.controller'
 import { FamilyController } from './controller/family.controller'
+import { OdgjResidentController } from './controller/odgjResident.controller'
 
 const Route: Router = express.Router()
 
@@ -30,5 +31,6 @@ Route.use('/resident', ResidentController)
 Route.use('/user', UserController)
 Route.use('/questionnaire-category', QuestionnaireCategoryController)
 Route.use('/family', FamilyController)
+Route.use('/odgj-resident', OdgjResidentController)
 
 export { Route as v1Route }

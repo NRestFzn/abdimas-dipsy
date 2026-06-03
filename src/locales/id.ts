@@ -51,6 +51,26 @@ const id: Translation = {
     noQuestion: 'Kuesioner belum memiliki pertanyaan',
   },
 
+  odgjResident: {
+    retrieved: 'Data warga ODGJ berhasil diambil',
+    created: 'Warga ODGJ berhasil ditambahkan',
+    updated: 'Data warga ODGJ berhasil diperbarui',
+    deleted: 'Data warga ODGJ berhasil dihapus',
+    notFound: 'Data warga ODGJ tidak ditemukan',
+    duplicate: 'Warga sudah terdaftar sebagai ODGJ',
+    residentNotFound: 'Warga tidak ditemukan',
+    scheduleCreated: 'Jadwal pemeriksaan berhasil ditambahkan',
+    recurringSchedulesCreated:
+      'Jadwal pemeriksaan berulang berhasil ditambahkan',
+    scheduleUpdated: 'Jadwal pemeriksaan berhasil diperbarui',
+    scheduleDeleted: 'Jadwal pemeriksaan berhasil dihapus',
+    scheduleNotFound: 'Jadwal pemeriksaan tidak ditemukan',
+    recurrenceCountMin:
+      'Jadwal pemeriksaan berulang memerlukan minimal 2 pertemuan',
+    recurrenceCountMax:
+      'Jadwal pemeriksaan berulang tidak boleh melebihi 120 pertemuan',
+  },
+
   validation: {
     required: '{field} wajib diisi',
     email: 'Format {field} tidak valid',
@@ -60,6 +80,8 @@ const id: Translation = {
     same: '{field} harus sama',
     oneOf: 'Pilihan {field} tidak valid',
     positive: '{field} harus berupa angka positif',
+    integer: '{field} harus berupa bilangan bulat',
+    number: '{field} harus berupa angka',
   },
 
   attributes: {
@@ -100,6 +122,11 @@ const id: Translation = {
     confirmNewPassword: 'Konfirmasi Kata Sandi Baru',
     count: 'Jumlah',
     name: 'Nama',
+    examinationDate: 'Tanggal Pemeriksaan',
+    notes: 'Catatan',
+    scheduleId: 'ID Jadwal',
+    recurrenceType: 'Pola Pengulangan',
+    recurrenceCount: 'Jumlah Pertemuan',
   },
 }
 
