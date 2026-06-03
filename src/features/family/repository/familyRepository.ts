@@ -5,7 +5,6 @@ import UserDetail from '@/database/model/userDetail'
 import UserHasRoles from '@/database/model/userHasRoles'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
 import { RoleId } from '@/libs/constant/roleIds'
-import { Encryption } from '@/libs/encryption'
 import { CreateFamilyDto, UpdateFamilyHeadDto } from '../dto'
 import { RegisterDto } from '@/features/auth/dto'
 import { AuthRepository } from '@/features/auth/repository/authRepository'
@@ -16,8 +15,16 @@ export class FamilyRepository {
   async getAllFamilies(): Promise<Family[]> {
     return await Family.findAll({
       include: [
-        { model: User, as: 'headOfFamily', attributes: ['id', 'fullname', 'email'] },
-        { model: UserDetail, as: 'members', include: [{ model: User, attributes: ['fullname'] }] }
+        {
+          model: User,
+          as: 'headOfFamily',
+          attributes: ['id', 'fullname', 'email'],
+        },
+        {
+          model: UserDetail,
+          as: 'members',
+          include: [{ model: User, attributes: ['fullname'] }],
+        },
       ],
     })
   }
@@ -25,8 +32,16 @@ export class FamilyRepository {
   async getFamilyDetail(id: string): Promise<Family> {
     const family = await Family.findByPk(id, {
       include: [
-        { model: User, as: 'headOfFamily', attributes: ['id', 'fullname', 'email'] },
-        { model: UserDetail, as: 'members', include: [{ model: User, attributes: ['id', 'fullname', 'email'] }] }
+        {
+          model: User,
+          as: 'headOfFamily',
+          attributes: ['id', 'fullname', 'email'],
+        },
+        {
+          model: UserDetail,
+          as: 'members',
+          include: [{ model: User, attributes: ['id', 'fullname', 'email'] }],
+        },
       ],
     })
 
@@ -51,14 +66,20 @@ export class FamilyRepository {
         transaction,
       })
       if (!roleExists) {
-        await UserHasRoles.create({ UserId: data.headOfFamilyId, RoleId: RoleId.kepalaKeluarga }, { transaction })
+        await UserHasRoles.create(
+          { UserId: data.headOfFamilyId, RoleId: RoleId.kepalaKeluarga },
+          { transaction }
+        )
       }
     })
 
     return this.getFamilyDetail(familyId)
   }
 
-  async updateFamilyHead(id: string, data: UpdateFamilyHeadDto): Promise<Family> {
+  async updateFamilyHead(
+    id: string,
+    data: UpdateFamilyHeadDto
+  ): Promise<Family> {
     const family = await Family.findByPk(id)
     if (!family) throw new ErrorResponse.NotFound('Keluarga tidak ditemukan')
 
@@ -67,9 +88,13 @@ export class FamilyRepository {
 
     if (oldHeadId === newHeadId) return family
 
-    const newHeadDetail = await UserDetail.findOne({ where: { UserId: newHeadId } })
+    const newHeadDetail = await UserDetail.findOne({
+      where: { UserId: newHeadId },
+    })
     if (!newHeadDetail || newHeadDetail.FamilyId !== id) {
-      throw new ErrorResponse.BadRequest('Kepala keluarga baru harus berasal dari keluarga yang sama')
+      throw new ErrorResponse.BadRequest(
+        'Kepala keluarga baru harus berasal dari keluarga yang sama'
+      )
     }
 
     await db.sequelize!.transaction(async (transaction) => {
@@ -87,7 +112,10 @@ export class FamilyRepository {
         transaction,
       })
       if (!roleExists) {
-        await UserHasRoles.create({ UserId: newHeadId, RoleId: RoleId.kepalaKeluarga }, { transaction })
+        await UserHasRoles.create(
+          { UserId: newHeadId, RoleId: RoleId.kepalaKeluarga },
+          { transaction }
+        )
       }
     })
 
@@ -95,51 +123,72 @@ export class FamilyRepository {
   }
 
   async addMemberByNik(familyId: string, nik: string): Promise<UserDetail> {
-    const nikBlindIndex = Encryption.hashIndex(nik)
-    const userDetail = await UserDetail.findOne({ where: { nikHash: nikBlindIndex } })
+    const userDetail = await UserDetail.findOne({
+      where: { nik },
+    })
 
-    if (!userDetail) throw new ErrorResponse.NotFound('Penduduk dengan NIK tersebut tidak ditemukan')
+    if (!userDetail)
+      throw new ErrorResponse.NotFound(
+        'Penduduk dengan NIK tersebut tidak ditemukan'
+      )
 
     await userDetail.update({ FamilyId: familyId })
     return userDetail
   }
 
-  async registerAndAddMember(familyId: string, formData: RegisterDto): Promise<any> {
+  async registerAndAddMember(
+    familyId: string,
+    formData: RegisterDto
+  ): Promise<any> {
     let newUserId: string = ''
 
     await db.sequelize!.transaction(async (transaction) => {
-      const nikBlindIndex = Encryption.hashIndex(formData.nik)
-      const duplicateNik = await UserDetail.scope('withNik').findOne({
-        where: { nikHash: nikBlindIndex },
+      const duplicateNik = await UserDetail.findOne({
+        where: { nik: formData.nik },
         transaction,
       })
-      if (duplicateNik) throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
+      if (duplicateNik)
+        throw new ErrorResponse.BaseResponse('auth.nikUsed', 'Conflict', 409)
 
       if (!formData.email) {
-        formData.email = authRepo.createEmailFromFullnameAndNik(formData.fullname, formData.nik)
+        formData.email = authRepo.createEmailFromFullnameAndNik(
+          formData.fullname,
+          formData.nik
+        )
       }
 
-      const duplicateEmail = await User.findOne({ where: { email: formData.email }, transaction })
-      if (duplicateEmail) throw new ErrorResponse.BaseResponse('auth.emailUsed', 'Conflict', 409)
+      const duplicateEmail = await User.findOne({
+        where: { email: formData.email },
+        transaction,
+      })
+      if (duplicateEmail)
+        throw new ErrorResponse.BaseResponse('auth.emailUsed', 'Conflict', 409)
 
       if (formData.phoneNumber) {
         const duplicatePhoneNumber = await UserDetail.findOne({
           where: { phoneNumber: formData.phoneNumber },
           transaction,
         })
-        if (duplicatePhoneNumber) throw new ErrorResponse.BaseResponse('auth.phoneUsed', 'Conflict', 409)
+        if (duplicatePhoneNumber)
+          throw new ErrorResponse.BaseResponse(
+            'auth.phoneUsed',
+            'Conflict',
+            409
+          )
       }
 
       const user = await User.create({ ...formData }, { transaction })
       newUserId = user.id
 
-      await UserHasRoles.create({ UserId: user.id, RoleId: RoleId.user }, { transaction })
+      await UserHasRoles.create(
+        { UserId: user.id, RoleId: RoleId.user },
+        { transaction }
+      )
 
       await UserDetail.create(
         {
           ...formData,
-          nikHash: formData.nik,
-          nikEncrypted: formData.nik,
+          nik: formData.nik,
           UserId: user.id,
           FamilyId: familyId,
         },
@@ -155,11 +204,16 @@ export class FamilyRepository {
     if (!family) throw new ErrorResponse.NotFound('Keluarga tidak ditemukan')
 
     if (family.headOfFamilyId === userId) {
-      throw new ErrorResponse.BadRequest('Tidak dapat menghapus kepala keluarga, ganti kepala keluarga terlebih dahulu')
+      throw new ErrorResponse.BadRequest(
+        'Tidak dapat menghapus kepala keluarga, ganti kepala keluarga terlebih dahulu'
+      )
     }
 
-    const userDetail = await UserDetail.findOne({ where: { UserId: userId, FamilyId: familyId } })
-    if (!userDetail) throw new ErrorResponse.NotFound('Anggota keluarga tidak ditemukan')
+    const userDetail = await UserDetail.findOne({
+      where: { UserId: userId, FamilyId: familyId },
+    })
+    if (!userDetail)
+      throw new ErrorResponse.NotFound('Anggota keluarga tidak ditemukan')
 
     await userDetail.update({ FamilyId: null })
   }

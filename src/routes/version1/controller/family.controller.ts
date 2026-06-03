@@ -5,7 +5,10 @@ import HttpResponse from '@/libs/http/HttpResponse'
 import asyncHandler from '@/helper/asyncHandler'
 import { permissionAccess } from '@/middleware/permissionAccess'
 import { RoleId } from '@/libs/constant/roleIds'
-import { createFamilySchema, updateFamilyHeadSchema } from '@/features/family/schema'
+import {
+  createFamilySchema,
+  updateFamilyHeadSchema,
+} from '@/features/family/schema'
 import User from '@/database/model/user'
 import UserDetail from '@/database/model/userDetail'
 import { ErrorResponse } from '@/libs/http/ErrorResponse'
@@ -17,13 +20,15 @@ const route = express.Router()
 route.get(
   '/me/my-family',
   authorization(),
-  permissionAccess([RoleId.kepalaKeluarga]),
+  permissionAccess([RoleId.kepalaKeluarga, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.getState('userLoginState')
     const userDetail = await UserDetail.findOne({ where: { UserId: user.uid } })
 
     if (!userDetail || !userDetail.FamilyId) {
-      throw new ErrorResponse.NotFound('Anda tidak tergabung dalam keluarga manapun')
+      throw new ErrorResponse.NotFound(
+        'Anda tidak tergabung dalam keluarga manapun'
+      )
     }
 
     const data = await repository.getFamilyDetail(userDetail.FamilyId)
@@ -38,17 +43,22 @@ route.get(
 route.post(
   '/me/my-family/members/by-nik',
   authorization(),
-  permissionAccess([RoleId.kepalaKeluarga]),
+  permissionAccess([RoleId.kepalaKeluarga, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.getState('userLoginState')
     const userDetail = await UserDetail.findOne({ where: { UserId: user.uid } })
 
     if (!userDetail || !userDetail.FamilyId) {
-      throw new ErrorResponse.NotFound('Anda tidak tergabung dalam keluarga manapun')
+      throw new ErrorResponse.NotFound(
+        'Anda tidak tergabung dalam keluarga manapun'
+      )
     }
 
     const { nik } = req.getBody()
-    const data = await repository.addMemberByNik(userDetail.FamilyId, nik as string)
+    const data = await repository.addMemberByNik(
+      userDetail.FamilyId,
+      nik as string
+    )
     const httpResponse = HttpResponse.created({
       message: 'Berhasil menambahkan anggota keluarga',
       data,
@@ -60,18 +70,23 @@ route.post(
 route.post(
   '/me/my-family/members/register',
   authorization(),
-  permissionAccess([RoleId.kepalaKeluarga]),
+  permissionAccess([RoleId.kepalaKeluarga, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.getState('userLoginState')
     const userDetail = await UserDetail.findOne({ where: { UserId: user.uid } })
 
     if (!userDetail || !userDetail.FamilyId) {
-      throw new ErrorResponse.NotFound('Anda tidak tergabung dalam keluarga manapun')
+      throw new ErrorResponse.NotFound(
+        'Anda tidak tergabung dalam keluarga manapun'
+      )
     }
 
     const formData = req.getBody()
     const values = registerSchema.validateSync(formData)
-    const data = await repository.registerAndAddMember(userDetail.FamilyId, { ...values, isKader: false })
+    const data = await repository.registerAndAddMember(userDetail.FamilyId, {
+      ...values,
+      isKader: false,
+    })
     const httpResponse = HttpResponse.created({
       message: 'Berhasil mendaftarkan anggota keluarga',
       data,
@@ -83,13 +98,15 @@ route.post(
 route.delete(
   '/me/my-family/members/:userId',
   authorization(),
-  permissionAccess([RoleId.kepalaKeluarga]),
+  permissionAccess([RoleId.kepalaKeluarga, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.getState('userLoginState')
     const userDetail = await UserDetail.findOne({ where: { UserId: user.uid } })
 
     if (!userDetail || !userDetail.FamilyId) {
-      throw new ErrorResponse.NotFound('Anda tidak tergabung dalam keluarga manapun')
+      throw new ErrorResponse.NotFound(
+        'Anda tidak tergabung dalam keluarga manapun'
+      )
     }
 
     const userId = req.params.userId as string
@@ -105,7 +122,7 @@ route.delete(
 route.get(
   '/',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const data = await repository.getAllFamilies()
     const httpResponse = HttpResponse.get({
@@ -119,7 +136,7 @@ route.get(
 route.get(
   '/:id',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string
     const data = await repository.getFamilyDetail(id)
@@ -134,7 +151,7 @@ route.get(
 route.post(
   '/',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const formData = req.getBody()
     const values = createFamilySchema.validateSync(formData)
@@ -150,7 +167,7 @@ route.post(
 route.put(
   '/:id/head',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string
     const formData = req.getBody()
@@ -167,7 +184,7 @@ route.put(
 route.post(
   '/:id/members/by-nik',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string
     const { nik } = req.getBody()
@@ -183,12 +200,15 @@ route.post(
 route.post(
   '/:id/members/register',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string
     const formData = req.getBody()
     const values = registerSchema.validateSync(formData)
-    const data = await repository.registerAndAddMember(id, { ...values, isKader: false })
+    const data = await repository.registerAndAddMember(id, {
+      ...values,
+      isKader: false,
+    })
     const httpResponse = HttpResponse.created({
       message: 'Berhasil mendaftarkan anggota keluarga',
       data,
@@ -200,7 +220,7 @@ route.post(
 route.delete(
   '/:id/members/:userId',
   authorization(),
-  permissionAccess([RoleId.adminDesa]),
+  permissionAccess([RoleId.adminDesa, RoleId.kaderDesa]),
   asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string
     const userId = req.params.userId as string

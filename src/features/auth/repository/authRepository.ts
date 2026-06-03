@@ -6,7 +6,6 @@ import { env } from '@/config/env.config'
 import { AuthResponseDto, LoginDto, LoginWithNikDto, RegisterDto } from '../dto'
 import { RoleId } from '@/libs/constant/roleIds'
 import UserDetail from '@/database/model/userDetail'
-import { Encryption } from '@/libs/encryption'
 import Role from '@/database/model/role'
 import UserHasRoles from '@/database/model/userHasRoles'
 
@@ -67,7 +66,7 @@ export class AuthRepository {
 
   async loginWithNik(formData: LoginWithNikDto): Promise<AuthResponseDto> {
     const getUser = await UserDetail.findOne({
-      where: { nikHash: Encryption.hashIndex(formData.nik) },
+      where: { nik: formData.nik },
       include: [{ model: User.scope('withPassword') }],
     })
 
@@ -90,10 +89,8 @@ export class AuthRepository {
 
   async register(formData: RegisterDto): Promise<AuthResponseDto> {
     await db.sequelize!.transaction(async (transaction) => {
-      const nikBlindIndex = Encryption.hashIndex(formData.nik)
-
-      const duplicateNik = await UserDetail.scope('withNik').findOne({
-        where: { nikHash: nikBlindIndex },
+      const duplicateNik = await UserDetail.findOne({
+        where: { nik: formData.nik },
         transaction,
       })
 
@@ -131,16 +128,18 @@ export class AuthRepository {
 
       const user = await User.create({ ...formData }, { transaction })
 
-      await UserHasRoles.create({
-        UserId: user.id,
-        RoleId: RoleId.user,
-      }, { transaction })
+      await UserHasRoles.create(
+        {
+          UserId: user.id,
+          RoleId: RoleId.user,
+        },
+        { transaction }
+      )
 
       await UserDetail.create(
         {
           ...formData,
-          nikHash: formData.nik,
-          nikEncrypted: formData.nik,
+          nik: formData.nik,
           UserId: user.id,
         },
         { transaction }
