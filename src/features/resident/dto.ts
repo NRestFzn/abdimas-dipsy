@@ -82,6 +82,10 @@ export interface ResidentDetailQueryFilterDto {
   nik: string
 }
 
+export interface ResidentNikQueryDto {
+  nik: string
+}
+
 export interface UpdateProfileDto {
   phoneNumber: string
   newPassword?: string

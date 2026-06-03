@@ -41,7 +41,11 @@ export class ResidentRepository {
 
     const isKader = userLogin.RoleIds.includes(RoleId.kaderDesa)
 
-    let isDetailRequired = false
+    let isDetailRequired = Boolean(
+      residentDetailQuery.RukunWargaId ||
+        residentDetailQuery.RukunTetanggaId ||
+        residentDetailQuery.nik
+    )
 
     if (isKader) {
       const user = await this.getById(userLogin.uid)
@@ -101,6 +105,36 @@ export class ResidentRepository {
         { model: Role, through: { attributes: [] } },
         {
           model: UserDetail,
+          include: [
+            { model: RukunWarga },
+            { model: RukunTetangga },
+            { model: MarriageStatus },
+            { model: Education },
+            { model: SalaryRange },
+          ],
+        },
+      ],
+    })
+
+    if (!data) throw new ErrorResponse.NotFound('errors.notFound')
+
+    return data
+  }
+
+  async getByNik(nik: string): Promise<ResidentDetailDto> {
+    const data = await User.findOne({
+      include: [
+        {
+          model: Role,
+          where: {
+            id: { [Op.in]: [RoleId.kaderDesa, RoleId.user] },
+          },
+          through: { attributes: [] },
+        },
+        {
+          model: UserDetail,
+          where: { nik },
+          required: true,
           include: [
             { model: RukunWarga },
             { model: RukunTetangga },

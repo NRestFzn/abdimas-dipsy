@@ -106,7 +106,18 @@ export const residentQuerySchema = yup.object().shape({
   id: yup.string().required('validation.required'),
 })
 
+export const residentNikQuerySchema = yup.object().shape({
+  nik: yup
+    .string()
+    .required('validation.required')
+    .min(16, 'validation.min')
+    .max(16, 'validation.max')
+    .matches(/^\d+$/, 'validation.number'),
+})
+
 export type ResidentQuery = yup.InferType<typeof residentQuerySchema>
+
+export type ResidentNikQuery = yup.InferType<typeof residentNikQuerySchema>
 
 export type CreateResident = yup.InferType<typeof createResidentSchema>
 
