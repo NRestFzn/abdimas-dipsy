@@ -4,8 +4,10 @@ import authorization from '@/middleware/authorization'
 import express, { Response, Request } from 'express'
 import HttpResponse from '@/libs/http/HttpResponse'
 import {
+  ResidentNikQuery,
   ResidentQuery,
   createResidentSchema,
+  residentNikQuerySchema,
   residentQuerySchema,
   updateProfileSchema,
   updateResidentSchema,
@@ -103,6 +105,26 @@ route.put(
 
     const httpResponse = HttpResponse.updated({
       message: req.t.user.profileUpdated,
+      data,
+    })
+
+    res.status(httpResponse.statusCode).json(httpResponse)
+  })
+)
+
+route.get(
+  '/by-nik/:nik',
+  authorization(),
+  permissionAccess([RoleId.adminDesa]),
+  asyncHandler(async (req: Request, res: Response) => {
+    const params: ResidentNikQuery = req.getParams()
+
+    const querySchema = residentNikQuerySchema.validateSync(params)
+
+    const data = await repository.getByNik(querySchema.nik)
+
+    const httpResponse = HttpResponse.get({
+      message: req.t.success.retrieved,
       data,
     })
 

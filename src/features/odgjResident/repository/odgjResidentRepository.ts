@@ -74,7 +74,7 @@ export class OdgjResidentRepository {
         ...(residentWhere ? { where: residentWhere } : {}),
         include: [
           {
-            model: UserDetail.scope('withNik'),
+            model: UserDetail,
             include: [{ model: RukunWarga }, { model: RukunTetangga }],
           },
         ],
