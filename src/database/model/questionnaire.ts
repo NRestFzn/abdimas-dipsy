@@ -11,6 +11,10 @@ import { DataTypes } from 'sequelize'
 import QuestionnaireQuestion from './questionnaireQuestion'
 import QuestionnaireSubmission from './questionnaireSubmission'
 import QuestionnaireCategory from './questionnaireCategory'
+import {
+  QuestionnaireScoringConfig,
+  QuestionnaireScoringType,
+} from '@/features/questionnaire/scoring'
 
 @Table({ freezeTableName: true, tableName: 'questionnaires' })
 export default class Questionnaire extends BaseSchema {
@@ -28,6 +32,16 @@ export default class Questionnaire extends BaseSchema {
 
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   cooldownInMinutes: number
+
+  @Column({
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: 'binary_threshold',
+  })
+  scoringType: QuestionnaireScoringType
+
+  @Column({ allowNull: true, type: DataTypes.JSON })
+  scoringConfig: QuestionnaireScoringConfig | null
 
   @IsUUID(4)
   @ForeignKey(() => QuestionnaireCategory)

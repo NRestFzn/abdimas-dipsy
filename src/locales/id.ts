@@ -49,6 +49,15 @@ const id: Translation = {
     notFound: 'Kuesioner tidak ditemukan',
     questionNotFound: 'Pertanyaan dengan id {id} tidak ditemukan',
     noQuestion: 'Kuesioner belum memiliki pertanyaan',
+    invalidScoringConfig: 'Konfigurasi penilaian kuesioner tidak valid',
+    invalidQuestionCategory: 'Kelompok penilaian pertanyaan tidak valid',
+    invalidQuestionScoreOverrides: 'Perubahan skor pertanyaan tidak valid',
+    invalidAnswerOption: 'Pilihan jawaban untuk pertanyaan {id} tidak valid',
+    scoreOutsideResultRange:
+      'Skor berada di luar rentang hasil yang telah dikonfigurasi',
+    duplicateAnswer: 'Satu pertanyaan tidak boleh dijawab lebih dari sekali',
+    questionNotInQuestionnaire:
+      'Pertanyaan dengan id {id} bukan bagian dari kuesioner ini',
   },
 
   odgjResident: {
@@ -103,6 +112,10 @@ const id: Translation = {
     description: 'Deskripsi',
     status: 'Status',
     riskThreshold: 'Ambang Batas Risiko',
+    scoringType: 'Tipe Penilaian',
+    scoringConfig: 'Konfigurasi Penilaian',
+    scoringCategory: 'Kelompok Penilaian',
+    scoreOverrides: 'Perubahan Skor',
     cooldownInMinutes: 'Waktu Jeda (Menit)',
     CategoryId: 'Kategori',
     QuestionnaireId: 'Kuesioner',

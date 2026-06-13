@@ -15,6 +15,12 @@ export default class QuestionnaireAnswer extends BaseSchema {
   @Column({ allowNull: false, type: DataTypes.STRING })
   answerValue: string
 
+  @Column({ allowNull: true, type: DataTypes.STRING })
+  answerLabel: string | null
+
+  @Column({ allowNull: true, type: DataTypes.INTEGER })
+  score: number | null
+
   @IsUUID(4)
   @ForeignKey(() => QuestionnaireQuestion)
   @Column({ allowNull: false, type: DataTypes.UUID })

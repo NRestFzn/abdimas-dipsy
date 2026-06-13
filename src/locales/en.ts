@@ -44,6 +44,14 @@ export default {
     notFound: 'QUestionnaire not found',
     questionNotFound: 'Question with id {id} not found',
     noQuestion: "Questionnaire doesn't have question yet",
+    invalidScoringConfig: 'Questionnaire scoring configuration is invalid',
+    invalidQuestionCategory: 'Question scoring category is invalid',
+    invalidQuestionScoreOverrides: 'Question score overrides are invalid',
+    invalidAnswerOption: 'Answer option for question {id} is invalid',
+    scoreOutsideResultRange: 'Score is outside the configured result ranges',
+    duplicateAnswer: 'A question cannot be answered more than once',
+    questionNotInQuestionnaire:
+      'Question with id {id} does not belong to this questionnaire',
   },
 
   odgjResident: {
@@ -98,6 +106,10 @@ export default {
     description: 'Description',
     status: 'Status',
     riskThreshold: 'Risk Threshold',
+    scoringType: 'Scoring Type',
+    scoringConfig: 'Scoring Configuration',
+    scoringCategory: 'Scoring Category',
+    scoreOverrides: 'Score Overrides',
     cooldownInMinutes: 'Cooldown (Minutes)',
     CategoryId: 'Category',
     QuestionnaireId: 'Questionnaire',

@@ -2,6 +2,7 @@ import { Column, ForeignKey, IsUUID, Table } from 'sequelize-typescript'
 import BaseSchema from './_baseModel'
 import { DataTypes } from 'sequelize'
 import Questionnaire from './questionnaire'
+import { QuestionScoreOverrides } from '@/features/questionnaire/scoring'
 
 @Table({ freezeTableName: true, tableName: 'questionnaire_questions' })
 export default class QuestionnaireQuestion extends BaseSchema {
@@ -16,6 +17,12 @@ export default class QuestionnaireQuestion extends BaseSchema {
 
   @Column({ allowNull: false, type: DataTypes.NUMBER })
   order: number
+
+  @Column({ allowNull: true, type: DataTypes.STRING })
+  scoringCategory: string | null
+
+  @Column({ allowNull: true, type: DataTypes.JSON })
+  scoreOverrides: QuestionScoreOverrides | null
 
   @IsUUID(4)
   @ForeignKey(() => Questionnaire)

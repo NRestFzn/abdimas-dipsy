@@ -9,6 +9,8 @@ import {
   UpdateQuestionnaireQuestionDto,
 } from '../dto'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
+import Questionnaire from '@/database/model/questionnaire'
+import { assertQuestionScoring } from '../../questionnaire/scoring'
 
 export class QuestionnaireQuestionRepository {
   async getAll(req: Request): Promise<{
@@ -57,7 +59,19 @@ export class QuestionnaireQuestionRepository {
   ): Promise<QuestionnaireQuestionDto[]> {
     let data: any
 
+    const questionnaire = await Questionnaire.findByPk(formData.QuestionnaireId)
+
+    if (!questionnaire)
+      throw new ErrorResponse.NotFound('questionnaire.notFound')
+
+    assertQuestionScoring(
+      questionnaire.scoringType,
+      questionnaire.scoringConfig,
+      formData
+    )
+
     const maxOrder = await QuestionnaireQuestion.findOne({
+      where: { QuestionnaireId: formData.QuestionnaireId },
       attributes: ['order'],
       order: [['order', 'desc']],
       limit: 1,
@@ -83,9 +97,27 @@ export class QuestionnaireQuestionRepository {
       throw new ErrorResponse.BadRequest('questionnaire.duplicateOrder')
 
     for (let i = 0; i < formData.length; i++) {
-      const { id, questionText, questionType, order, status } = formData[i]
+      const {
+        id,
+        questionText,
+        questionType,
+        order,
+        status,
+        scoringCategory,
+        scoreOverrides,
+      } = formData[i]
 
       const data = await this.getByPk(id)
+      const questionnaire = await Questionnaire.findByPk(data.QuestionnaireId)
+
+      if (!questionnaire)
+        throw new ErrorResponse.NotFound('questionnaire.notFound')
+
+      assertQuestionScoring(
+        questionnaire.scoringType,
+        questionnaire.scoringConfig,
+        { scoringCategory, scoreOverrides }
+      )
 
       bulkUpdate.push({
         id: data.id,
@@ -93,6 +125,8 @@ export class QuestionnaireQuestionRepository {
         questionType,
         status,
         order,
+        scoringCategory,
+        scoreOverrides,
         QuestionnaireId: data.QuestionnaireId,
       })
     }
@@ -106,6 +140,8 @@ export class QuestionnaireQuestionRepository {
           'questionType',
           'order',
           'status',
+          'scoringCategory',
+          'scoreOverrides',
           'QuestionnaireId',
         ],
       })
