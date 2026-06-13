@@ -1,5 +1,6 @@
 import { QuestionnaireDto } from '../questionnaire/dto'
 import { UserDto } from '../user/dto'
+import { QuestionnaireScoringResult } from '../questionnaire/scoring'
 
 export interface QuestionnaireSubmissionQueryFilterDto {
   UserId: string
@@ -12,6 +13,11 @@ export interface QuestionnaireSubmissionDto {
   QuestionnaireId: string
   SubmittedBy: string
   isAssisted: boolean
+  score: number | null
+  resultKey: string | null
+  resultLabel: string | null
+  isRisk: boolean | null
+  scoringResult: QuestionnaireScoringResult | null
   createdAt: Date
   updatedAt: Date
 }
@@ -82,6 +88,9 @@ export interface ISummarizeUserByRt {
 export interface ISummarizeSubmissionByUser {
   submissionId: string
   submissionDate: Date
+  score: number
+  resultKey: string
+  resultLabel: string
   isMentalUnStable: boolean
 }
 
@@ -112,6 +121,8 @@ interface IQuestionnaireAnswer {
   QuestionnaireSubmissionId: string
   QuestionnaireQuestionId: string
   answerValue: string
+  answerLabel: string | null
+  score: number | null
 }
 
 export interface ISummarizeSubmission extends QuestionnaireSubmissionDetailDto {
@@ -119,4 +130,8 @@ export interface ISummarizeSubmission extends QuestionnaireSubmissionDetailDto {
   falseCount: number
   answeredCount: number
   isMentalUnstable: boolean
+  score: number
+  resultKey: string
+  resultLabel: string
+  scoringResult: QuestionnaireScoringResult | null
 }

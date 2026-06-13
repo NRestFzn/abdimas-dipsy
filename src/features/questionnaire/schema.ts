@@ -1,4 +1,8 @@
 import * as yup from 'yup'
+import {
+  QuestionnaireScoringConfig,
+  questionnaireScoringTypes,
+} from './scoring'
 
 export const createQuestionnaireSchema = yup.object().shape({
   title: yup.string().required('validation.required'),
@@ -10,6 +14,12 @@ export const createQuestionnaireSchema = yup.object().shape({
   riskThreshold: yup.number().required('validation.required'),
   cooldownInMinutes: yup.number().required('validation.required'),
   CategoryId: yup.string().required('validation.required'),
+  scoringType: yup
+    .string()
+    .oneOf([...questionnaireScoringTypes], 'validation.oneOf')
+    .default('binary_threshold')
+    .required('validation.required'),
+  scoringConfig: yup.mixed<QuestionnaireScoringConfig>().nullable().default(null),
 })
 
 export const updateQuestionnaireSchema = createQuestionnaireSchema.clone()

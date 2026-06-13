@@ -14,6 +14,10 @@ import QuestionnaireSubmission from '@/database/model/questionnaireSubmission'
 import { UserLoginState } from '../../user/dto'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 import QuestionnaireCategory from '@/database/model/questionnaireCategory'
+import {
+  assertQuestionScoring,
+  assertScoringConfiguration,
+} from '../scoring'
 
 export class QuestionnaireRepository {
   async getAll(req: Request): Promise<{
@@ -180,6 +184,8 @@ export class QuestionnaireRepository {
   async add(formData: CreateQuestionnaireDto): Promise<QuestionnaireDto[]> {
     let data: any
 
+    assertScoringConfiguration(formData.scoringType, formData.scoringConfig)
+
     await db.sequelize!.transaction(async (transaction) => {
       data = await Questionnaire.create({ ...formData }, { transaction })
     })
@@ -197,6 +203,15 @@ export class QuestionnaireRepository {
 
     if (data.questions.length <= 0)
       throw new ErrorResponse.BadRequest('questionnaire.noQuestion')
+
+    assertScoringConfiguration(formData.scoringType, formData.scoringConfig)
+
+    for (const question of data.questions) {
+      assertQuestionScoring(formData.scoringType, formData.scoringConfig, {
+        scoringCategory: question.scoringCategory,
+        scoreOverrides: question.scoreOverrides,
+      })
+    }
 
     await db.sequelize!.transaction(async (transaction) => {
       await data.update({ ...formData }, { transaction })

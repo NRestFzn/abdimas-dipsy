@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { QuestionScoreOverrides } from '../questionnaire/scoring'
 
 export const createQuestionnaireQuestionSchema = yup.object().shape({
   QuestionnaireId: yup.string().required('validation.required'),
@@ -8,6 +9,8 @@ export const createQuestionnaireQuestionSchema = yup.object().shape({
     .string()
     .oneOf(['draft', 'publish'], 'validation.oneOf')
     .required('validation.required'),
+  scoringCategory: yup.string().nullable().default(null),
+  scoreOverrides: yup.mixed<QuestionScoreOverrides>().nullable().default(null),
 })
 
 export const updateQuestionnaireQuestionSchema = yup
@@ -21,6 +24,8 @@ export const updateQuestionnaireQuestionSchema = yup
         .oneOf(['draft', 'publish'], 'validation.oneOf')
         .required('validation.required'),
       order: yup.number().required('validation.required'),
+      scoringCategory: yup.string().nullable().default(null),
+      scoreOverrides: yup.mixed<QuestionScoreOverrides>().nullable().default(null),
     })
   )
   .required('validation.required')

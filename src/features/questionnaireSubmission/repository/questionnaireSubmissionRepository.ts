@@ -32,6 +32,7 @@ import { UserLoginState } from '../../user/dto'
 import User from '@/database/model/user'
 import { MetaPaginationDto } from '@/routes/version1/response/metaData'
 import Questionnaire from '@/database/model/questionnaire'
+import { evaluateQuestionnaire } from '../../questionnaire/scoring'
 
 const questionnaireRepository = new QuestionnaireRepository()
 const rukunWargaRepository = new RukunWargaRepository()
@@ -139,19 +140,19 @@ export class QuestionnaireSubmissionRepository {
     const query = `
     WITH RwRtCounts AS (SELECT RukunWargaId, COUNT(id) AS totalRt FROM rukun_tetanggas GROUP BY RukunWargaId),
 
-    LatestSubmissionsInRange AS (SELECT id, UserId FROM
-    ( SELECT qs.id, qs.UserId, ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
+    LatestSubmissionsInRange AS (SELECT id, UserId, isRisk FROM
+    ( SELECT qs.id, qs.UserId, qs.isRisk, ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
     FROM questionnaire_submissions qs WHERE qs.QuestionnaireId = :QuestionnaireId ${dateFilter}) t WHERE t.rn = 1),
     
-    UnstableMentalScore AS (SELECT ls.UserId, SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END)
+    UnstableMentalScore AS (SELECT ls.UserId, ls.isRisk, SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END)
     AS trueCount FROM LatestSubmissionsInRange ls
     JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
-    JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
-    GROUP BY ls.UserId),
+    GROUP BY ls.UserId, ls.isRisk),
     
     UserMentalState AS (SELECT ud.UserId, ud.RukunWargaId,
     CASE
       WHEN ds.trueCount IS NULL THEN NULL
+      WHEN ds.isRisk IS NOT NULL THEN ds.isRisk
       WHEN ds.trueCount >= (select riskThreshold FROM questionnaires where id = :QuestionnaireId) THEN 1
       ELSE 0
     END AS healthStatus
@@ -262,11 +263,12 @@ export class QuestionnaireSubmissionRepository {
     GROUP BY rt.id, rt.RukunWargaId),
     
     LatestSubmissionsInRange AS (
-    SELECT id, UserId
+    SELECT id, UserId, isRisk
     FROM (
       SELECT
         qs.id,
         qs.UserId,
+        qs.isRisk,
         ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
       FROM questionnaire_submissions qs
       WHERE qs.QuestionnaireId = :QuestionnaireId
@@ -277,11 +279,11 @@ export class QuestionnaireSubmissionRepository {
     UnstableMentalScore AS (
     SELECT
       ls.UserId,
+      ls.isRisk,
       SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
     FROM LatestSubmissionsInRange ls
     JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
-    JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id WHERE qq.status = 'publish'
-    GROUP BY ls.UserId),
+    GROUP BY ls.UserId, ls.isRisk),
 
     UserMentalState AS (
     SELECT
@@ -290,6 +292,7 @@ export class QuestionnaireSubmissionRepository {
       ud.RukunTetanggaId,
       CASE
         WHEN ds.trueCount IS NULL THEN NULL
+        WHEN ds.isRisk IS NOT NULL THEN ds.isRisk
         WHEN ds.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1
         ELSE 0
       END AS healthStatus
@@ -405,6 +408,7 @@ export class QuestionnaireSubmissionRepository {
         SELECT
           qs.id,
           qs.UserId,
+          qs.isRisk,
           qs.createdAt AS submissionDate,
           ROW_NUMBER() OVER (PARTITION BY qs.UserId ORDER BY qs.createdAt DESC) AS rn
         FROM questionnaire_submissions qs
@@ -413,13 +417,12 @@ export class QuestionnaireSubmissionRepository {
       ),
 
       UnstableMentalScore AS (
-        SELECT ls.UserId, ls.submissionDate,
+        SELECT ls.UserId, ls.submissionDate, ls.isRisk,
         SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
         FROM LatestSubmissionsInRange ls
         JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = ls.id
-        JOIN questionnaire_questions qq ON qa.QuestionnaireQuestionId = qq.id
-        WHERE ls.rn = 1 && qq.status = 'publish'
-        GROUP BY ls.UserId, ls.submissionDate
+        WHERE ls.rn = 1
+        GROUP BY ls.UserId, ls.submissionDate, ls.isRisk
       ),
 
       UserMentalState AS (
@@ -429,7 +432,11 @@ export class QuestionnaireSubmissionRepository {
           u.fullname,
           ud.RukunTetanggaId,
           ds.submissionDate AS lastSubmissionDate,
-          CASE WHEN ds.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
+          CASE
+            WHEN ds.isRisk IS NOT NULL THEN ds.isRisk
+            WHEN ds.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1
+            ELSE 0
+          END AS isMentalUnStable
         FROM user_details ud
         INNER JOIN users u on ud.UserId = u.id
         JOIN UnstableMentalScore ds ON ds.UserId = ud.UserId
@@ -525,7 +532,11 @@ export class QuestionnaireSubmissionRepository {
     SELECT
       qs.id AS submissionId,
       qs.UserId,
-      qs.createdAt AS submissionDate
+      qs.createdAt AS submissionDate,
+      qs.score,
+      qs.resultKey,
+      qs.resultLabel,
+      qs.isRisk
     FROM questionnaire_submissions qs
     JOIN user_details ud ON ud.UserId = qs.UserId
     JOIN rukun_tetanggas rt ON ud.RukunTetanggaId = rt.id
@@ -540,18 +551,27 @@ export class QuestionnaireSubmissionRepository {
     SELECT
       us.submissionId,
       us.submissionDate,
+      us.score,
+      us.resultKey,
+      us.resultLabel,
+      us.isRisk,
       SUM(CASE WHEN LOWER(COALESCE(qa.answerValue, '')) = 'true' THEN 1 ELSE 0 END) AS trueCount
     FROM UserSubmissions us
     JOIN questionnaire_answers qa ON qa.QuestionnaireSubmissionId = us.submissionId
-    JOIN questionnaire_questions qq ON qq.id = qa.QuestionnaireQuestionId
-    WHERE qq.status = 'publish'
-    GROUP BY us.submissionId, us.submissionDate)
+    GROUP BY us.submissionId, us.submissionDate, us.score, us.resultKey, us.resultLabel, us.isRisk)
 
     SELECT
       ac.submissionId,
       ac.submissionDate,
+      COALESCE(ac.score, ac.trueCount) AS score,
       ac.trueCount,
-    CASE WHEN ac.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1 ELSE 0 END AS isMentalUnStable
+      COALESCE(ac.resultKey, CASE WHEN ac.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 'risk' ELSE 'stable' END) AS resultKey,
+      COALESCE(ac.resultLabel, CASE WHEN ac.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 'Berisiko' ELSE 'Stabil' END) AS resultLabel,
+    CASE
+      WHEN ac.isRisk IS NOT NULL THEN ac.isRisk
+      WHEN ac.trueCount >= (select riskThreshold from questionnaires where id = :QuestionnaireId) THEN 1
+      ELSE 0
+    END AS isMentalUnStable
     FROM AnswerCounts ac
     ORDER BY ac.submissionDate DESC;`
 
@@ -620,15 +640,33 @@ export class QuestionnaireSubmissionRepository {
     ).length
 
     const answeredCount = submission.questionnaireAnswer.length
+    const scoringResult =
+      submission.scoringResult ??
+      evaluateQuestionnaire({
+        scoringType: questionnaire.scoringType,
+        riskThreshold: questionnaire.riskThreshold,
+        scoringConfig: questionnaire.scoringConfig,
+        questions: submission.questionnaireAnswer.map(
+          (answer) => answer.questionnaireQuestion
+        ),
+        answers: submission.questionnaireAnswer.map((answer) => ({
+          QuestionId: answer.QuestionnaireQuestionId,
+          answerValue: answer.answerValue,
+        })),
+      })
 
     const submissionToJson = submission.toJSON()
 
     const data: ISummarizeSubmission = {
+      ...submissionToJson,
       trueCount,
       falseCount,
       answeredCount,
-      isMentalUnstable: trueCount >= questionnaire.riskThreshold,
-      ...submissionToJson,
+      score: submission.score ?? scoringResult.score,
+      resultKey: submission.resultKey ?? scoringResult.resultKey,
+      resultLabel: submission.resultLabel ?? scoringResult.resultLabel,
+      isMentalUnstable: submission.isRisk ?? scoringResult.isRisk,
+      scoringResult,
     }
 
     return data
@@ -639,32 +677,12 @@ export class QuestionnaireSubmissionRepository {
   ): Promise<QuestionnaireSubmissionDto> {
     let submission: any
 
-    const answerData: { QuestionId: string; answer: string }[] = []
-
     const questionnaire = await questionnaireRepository.getByIdPublic(
       formData.QuestionnaireId
     )
 
     if (!questionnaire)
       throw new ErrorResponse.NotFound('questionnaire.notFound')
-
-    if (formData.answers.length > 0) {
-      for (let i = 0; i < formData.answers.length; i++) {
-        const { QuestionId, answerValue } = formData.answers[i]
-
-        const question = await QuestionnaireQuestion.findByPk(QuestionId)
-
-        if (!question)
-          throw new ErrorResponse.NotFound('questionnaire.questionNotFound', {
-            id: QuestionId,
-          })
-
-        answerData.push({
-          QuestionId: QuestionId,
-          answer: answerValue,
-        })
-      }
-    }
 
     if (formData.answers.length < questionnaire.questions.length) {
       throw new ErrorResponse.BadRequest('questionnaire.inCompleteAnswer')
@@ -673,6 +691,43 @@ export class QuestionnaireSubmissionRepository {
     if (formData.answers.length > questionnaire.questions.length) {
       throw new ErrorResponse.BadRequest('questionnaire.exceededAnswer')
     }
+
+    const questionIds = new Set(questionnaire.questions.map((question) => question.id))
+    const submittedQuestionIds = formData.answers.map((answer) => answer.QuestionId)
+
+    if (new Set(submittedQuestionIds).size !== submittedQuestionIds.length) {
+      throw new ErrorResponse.BadRequest('questionnaire.duplicateAnswer')
+    }
+
+    for (const answer of formData.answers) {
+      if (!questionIds.has(answer.QuestionId)) {
+        throw new ErrorResponse.BadRequest(
+          'questionnaire.questionNotInQuestionnaire',
+          { id: answer.QuestionId }
+        )
+      }
+
+      if (
+        questionnaire.scoringType === 'binary_threshold' &&
+        !['true', 'false'].includes(answer.answerValue.toLowerCase())
+      ) {
+        throw new ErrorResponse.BadRequest('questionnaire.invalidAnswerOption', {
+          id: answer.QuestionId,
+        })
+      }
+    }
+
+    const scoringResult = evaluateQuestionnaire({
+      scoringType: questionnaire.scoringType,
+      riskThreshold: questionnaire.riskThreshold,
+      scoringConfig: questionnaire.scoringConfig,
+      questions: questionnaire.questions,
+      answers: formData.answers,
+    })
+
+    const evaluatedAnswerByQuestion = new Map(
+      scoringResult.answers.map((answer) => [answer.QuestionId, answer])
+    )
 
     await db.sequelize!.transaction(async (transaction) => {
       const bulkCreate = []
@@ -683,14 +738,23 @@ export class QuestionnaireSubmissionRepository {
           SubmittedBy: formData.SubmittedBy,
           UserId: formData.UserId,
           QuestionnaireId: formData.QuestionnaireId,
+          score: scoringResult.score,
+          resultKey: scoringResult.resultKey,
+          resultLabel: scoringResult.resultLabel,
+          isRisk: scoringResult.isRisk,
+          scoringResult,
         },
         { transaction }
       )
 
-      for (let i = 0; i < answerData.length; i++) {
+      for (const answer of formData.answers) {
+        const evaluatedAnswer = evaluatedAnswerByQuestion.get(answer.QuestionId)!
+
         bulkCreate.push({
-          answerValue: answerData[i].answer,
-          QuestionnaireQuestionId: answerData[i].QuestionId,
+          answerValue: evaluatedAnswer.answerValue,
+          answerLabel: evaluatedAnswer.answerLabel,
+          score: evaluatedAnswer.score,
+          QuestionnaireQuestionId: evaluatedAnswer.QuestionId,
           QuestionnaireSubmissionId: questionnaireSubmission.id,
         })
       }

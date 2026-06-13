@@ -1,5 +1,9 @@
 import { QuestionnaireCategoryDto } from '../questionnaireCategory/dto'
 import { QuestionnaireQuestionDto } from '../questionnaireQuestion/dto'
+import {
+  QuestionnaireScoringConfig,
+  QuestionnaireScoringType,
+} from './scoring'
 
 export interface QuestionnaireDto {
   id: string
@@ -9,6 +13,8 @@ export interface QuestionnaireDto {
   riskThreshold: number
   cooldownInMinutes: number
   CategoryId: string
+  scoringType: QuestionnaireScoringType
+  scoringConfig: QuestionnaireScoringConfig | null
   category: QuestionnaireCategoryDto
   createdAt: Date
   updatedAt: Date
@@ -25,6 +31,8 @@ export interface CreateQuestionnaireDto {
   riskThreshold: number
   cooldownInMinutes: number
   CategoryId: string
+  scoringType: QuestionnaireScoringType
+  scoringConfig: QuestionnaireScoringConfig | null
 }
 
 export interface UpdateQuestionnaireDto extends CreateQuestionnaireDto {}
