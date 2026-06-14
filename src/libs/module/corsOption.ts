@@ -1,10 +1,5 @@
 import { CorsOptions } from 'cors'
-
-export const allowedOrigins = [
-  'http://localhost:5173',
-  'https://abdimas-dipsy-fe.vercel.app',
-  'https://dipsy.chevalierlabsas.org',
-]
+import { allowedOrigins } from '../constant/allowedCors'
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
