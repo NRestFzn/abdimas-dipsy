@@ -289,7 +289,8 @@ export async function up(
       [
         {
           id: QUESTIONNAIRE_ID,
-          title: 'Strengths and Difficulties Questionnaire (SDQ) Usia 4-10 Tahun',
+          title:
+            'Strengths and Difficulties Questionnaire (SDQ) Usia 4-10 Tahun',
           description:
             'Skrining kekuatan dan kesulitan emosional serta perilaku anak usia 4-10 tahun. Bukan alat diagnosis klinis.',
           status: 'publish',
@@ -305,6 +306,10 @@ export async function up(
       { transaction }
     )
 
+    const answerOptions = scoringConfig.answerOptions.map(
+      (option) => option.label
+    )
+
     await queryInterface.bulkInsert(
       'questionnaire_questions',
       questions.map((question, index) => ({
@@ -317,6 +322,7 @@ export async function up(
         scoreOverrides: question.reverseScore
           ? JSON.stringify(reverseScoreOverrides)
           : null,
+        options: JSON.stringify(answerOptions),
         QuestionnaireId: QUESTIONNAIRE_ID,
         createdAt: now,
         updatedAt: now,

@@ -44,6 +44,7 @@ export async function up(
       questionType: 'radio',
       order: i + 1,
       status: 'publish',
+      options: JSON.stringify(['Ya', 'Tidak']),
       QuestionnaireId: questionnaireId,
       createdAt: new Date(),
       updatedAt: new Date(),

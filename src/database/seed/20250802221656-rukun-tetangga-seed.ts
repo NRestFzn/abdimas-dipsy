@@ -12,18 +12,20 @@ export async function up(
   const formData: any[] = []
 
   const rukunWarga: { id: string }[] = await queryInterface.sequelize.query(
-    'SELECT id FROM `rukun_wargas` LIMIT 1',
+    'SELECT id FROM `rukun_wargas` ORDER BY name ASC',
     { type: QueryTypes.SELECT }
   )
 
-  for (let i = 1; i <= 3; i++) {
-    formData.push({
-      id: v4(),
-      name: i,
-      RukunWargaId: rukunWarga[0].id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
+  for (const rw of rukunWarga) {
+    for (let i = 1; i <= 20; i++) {
+      formData.push({
+        id: v4(),
+        name: i,
+        RukunWargaId: rw.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    }
   }
 
   await queryInterface.bulkInsert('rukun_tetanggas', formData)

@@ -9,14 +9,16 @@ export async function up(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes
 ) {
-  const formData: any[] = [
-    {
+  const formData: any[] = []
+
+  for (let i = 1; i <= 20; i++) {
+    formData.push({
       id: v4(),
-      name: 1,
+      name: i,
       createdAt: new Date(),
       updatedAt: new Date(),
-    },
-  ]
+    })
+  }
 
   await queryInterface.bulkInsert('rukun_wargas', formData)
 }
